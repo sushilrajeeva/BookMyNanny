@@ -5,7 +5,7 @@
 **Members:**
 - Sushil Rajeeva Bhandary (20015528)
 - Sabitha Rachel Nazareth (20012150)
-- Sai Bandla
+- Sai Bandla (20011577)
 - Kavitha Siratla (20012554)
 
 ---
