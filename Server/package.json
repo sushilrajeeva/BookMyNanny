@@ -3,16 +3,18 @@
   "version": "1.0.0",
   "description": "GraphQL Server (BookMyNanny) ",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
-  "author": "sai pranav bandla",
+  "author": "Fantastic 4",
   "license": "MIT",
   "dependencies": {
     "@apollo/server": "^4.9.3",
     "graphql": "^16.8.1",
     "mongodb": "^6.1.0",
+    "nodemon": "^3.0.1",
     "uuid": "^9.0.1"
   }
 }
