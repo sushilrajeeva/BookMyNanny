@@ -1,29 +1,71 @@
 import React, {useContext, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {doCreateUserWithEmailAndPassword} from '../firebase/FirebaseFunctions';
+import {doCreateUserWithEmailAndPassword,createUserDocument} from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../context/AuthContext';
 import SocialSignIn from './SocialSignIn';
+import { db } from '../main.jsx';
 function SignUp() {
   const {currentUser} = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState('');
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const {displayName, email, passwordOne, passwordTwo} = e.target.elements;
+    const {
+      displayName,
+      email,
+      passwordOne,
+      passwordTwo,
+      firstName,
+      lastName,
+      countryCode,
+      phoneNumber,
+      street,
+      city,
+      state,
+      country,
+      pincode,
+      dob,
+    } = e.target.elements;
+  
     if (passwordOne.value !== passwordTwo.value) {
       setPwMatch('Passwords do not match');
       return false;
     }
-
+  
     try {
-      await doCreateUserWithEmailAndPassword(
+      // Create user in Firebase Authentication
+      let createdUid = await doCreateUserWithEmailAndPassword(
         email.value,
         passwordOne.value,
         displayName.value
       );
+      console.log("created uid",createdUid)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      //todo need to hash password
+        // if(!currentUser) throw "no usercreds to do crud"
+      // Create document in Firestore
+      await createUserDocument(createdUid, {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        emailAddress: email.value,
+        countryCode: countryCode.value,
+        phoneNumber: phoneNumber.value,
+        street: street.value,
+        city: city.value,
+        state: state.value,
+        country: country.value,
+        pincode: pincode.value,
+        dob: dob.value,
+        role: 'parent',
+        password: passwordOne.value,
+        listings: [],
+        wallet: 0,
+      });
     } catch (error) {
+      console.log(error)
       alert(error);
     }
   };
+  
 
   if (currentUser) {
     return <Navigate to='/home' />;
@@ -31,7 +73,7 @@ function SignUp() {
 
   return (
     <div className='card'>
-      <h1>Sign up</h1>
+      <h1>Sign up as a parent</h1>
       {pwMatch && <h4 className='error'>{pwMatch}</h4>}
       <form onSubmit={handleSignUp}>
         <div className='form-group'>
@@ -90,6 +132,146 @@ function SignUp() {
             />
           </label>
         </div>
+        <div className='form-group'>
+          <label>
+            First Name:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='firstName'
+              type='text'
+              placeholder='First Name'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Last Name:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='lastName'
+              type='text'
+              placeholder='Last Name'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Country Code:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='countryCode'
+              type='text'
+              placeholder='Country Code'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Phone Number:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='phoneNumber'
+              type='text'
+              placeholder='Phone Number'
+            />
+        </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Street:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='street'
+              type='text'
+              placeholder='Street'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            City:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='city'
+              type='text'
+              placeholder='City'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            State:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='state'
+              type='text'
+              placeholder='State'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Country:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='country'
+              type='text'
+              placeholder='Country'
+            />
+        </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Pincode:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='pincode'
+              type='text'
+              placeholder='Pincode'
+            />
+          </label>
+        </div>
+
+        <div className='form-group'>
+          <label>
+            Date of Birth:
+            <br />
+            <input
+              className='form-control'
+              required
+              name='dob'
+              type='date'
+              placeholder='Date of Birth'
+            />
+        </label>
+        </div>
+
         <button
           className='button'
           id='submitButton'
@@ -100,7 +282,6 @@ function SignUp() {
         </button>
       </form>
       <br />
-      <SocialSignIn />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import {BrowserRouter} from 'react-router-dom';
 
 import fbconfig from './firebase/FirebaseConfig';
 import {initializeApp} from 'firebase/app';
-
+import { getFirestore } from "firebase/firestore";
 const app = initializeApp(fbconfig);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -14,3 +14,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </BrowserRouter>
 );
+export const db = getFirestore(app);
