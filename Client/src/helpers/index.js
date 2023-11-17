@@ -1,5 +1,3 @@
-import { GraphQLError } from "graphql";
-
 const error = {
   BAD_REQUEST: {
     code: 400,
