@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./components/App";
+import Routes from "./routes/index";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { getFirestore } from "firebase/firestore";
@@ -15,7 +15,7 @@ const firebaseConfig = {
   projectId: "bookmynanny-e879b",
   storageBucket: "bookmynanny-e879b.appspot.com",
   messagingSenderId: "1077833080815",
-  appId: "1:1077833080815:web:49bc0157f975763d86201a"
+  appId: "1:1077833080815:web:49bc0157f975763d86201a",
 };
 
 // Initialize Firebase
@@ -24,7 +24,7 @@ const db = getFirestore(app);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <App />
+    <Routes />
   </BrowserRouter>
 );
 
