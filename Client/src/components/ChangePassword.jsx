@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {AuthContext} from '../context/AuthContext';
-import {doChangePassword} from '../firebase/FirebaseFunctions';
+import {doChangePassword} from '../firebase/AuthFunctions';
 import '../App.css';
 
 function ChangePassword() {
