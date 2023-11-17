@@ -13,8 +13,11 @@ const NavigationAuth = () => {
   return (
     <nav className="navigation">
       <ul>
-        <li>
-          <NavLink to="/">Landing</NavLink>
+        <li className="logo">
+          <NavLink to="/">
+            {" "}
+            <img src="/favicon.ico" alt="BookMyNanny Logo" />
+          </NavLink>
         </li>
         <li>
           <NavLink to="/home">Home</NavLink>
@@ -22,7 +25,7 @@ const NavigationAuth = () => {
         <li>
           <NavLink to="/account">Account</NavLink>
         </li>
-        <li>
+        <li className="signoutButton">
           <SignOutButton />
         </li>
       </ul>

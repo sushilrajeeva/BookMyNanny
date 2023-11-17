@@ -1,17 +1,18 @@
-import React, {useContext} from 'react';
-import {AuthContext} from '../context/AuthContext';
-import '../App.css';
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import "../App.css";
+import DashBoard from "./Dashboard";
 
 function Home() {
-  const {currentUser,userRole} = useContext(AuthContext);
+  const { currentUser, userRole } = useContext(AuthContext);
   console.log(currentUser);
   return (
-    <div className='card'>
-      <h2>
+    <div>
+      {/* <h2>
         Hello {currentUser && currentUser.displayName}, this is the Protected
-        Home page
-        The user role is :{userRole}
-      </h2>
+        Home page The user role is :{userRole}
+      </h2> */}
+      <DashBoard />
     </div>
   );
 }
