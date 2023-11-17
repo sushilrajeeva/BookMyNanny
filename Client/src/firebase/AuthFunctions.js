@@ -60,9 +60,18 @@ async function doSignOut() {
   await signOut(auth);
 }
 
-async function createParentUserInFireStore() {}
-
-async function createNannyUserInFireStore() {}
+async function createNannyDocument(uid, data) {
+  console.log("from createUserDoc", uid);
+  console.log("data", data);
+  data._id = uid;
+  try {
+    const nannyDocRef = doc(db, "Nanny", uid);
+    await setDoc(nannyDocRef, data);
+  } catch (error) {
+    console.error("Error creating user document:", error);
+    throw new Error("Error creating user document");
+  }
+}
 
 async function getNannyDocs() {
   try {
@@ -74,13 +83,11 @@ async function getNannyDocs() {
   }
 }
 const createUserDocument = async (uid, data) => {
-  //const parentsCollection = collection(db, "parents");
-  // const usersCollection = collection(db, "Users");
   console.log("from createUserDoc", uid);
   console.log("data", data);
   data._id = uid;
   try {
-    const userDocRef = doc(db, "parents", uid);
+    const userDocRef = doc(db, "Parent", uid);
     await setDoc(userDocRef, data);
   } catch (error) {
     console.error("Error creating user document:", error);
@@ -96,5 +103,6 @@ export {
   doSignOut,
   doChangePassword,
   createUserDocument,
+  createNannyDocument,
   getNannyDocs,
 };
