@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getUserRole } from '../firebase/AuthFunctions';
+import React, { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getUserRole } from "../firebase/AuthFunctions";
 
 export const AuthContext = React.createContext();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
           const role = await getUserRole(user.uid);
           setUserRole(role);
         } catch (error) {
-          console.error('Error getting user role:', error);
+          console.error("Error getting user role:", error);
         }
       }
     });
