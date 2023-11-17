@@ -5,7 +5,7 @@ import {AuthContext} from '../context/AuthContext';
 import {
   doSignInWithEmailAndPassword,
   doPasswordReset
-} from '../firebase/FirebaseFunctions';
+} from '../firebase/AuthFunctions';
 
 function SignIn() {
   const {currentUser} = useContext(AuthContext);

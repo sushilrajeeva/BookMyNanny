@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {doCreateUserWithEmailAndPassword,createUserDocument} from '../firebase/FirebaseFunctions';
+import {doCreateUserWithEmailAndPassword,createUserDocument,getNannyDocs} from '../firebase/AuthFunctions';
 import {AuthContext} from '../context/AuthContext';
 import SocialSignIn from './SocialSignIn';
-import { db } from '../main.jsx';
+import  db  from '../main.jsx';
 function SignUp() {
   const {currentUser} = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState('');
@@ -42,8 +42,8 @@ function SignUp() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       //todo need to hash password
         // if(!currentUser) throw "no usercreds to do crud"
-      // Create document in Firestore
-      await createUserDocument(createdUid, {
+        await getNannyDocs()
+      let dataToStore = {
         firstName: firstName.value,
         lastName: lastName.value,
         emailAddress: email.value,
@@ -59,7 +59,10 @@ function SignUp() {
         password: passwordOne.value,
         listings: [],
         wallet: 0,
-      });
+      }
+      console.log("From signup component data:",dataToStore);
+      // Create document in Firestore
+      await createUserDocument(createdUid, dataToStore);
     } catch (error) {
       console.log(error)
       alert(error);

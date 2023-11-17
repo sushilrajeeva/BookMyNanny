@@ -11,7 +11,7 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { db } from "../main.jsx";
+import db from "../main.jsx";
 import {
   addDoc,
   collection,
@@ -64,13 +64,24 @@ async function createParentUserInFireStore() {}
 
 async function createNannyUserInFireStore() {}
 
+async function getNannyDocs() {
+  try {
+    const nannyCollectionRef = collection(db, "Nanny");
+    const data = await getDocs(nannyCollectionRef);
+    console.log("GETTING DATA FROM NANNY", data);
+  } catch (error) {
+    alert(error);
+  }
+}
 const createUserDocument = async (uid, data) => {
   //const parentsCollection = collection(db, "parents");
-  const usersCollection = collection(db, "Users");
+  // const usersCollection = collection(db, "Users");
   console.log("from createUserDoc", uid);
   console.log("data", data);
+  data._id = uid;
   try {
-    await setDoc(doc(db, "parents", uid), data);
+    const userDocRef = doc(db, "parents", uid);
+    await setDoc(userDocRef, data);
   } catch (error) {
     console.error("Error creating user document:", error);
     throw new Error("Error creating user document");
@@ -85,4 +96,5 @@ export {
   doSignOut,
   doChangePassword,
   createUserDocument,
+  getNannyDocs,
 };
