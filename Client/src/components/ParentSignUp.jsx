@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {doCreateUserWithEmailAndPassword,createUserDocument,getNannyDocs} from '../firebase/AuthFunctions';
+import {doCreateUserWithEmailAndPassword,createUserDocument,createParentDocument,getNannyDocs} from '../firebase/AuthFunctions';
 import {AuthContext} from '../context/AuthContext';
 import  db  from '../main.jsx';
 function ParentSignUp() {
@@ -60,8 +60,10 @@ function ParentSignUp() {
         wallet: 0,
       }
       console.log("From signup component data:",dataToStore);
-      // Create document in Firestore
-      await createUserDocument(createdUid, dataToStore);
+      // Create document in Firestore parent collection
+      await createParentDocument(createdUid, dataToStore);
+      // Create document in Firestore user collection
+      await createUserDocument(createdUid,{role:'parent'})
     } catch (error) {
       console.log(error)
       alert(error);

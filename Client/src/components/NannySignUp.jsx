@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {doCreateUserWithEmailAndPassword,createNannyDocument} from '../firebase/AuthFunctions';
+import {doCreateUserWithEmailAndPassword,createNannyDocument,createUserDocument} from '../firebase/AuthFunctions';
 import {AuthContext} from '../context/AuthContext';
 import  db  from '../main.jsx';
 function NannySignUp() {
@@ -71,8 +71,10 @@ const handleSignUpNanny = async (e)=>{
 
     console.log("From signup component data:", dataToStore);
 
-    // Create document in Firestore
+    // Create document in Firestore nanny collection
     await createNannyDocument(createdUid, dataToStore);
+     // Create document in Firestore user collection
+     await createUserDocument(createdUid,{role:'nanny'})
   } catch (error) {
     console.log(error);
     alert(error);
