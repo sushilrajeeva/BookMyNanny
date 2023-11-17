@@ -32,7 +32,7 @@
     transform: rotate(360deg);
   }
 }
-
+/* 
 .navigation {
   background: #282c34;
 }
@@ -47,6 +47,36 @@
 .navigation a:visited {
   color: white;
   text-decoration: none;
+} */
+
+.navigation {
+  background: #282c34;
+}
+
+.navigation ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex; /* Use flexbox to make list items horizontal */
+}
+
+.navigation li {
+  margin-right: 20px; /* Adjust the spacing between list items as needed */
+}
+
+.navigation a:link,
+.navigation a:visited {
+  color: white;
+  text-decoration: none;
+}
+
+/* Add the following style to remove underlines on hover */
+.navigation a:hover {
+  text-decoration: none;
+}
+
+.navigation .signoutButton {
+  margin-left: auto; /* Push the SignOutButton to the right */
 }
 
 .active {
