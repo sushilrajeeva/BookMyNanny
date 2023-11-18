@@ -8,11 +8,11 @@ function Home() {
   console.log(currentUser);
   return (
     <div>
-      {/* <h2>
+      <h2>
         Hello {currentUser && currentUser.displayName}, this is the Protected
         Home page The user role is :{userRole}
-      </h2> */}
-      <DashBoard />
+      </h2>
+      <DashBoard userRole={userRole} />
     </div>
   );
 }

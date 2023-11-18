@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
     let myListener = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       setLoadingUser(false);
-
       if (user) {
         try {
           const role = await getUserRole(user.uid);
