@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import CreateListing from "./CreateListing";
+import CreateListingParent from "./CreateListingParent";
 import MyListing from "./MyListing";
 import ActiveListings from "./ActiveListings";
 import PastListings from "./PastListings";
@@ -54,7 +54,7 @@ const Dashboard = ({ userRole }) => {
       </Paper>
 
       <Paper elevation={3} className="component-container">
-        {activeComponent === "CreateListing" && <CreateListing />}
+        {activeComponent === "CreateListing" && <CreateListingParent />}
         {activeComponent === "MyListing" && <MyListing />}
         {activeComponent === "ActiveListings" && <ActiveListings />}
         {activeComponent === "PastListings" && <PastListings />}
