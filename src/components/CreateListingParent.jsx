@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-// import { createParentListing } from '../firebase/ParentFunctions';
+import { createParentListing } from '../firebase/ParentFunctions';
 
 function CreateListingParent() {
   const [formData, setFormData] = useState({
@@ -48,6 +48,22 @@ function CreateListingParent() {
 
       console.log("From createParentListing component data:", dataToStore);
       await createParentListing(dataToStore);
+      //on successful submit setting the form values to blank
+      setFormData({
+        listingName: "",
+        street: "",
+        city: "",
+        state: "",
+        country: "",
+        pincode: "",
+        hourlyRate: "",
+        startTime: "",
+        endTime: "",
+        jobDate: "",
+        postedDate: "",
+        kidInfo: "",
+        description: "",
+      });
     } catch (error) {
       console.log(error);
       alert(error);
@@ -66,6 +82,7 @@ function CreateListingParent() {
             name="listingName"
             type="text"
             placeholder="Listing Name"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -80,6 +97,7 @@ function CreateListingParent() {
             name="street"
             type="text"
             placeholder="Street"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -94,6 +112,7 @@ function CreateListingParent() {
             name="city"
             type="text"
             placeholder="City"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -108,6 +127,7 @@ function CreateListingParent() {
             name="state"
             type="text"
             placeholder="State"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -122,6 +142,7 @@ function CreateListingParent() {
             name="country"
             type="text"
             placeholder="Country"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -136,6 +157,7 @@ function CreateListingParent() {
             name="pincode"
             type="text"
             placeholder="Pincode"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -150,6 +172,7 @@ function CreateListingParent() {
             name="hourlyRate"
             type="text"
             placeholder="Hourly Rate"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -164,6 +187,7 @@ function CreateListingParent() {
             name="startTime"
             type="text"
             placeholder="Start Time"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -178,6 +202,7 @@ function CreateListingParent() {
             name="endTime"
             type="text"
             placeholder="End Time"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -192,6 +217,7 @@ function CreateListingParent() {
             name="jobDate"
             type="text"
             placeholder="Job Date"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -206,6 +232,7 @@ function CreateListingParent() {
             name="postedDate"
             type="text"
             placeholder="Posted Date"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -220,6 +247,7 @@ function CreateListingParent() {
             name="kidInfo"
             type="text"
             placeholder="Kid Info"
+            onChange={handleChange}
           />
         </label>
       </div>
@@ -233,6 +261,7 @@ function CreateListingParent() {
             required
             name="description"
             placeholder="Description (min 150 chars)"
+            onChange={handleChange}
           />
         </label>
       </div>
