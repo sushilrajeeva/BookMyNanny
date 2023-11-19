@@ -21,4 +21,25 @@ const createParentListing = async (data) => {
   }
 };
 
-export { createParentListing };
+
+const getAllListings = async () => {
+  try {
+      const listingsCollection = collection(db, "Listings");
+      const listingsSnapshot = await getDocs(listingsCollection);
+  
+      const allListings = [];
+  
+      listingsSnapshot.forEach((doc) => {
+        const listData = doc.data();
+        allListings.push(listData);
+      });
+  
+      return allListings;
+    } catch (error) {
+      console.error("Error getting all users:", error);
+      throw new Error("Error getting all users");
+    }
+};
+
+export { createParentListing,
+  getAllListings };
