@@ -11,10 +11,12 @@ import JobListings from "./JobListings";
 import "../App.css";
 
 const Dashboard = ({ userRole }) => {
-  
   // Added this to make job listing component the default landing component when nanny signs up
-  const defaultLoggedinUserComponent = userRole === "nanny" ? "JobListings" : null;
-  const [activeComponent, setActiveComponent] = useState(defaultLoggedinUserComponent);
+  const defaultLoggedinUserComponent =
+    userRole === "nanny" ? "JobListings" : "MyListing";
+  const [activeComponent, setActiveComponent] = useState(
+    defaultLoggedinUserComponent
+  );
 
   const renderComponent = (component) => {
     setActiveComponent(component);
