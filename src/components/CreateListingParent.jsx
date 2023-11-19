@@ -185,7 +185,7 @@ function CreateListingParent() {
             className="form-control"
             required
             name="startTime"
-            type="text"
+            type="datetime-local"
             placeholder="Start Time"
             onChange={handleChange}
           />
@@ -200,7 +200,7 @@ function CreateListingParent() {
             className="form-control"
             required
             name="endTime"
-            type="text"
+            type="datetime-local"
             placeholder="End Time"
             onChange={handleChange}
           />

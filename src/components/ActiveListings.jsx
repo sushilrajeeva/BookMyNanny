@@ -11,7 +11,6 @@ function ActiveListings() {
         setListings(allListings);
       } catch (error) {
         console.error('Error fetching listings:', error);
-        // Handle the error appropriately (e.g., show an error message)
       }
     };
 
@@ -20,11 +19,13 @@ function ActiveListings() {
 
   const isListingActive = (endTime) => {
     const currentDateTime = new Date();
-    const endTimeDate = endTime.toDate(); // Convert Firebase Timestamp to JavaScript Date object
-
+    const endTimeDate = new Date(endTime);  
+    console.log(endTime)
+    console.log(endTime<currentDateTime)
     // Compare the endTime with the current date and time
     return endTimeDate > currentDateTime;
   };
+
   const activeListings = listings.filter((listing) =>
     isListingActive(listing.endTime)
   );
@@ -37,7 +38,6 @@ function ActiveListings() {
           <li key={listing.listingName}>
             <strong>{listing.listingName}</strong>
             <p>{isListingActive(listing.endTime) ? 'Active' : 'Past'}</p>
-            {/* Add other listing details as needed */}
           </li>
         ))}
       </ul>

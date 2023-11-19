@@ -11,7 +11,7 @@ function PastListings() {
         setListings(allListings);
       } catch (error) {
         console.error('Error fetching listings:', error);
-        // Handle the error appropriately (e.g., show an error message)
+      
       }
     };
 
@@ -20,12 +20,13 @@ function PastListings() {
 
   const isListingPast = (endTime) => {
     const currentDateTime = new Date();
-    const endTimeDate = endTime.toDate(); // Convert Firebase Timestamp to JavaScript Date object
-
+    const endTimeDate = new Date(endTime); 
+    console.log(endTime)
+    console.log(endTime<currentDateTime)
     // Compare the endTime with the current date and time
     return endTimeDate < currentDateTime;
   };
-  const activeListings = listings.filter((listing) =>
+  const pastListings = listings.filter((listing) =>
   isListingPast(listing.endTime)
   );
 
@@ -33,11 +34,10 @@ function PastListings() {
     <div>
       <h1>Past Listings</h1>
       <ul>
-        {activeListings.map((listing) => (
+        {pastListings.map((listing) => (
           <li key={listing.listingName}>
             <strong>{listing.listingName}</strong>
             <p>{isListingPast(listing.endTime) ? 'Past' : 'Active'}</p>
-            {/* Add other listing details as needed */}
           </li>
         ))}
       </ul>
