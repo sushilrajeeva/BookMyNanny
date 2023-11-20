@@ -8,27 +8,30 @@ import Navigation from "../components/Navigation";
 import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 import { AuthProvider } from "../context/AuthContext";
+import { AlertProvider } from "../context/AlertContext";
 import PrivateRoute from "../routes/PrivateRoute";
 
 function Routes() {
   return (
     <AuthProvider>
-      <div className="App">
-        <header className="App-header card">
-          <Navigation />
-        </header>
-        <AppRoutes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/home" element={<PrivateRoute />}>
-            <Route path="/home" element={<Home />} />
-          </Route>
-          <Route path="/account" element={<PrivateRoute />}>
-            <Route path="/account" element={<Account />} />
-          </Route>
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-        </AppRoutes>
-      </div>
+      <AlertProvider>
+        <div className="App">
+          <header className="App-header card">
+            <Navigation />
+          </header>
+          <AppRoutes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/home" element={<PrivateRoute />}>
+              <Route path="/home" element={<Home />} />
+            </Route>
+            <Route path="/account" element={<PrivateRoute />}>
+              <Route path="/account" element={<Account />} />
+            </Route>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+          </AppRoutes>
+        </div>
+      </AlertProvider>
     </AuthProvider>
   );
 }

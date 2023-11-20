@@ -5,7 +5,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 const SignUp = () => {
   const [alignment, setAlignment] = useState("parent");
-
+  console.log("signup");
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
