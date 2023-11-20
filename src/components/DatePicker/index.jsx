@@ -4,9 +4,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-// import { FieldProps } from "formik";
 
-const DatePickerInput = ({
+const DatePickerFormInput = ({
   field,
   form: { setFieldValue, errors, touched, handleBlur },
   label,
@@ -46,4 +45,4 @@ const DatePickerInput = ({
   );
 };
 
-export default DatePickerInput;
+export default DatePickerFormInput;

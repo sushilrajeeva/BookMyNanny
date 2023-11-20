@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import DatePickerInput from "./DatePicker";
+import DatePickerFormInput from "./DatePicker";
 import { Formik, Form, Field } from "formik";
 import moment from "moment";
 import {
@@ -24,6 +24,7 @@ import { AlertContext } from "../context/AlertContext";
 import "react-phone-input-2/lib/style.css";
 import { isPossiblePhoneNumber, parsePhoneNumber } from "libphonenumber-js";
 import { parentSchema } from "../schemas/parentsignup";
+import { validateDate, passwordMatch } from "../helpers";
 
 const schema = parentSchema;
 
@@ -33,6 +34,7 @@ function ParentSignUp() {
   // const [phone, setPhone] = useState("");
   // const [isValid, setIsValid] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [formErrors, setFormErrors] = useState({}); // State for form errors
 
   // const handleChange = (value, country) => {
   //   setPhone(value);
@@ -85,6 +87,15 @@ function ParentSignUp() {
       pincode,
       dob,
     } = values;
+
+    // Validate the entire form
+    const newFormErrors = await validateForm(values);
+    setFormErrors(newFormErrors);
+    if (Object.keys(newFormErrors).length > 0) {
+      showAlert("error", "Please fix the errors in the form.");
+      return;
+    }
+    setFormErrors({});
 
     try {
       // Create user in Firebase Authentication
@@ -164,15 +175,15 @@ function ParentSignUp() {
           validationSchema={schema}
           validate={(values) => {
             const errors = {};
-            // if (values.dob) {
-            //   if (!isValidDateStr(values.dob)) errors.dob = "Invalid DOB";
-            //   else if (!isValidDob(values.dob))
-            //     errors.dob =
-            //       "Invalid DOB: Should be between 18-100 years in age";
-            // }
-            if (values.passwordOne !== values.passwordTwo) {
-              errors.passwordOne = "Passwords do not match";
+            if (values.dob) {
+              if (!validateDate(values.dob))
+                errors.dob = "You must be between 13-100 years in age";
             }
+            if (values.passwordOne && values.passwordTwo) {
+              if (!passwordMatch(values.passwordOne, values.passwordTwo))
+                errors.passwordTwo = "Passwords do not match";
+            }
+
             return errors;
           }}
           onSubmit={async (values, { setSubmitting }) => {
@@ -197,11 +208,16 @@ function ParentSignUp() {
                   justifyContent: "center",
                   gap: 2,
                   minWidth: "500px",
+                  padding: "2rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "#fff",
                 }}
               >
                 <Typography
-                  variant="h3"
-                  component="h1"
+                  variant="h2"
+                  component="h3"
                   sx={{ textTransform: "uppercase" }}
                 >
                   Sign Up as a parent
@@ -434,6 +450,7 @@ function ParentSignUp() {
                   value={values.phoneNumber}
                   onChange={(e) => {
                     let number = e.target.value;
+                    console.log("HERE", number);
                     number = number.replace(/\D/g, "");
                     number = number.replace(/[()-\s]/g, "");
                     if (number.length > 10) return;
@@ -612,9 +629,9 @@ function ParentSignUp() {
             </div> */}
                 <Field
                   name="dob"
-                  component={DatePickerInput}
+                  component={DatePickerFormInput}
                   label="Date of Birth"
-                  maxDate={moment().subtract(18, "y")}
+                  maxDate={moment().subtract(13, "y")}
                   required
                 />
 

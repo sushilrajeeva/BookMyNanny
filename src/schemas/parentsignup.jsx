@@ -28,13 +28,18 @@ export const parentSchema = Yup.object().shape({
     .min(6, "Street must be at least 6 characters"),
   city: Yup.string()
     .required("City is required")
-    .min(3, "City must be at least 3 characters"),
+    .min(3, "City must be at least 3 characters")
+    .matches("^[a-zA-Z ]*$", "Invalid City name"),
   state: Yup.string()
     .required("State is required")
-    .min(3, "State must be at least 3 characters"),
-  pincode: Yup.string()
+    .min(3, "State must be at least 3 characters")
+    .matches("^[a-zA-Z ]*$", "Invalid State name"),
+  pincode: Yup.number()
     .required("Zip code is required")
-    .min(5, "Zip code must be at least 5 characters"),
+    .min(1000, "Zip code must be between 4-16 characters")
+    .max(99999999999999999n, "Zip code must be between 4-16 characters")
+    .typeError("Pincode must be a number"),
+  // .matches("^[a-zA-Z ]*$", "Invalid pincode"),
   phoneNumber: Yup.string()
     .required("Phone Number is required")
     .matches(/^\(\d{3}\)\s\d{3}-\d{4}$/, "Invalid Phone Number"),
