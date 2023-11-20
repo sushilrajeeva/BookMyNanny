@@ -34,7 +34,7 @@ function ParentSignUp() {
   // const [phone, setPhone] = useState("");
   // const [isValid, setIsValid] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [formErrors, setFormErrors] = useState({}); // State for form errors
+  const [formErrors, setFormErrors] = useState({});
 
   // const handleChange = (value, country) => {
   //   setPhone(value);
@@ -89,13 +89,13 @@ function ParentSignUp() {
     } = values;
 
     // Validate the entire form
-    const newFormErrors = await validateForm(values);
-    setFormErrors(newFormErrors);
-    if (Object.keys(newFormErrors).length > 0) {
-      showAlert("error", "Please fix the errors in the form.");
-      return;
-    }
-    setFormErrors({});
+    // const newFormErrors = await validateForm(values);
+    // setFormErrors(newFormErrors);
+    // if (Object.keys(newFormErrors).length > 0) {
+    //   showAlert("error", "Please fix the errors in the form.");
+    //   return;
+    // }
+    // setFormErrors({});
 
     try {
       // Create user in Firebase Authentication
