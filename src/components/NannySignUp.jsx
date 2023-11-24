@@ -76,7 +76,6 @@ function NannySignUp() {
         role: "nanny",
         verified: false,
         documents: [],
-        approvedListings: [],
         wallet: 0,
       };
 

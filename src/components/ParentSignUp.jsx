@@ -74,7 +74,6 @@ function ParentSignUp() {
         dob: dob,
         role: "parent",
         password: passwordOne.trim(),
-        listings: [],
         wallet: 0,
       };
       console.log("From signup component data:", dataToStore);
