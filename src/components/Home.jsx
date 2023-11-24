@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import "../App.css";
-import DashBoard from "./Dashboard";
+import ParentDashboard from "./Dashboard/ParentDashboard";
+import NannyDashboard from "./Dashboard/NannyDashboard";
+// import Dashboard from "./Dashboard";
 
 function Home() {
   const { currentUser, userRole } = useContext(AuthContext);
@@ -12,7 +14,16 @@ function Home() {
         Hello {currentUser && currentUser.displayName}, this is the Protected
         Home page The user role is :{userRole}
       </h2>
-      <DashBoard userRole={userRole} />
+
+      <div>
+        {userRole === "nanny" ? (
+          <NannyDashboard />
+        ) : userRole === "parent" ? (
+          <ParentDashboard />
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 }

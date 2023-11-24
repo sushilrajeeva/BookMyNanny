@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
-import { createParentListing } from '../firebase/ParentFunctions';
+import { createParentListing } from "../firebase/ParentFunctions";
+import { AuthContext } from "../context/AuthContext";
+import { v4 as uuid } from "uuid";
 
 function CreateListingParent() {
   const [formData, setFormData] = useState({
@@ -17,6 +19,8 @@ function CreateListingParent() {
     kidInfo: "",
     description: "",
   });
+  const { currentUser, userRole } = useContext(AuthContext);
+  console.log(currentUser.uid);
 
   const handleChange = (e) => {
     setFormData({
@@ -31,6 +35,7 @@ function CreateListingParent() {
     try {
       // Create data object for storing in Firestore
       let dataToStore = {
+        parentID: currentUser.uid,
         listingName: formData.listingName,
         street: formData.street,
         city: formData.city,
@@ -44,6 +49,11 @@ function CreateListingParent() {
         postedDate: formData.postedDate,
         kidInfo: formData.kidInfo,
         description: formData.description,
+        interestedNannies: [],
+        selectedNannyID: "",
+        status: "pending",
+        progressBar: 0,
+        chatID: uuid(),
       };
 
       console.log("From createParentListing component data:", dataToStore);
