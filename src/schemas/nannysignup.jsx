@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const parentSchema = Yup.object().shape({
+export const nannySchema = Yup.object().shape({
   displayName: Yup.string()
     .required("Display name is required")
     .matches("^[a-zA-Z ]*$", "Invalid Name")
@@ -92,4 +92,21 @@ export const parentSchema = Yup.object().shape({
     .required("Phone Number is required")
     .matches(/^\d{10}$/, "Invalid Phone Number: Must be 10 digits"),
   dob: Yup.string("Invalid DOB").required("DOB is required"),
+  experience: Yup.string()
+    .required("Experience is required")
+    .matches(/^\d+$/, "Experience must be a number")
+    .test("is-valid-range", "Invalid Experience", (value) => {
+      if (!value) return true;
+      const numericValue = parseInt(value, 10);
+      return numericValue >= 0 && numericValue <= 100;
+    }),
+  ssn: Yup.string().required("SSN is required"),
+  bio: Yup.string()
+    .required("Bio is required")
+    .min(100, "Bio must be at least 100 characters")
+    .test(
+      "is-not-empty-after-trim",
+      "Cannot be empty. Enter valid characters",
+      (value) => value.trim() !== ""
+    ),
 });
