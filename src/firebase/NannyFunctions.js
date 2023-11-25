@@ -6,6 +6,8 @@ import {
   doc,
   getDoc,
   getDocs,
+  updateDoc,
+  arrayUnion,
   setDoc,
 } from "firebase/firestore";
 
@@ -29,4 +31,32 @@ const getAllListings = async () => {
   }
 };
 
-export { getAllListings };
+const nannyInterested = async (listingId, nannyId) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    const listingSnapshot = await getDoc(listingDocRef);
+
+    if (!listingSnapshot.exists()) {
+      console.error("Listing not found");
+      return false;
+    }
+
+    const listingData = listingSnapshot.data();
+
+    if (listingData.interestedNannies.includes(nannyId)) {
+      console.log("Nanny already in the interested list");
+      return false;
+    }
+
+    await updateDoc(listingDocRef, {
+      interestedNannies: arrayUnion(nannyId),
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error updating listing with nanny interest:", error);
+    return false;
+  }
+};
+
+export { getAllListings, nannyInterested };
