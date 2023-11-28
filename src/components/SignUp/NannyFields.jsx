@@ -62,7 +62,7 @@ const NannyFields = ({
         label="Bio"
         minRows={6}
         name="bio"
-        placeholder="Enter your bio here..." // Add a placeholder for better guidance
+        placeholder="Enter your bio here..."
         value={values.bio}
         onInput={(e) => {
           handleChange(e);
@@ -71,7 +71,7 @@ const NannyFields = ({
         onChange={handleChange}
         onBlur={handleBlur}
         required
-        style={{ width: "100%", marginTop: "16px" }} // Adjust the width and margin as needed
+        style={{ width: "100%", marginTop: "16px" }}
       />
 
       {touched.bio && errors.bio && (
