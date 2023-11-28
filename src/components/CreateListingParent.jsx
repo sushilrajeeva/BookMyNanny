@@ -1,193 +1,256 @@
 import React, { useContext, useState } from "react";
 import { createParentListing } from "../firebase/ParentFunctions";
 import { AuthContext } from "../context/AuthContext";
+import { AlertContext } from "../context/AlertContext";
 import { v4 as uuid } from "uuid";
+import AdressFields from "./AdressFields";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+  Stack,
+  TextField,
+  TextareaAutosize,
+  Grid,
+} from "@mui/material";
+import { Formik, Form, Field } from "formik";
+import DatePickerFormInput from "./DatePicker";
+import TimePickerFormInput from "./TimePicker";
+import CustomTextareaAutosize from "./TextAreaAutoSize";
+import moment from "moment";
+import { listingSchema } from "../schemas/listing";
+import { validateJobDate } from "../helpers";
+
+const schema = listingSchema;
 
 function CreateListingParent() {
-  const [formData, setFormData] = useState({
-    listingName: "",
-    street: "",
-    city: "",
-    state: "",
-    country: "",
-    pincode: "",
-    hourlyRate: "",
-    startTime: "",
-    endTime: "",
-    jobDate: "",
-    postedDate: "",
-    kidInfo: "",
-    description: "",
-  });
-  const { currentUser, userRole } = useContext(AuthContext);
-  console.log(currentUser.uid);
+  const { currentUser } = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleCreateListing = async (e) => {
-    e.preventDefault();
+  const handleCreateListing = async (values, setSubmitting) => {
+    setSubmitting(true);
+    let {
+      listingName,
+      street,
+      city,
+      state,
+      country,
+      pincode,
+      hourlyRate,
+      startTime,
+      endTime,
+      jobStartDate,
+      jobEndDate,
+      payableHours,
+      kidInfo,
+      description,
+    } = values;
 
     try {
       // Create data object for storing in Firestore
       let dataToStore = {
         parentID: currentUser.uid,
-        listingName: formData.listingName,
-        street: formData.street,
-        city: formData.city,
-        state: formData.state,
-        country: formData.country,
-        pincode: formData.pincode,
-        hourlyRate: formData.hourlyRate,
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-        jobDate: formData.jobDate,
-        postedDate: formData.postedDate,
-        kidInfo: formData.kidInfo,
-        description: formData.description,
+        listingName: listingName.trim(),
+        street: street.trim(),
+        city: city.trim(),
+        state: state.trim(),
+        country: country.trim(),
+        pincode,
+        hourlyRate,
+        jobStartDate: jobStartDate,
+        jobEndDate: jobEndDate,
+        kidInfo: kidInfo.trim(),
+        description: description.trim(),
         interestedNannies: [],
+        payableHours,
         selectedNannyID: "",
         status: "pending",
         progressBar: 0,
+        postedDate: moment().format("YYYY/MM/DD HH:mm:ss"),
         chatID: uuid(),
       };
 
       console.log("From createParentListing component data:", dataToStore);
       await createParentListing(dataToStore);
-      //on successful submit setting the form values to blank
-      setFormData({
-        listingName: "",
-        street: "",
-        city: "",
-        state: "",
-        country: "",
-        pincode: "",
-        hourlyRate: "",
-        startTime: "",
-        endTime: "",
-        jobDate: "",
-        postedDate: "",
-        kidInfo: "",
-        description: "",
-      });
+      showAlert("success", "Listing created successfully");
     } catch (error) {
       console.log(error);
-      alert(error);
+      showAlert("error", error.message || "Unexpected error occurred");
     }
   };
 
   return (
-    <form onSubmit={handleCreateListing}>
-      <div className="form-group">
-        <label>
-          Listing Name:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="listingName"
-            type="text"
-            placeholder="Listing Name"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+    <Box>
+      <Box
+        sx={{
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 4,
+        }}
+      >
+        <Formik
+          initialValues={{
+            listingName: "",
+            street: "",
+            city: "",
+            state: "",
+            country: "",
+            pincode: "",
+            hourlyRate: "",
+            jobStartDate: "",
+            jobEndDate: "",
+            payableHours: "",
+            kidInfo: "",
+            description: "",
+          }}
+          validationSchema={schema}
+          validate={(values) => {
+            const errors = {};
+            if (values.jobDate) {
+              if (!validateJobDate(values.jobDate))
+                errors.jobDate =
+                  "Job Date must be between current day to 1 year from today";
+            }
+            return errors;
+          }}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            handleCreateListing(values, setSubmitting);
+            resetForm({ values: "" });
+          }}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            setFieldValue,
+            setFieldError,
+            handleChange,
+            handleBlur,
+            isSubmitting,
+          }) => (
+            <Form>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  minWidth: "500px",
+                  padding: "2rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "#fff",
+                }}
+              >
+                <TextField
+                  variant="standard"
+                  label="Listing Name"
+                  name="listingName"
+                  value={values.listingName}
+                  onInput={(e) => {
+                    handleChange(e);
+                    setTimeout(() => handleBlur(e), 0);
+                  }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.listingName && Boolean(errors.listingName)}
+                  helperText={touched.listingName && errors.listingName}
+                  fullWidth
+                  required
+                />
 
-      <div className="form-group">
-        <label>
-          Street:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="street"
-            type="text"
-            placeholder="Street"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+                <AdressFields
+                  values={values}
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
+                  touched={touched}
+                  errors={errors}
+                />
 
-      <div className="form-group">
-        <label>
-          City:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="city"
-            type="text"
-            placeholder="City"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+                <Stack marginTop={1}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <Field
+                        name="jobStartDate"
+                        component={DatePickerFormInput}
+                        label="Job Start Date"
+                        minDate={moment()}
+                        maxDate={moment().add(1, "year")}
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Field
+                        name="jobEndDate"
+                        component={DatePickerFormInput}
+                        label="Job End Date"
+                        minDate={moment()}
+                        maxDate={moment().add(1, "year")}
+                      />
+                    </Grid>
+                  </Grid>
+                </Stack>
+                {/* <Stack marginTop={1}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <Field
+                        name="startTime"
+                        component={TimePickerFormInput}
+                        label="Start Time"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Field
+                        name="endTime"
+                        component={TimePickerFormInput}
+                        label="End Time"
+                        required
+                      />
+                    </Grid>
+                  </Grid>
+                </Stack> */}
+                <TextField
+                  variant="standard"
+                  label="Payable Hours"
+                  name="payableHours"
+                  value={values.payableHours}
+                  onInput={(e) => {
+                    handleChange(e);
+                    setTimeout(() => handleBlur(e), 0);
+                  }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.payableHours && Boolean(errors.payableHours)}
+                  helperText={touched.payableHours && errors.payableHours}
+                  fullWidth
+                  required
+                />
 
-      <div className="form-group">
-        <label>
-          State:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="state"
-            type="text"
-            placeholder="State"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+                <TextField
+                  variant="standard"
+                  label="Hourly Rate"
+                  name="hourlyRate"
+                  value={values.hourlyRate}
+                  onInput={(e) => {
+                    handleChange(e);
+                    setTimeout(() => handleBlur(e), 0);
+                  }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.hourlyRate && Boolean(errors.hourlyRate)}
+                  helperText={touched.hourlyRate && errors.hourlyRate}
+                  fullWidth
+                  required
+                />
 
-      <div className="form-group">
-        <label>
-          Country:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="country"
-            type="text"
-            placeholder="Country"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          Pincode:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="pincode"
-            type="text"
-            placeholder="Pincode"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          Hourly Rate:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="hourlyRate"
-            type="text"
-            placeholder="Hourly Rate"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
+                {/* <div className="form-group">
         <label>
           Start Time:
           <br />
@@ -215,9 +278,9 @@ function CreateListingParent() {
             onChange={handleChange}
           />
         </label>
-      </div>
+      </div> */}
 
-      <div className="form-group">
+                {/* <div className="form-group">
         <label>
           Job Date:
           <br />
@@ -230,55 +293,68 @@ function CreateListingParent() {
             onChange={handleChange}
           />
         </label>
-      </div>
+      </div> */}
 
-      <div className="form-group">
-        <label>
-          Posted Date:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="postedDate"
-            type="text"
-            placeholder="Posted Date"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+                <TextareaAutosize
+                  label="Kid Info"
+                  minRows={3}
+                  name="kidInfo"
+                  placeholder="Enter info about your kid here..."
+                  value={values.kidInfo}
+                  onInput={(e) => {
+                    handleChange(e);
+                    setTimeout(() => handleBlur(e), 0);
+                  }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  required
+                  style={{ width: "100%", marginTop: "16px" }}
+                />
 
-      <div className="form-group">
-        <label>
-          Kid Info:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="kidInfo"
-            type="text"
-            placeholder="Kid Info"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+                {touched.kidInfo && errors.kidInfo && (
+                  <Typography variant="caption" color="error" textAlign="left">
+                    {errors.kidInfo}
+                  </Typography>
+                )}
 
-      <div className="form-group">
-        <label>
-          Description:
-          <br />
-          <textarea
-            className="form-control"
-            required
-            name="description"
-            placeholder="Description (min 150 chars)"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-      <button className="button" type="submit">
-        Create Listing
-      </button>
-    </form>
+                <TextareaAutosize
+                  label="Description"
+                  minRows={3}
+                  name="description"
+                  placeholder="Provide brief description about the work (min 100 characters)"
+                  value={values.description}
+                  onInput={(e) => {
+                    handleChange(e);
+                    setTimeout(() => handleBlur(e), 0);
+                  }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  required
+                  style={{ width: "100%", marginTop: "16px" }}
+                />
+
+                {touched.description && errors.description && (
+                  <Typography variant="caption" color="error" textAlign="left">
+                    {errors.description}
+                  </Typography>
+                )}
+                <Button
+                  variant="contained"
+                  type="submit"
+                  sx={{
+                    height: "3rem",
+                    width: "10rem",
+                  }}
+                  disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
+                >
+                  {isSubmitting ? <CircularProgress size={24} /> : "Create"}
+                </Button>
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Box>
   );
 }
 
