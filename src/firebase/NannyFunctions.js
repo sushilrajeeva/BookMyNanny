@@ -59,4 +59,40 @@ const nannyInterested = async (listingId, nannyId) => {
   }
 };
 
-export { getAllListings, nannyInterested };
+const withdrawNannyInterest = async (listingId, nannyId) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    const listingSnapshot = await getDoc(listingDocRef);
+
+    if (!listingSnapshot.exists()) {
+      console.error("Listing not found");
+      return false;
+    }
+
+    const listingData = listingSnapshot.data();
+
+    // Checking if the nanny is already in the interestedNannies array
+    // if it exist then i will return false
+    if (!listingData.interestedNannies.includes(nannyId)) {
+      console.log("Nanny not in the interested list");
+      return false;
+    }
+
+    // Removing nannyId from the interestedNannies array
+    const updatedNannies = listingData.interestedNannies.filter(
+      (id) => id !== nannyId
+    );
+
+    // Update the document with the new array
+    await updateDoc(listingDocRef, {
+      interestedNannies: updatedNannies,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error updating listing with nanny interest:", error);
+    return false;
+  }
+};
+
+export { getAllListings, nannyInterested, withdrawNannyInterest };
