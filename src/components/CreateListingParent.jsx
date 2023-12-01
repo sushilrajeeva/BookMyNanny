@@ -124,18 +124,18 @@ function CreateListingParent() {
                 errors.jobEndDate =
                   "Job Date must be between current day to 1 year from today";
             }
-            if (values.jobEndDate && values.jobStartDate) {
-              console.log("endDate", moment(values.jobEndDate));
-              console.log("startdate", moment(values.jobStartDate));
-              console.log(
-                moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
-              );
-              if (
-                moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
-              )
-                errors.jobEndDate =
-                  "Job end date cannot be before job start date";
-            }
+            // if (values.jobEndDate && values.jobStartDate) {
+            //   console.log("endDate", moment(values.jobEndDate));
+            //   console.log("startdate", moment(values.jobStartDate));
+            //   console.log(
+            //     moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
+            //   );
+            //   if (
+            //     moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
+            //   )
+            //     errors.jobEndDate =
+            //       "Job end date cannot be before job start date";
+            // }
             console.log(errors);
             return errors;
           }}
