@@ -3,6 +3,8 @@ import { AuthContext } from "../context/AuthContext";
 import "../App.css";
 import ParentDashboard from "./Dashboard/ParentDashboard";
 import NannyDashboard from "./Dashboard/NannyDashboard";
+import AdminDashboard from "./Dashboard/AdminDashboard";
+
 // import Dashboard from "./Dashboard";
 
 function Home() {
@@ -20,6 +22,8 @@ function Home() {
           <NannyDashboard />
         ) : userRole === "parent" ? (
           <ParentDashboard />
+        ) : userRole === "admin" ? (
+          <AdminDashboard />
         ) : (
           <p>Loading...</p>
         )}
