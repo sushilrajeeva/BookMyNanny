@@ -71,7 +71,7 @@ const NannyFields = ({
         onChange={handleChange}
         onBlur={handleBlur}
         required
-        style={{ width: "100%", marginTop: "16px" }}
+        style={{ width: "100%", marginTop: "16px", border: "1px solid black" }}
       />
 
       {touched.bio && errors.bio && (

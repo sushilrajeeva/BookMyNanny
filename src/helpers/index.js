@@ -1,9 +1,24 @@
 import moment from "moment";
 
 const validateDate = (date, minDate, maxDate) => {
-  const momentDate = moment(date);
-  if (!momentDate.isValid()) return false;
-  const isBtwn = momentDate.isBetween(minDate, maxDate);
+  const parsedDate = moment(date, "MM-DD-YYYY", true);
+
+  console.log("Min", minDate);
+  console.log("Max", maxDate);
+  if (!parsedDate.isValid()) {
+    console.error("Invalid date format");
+    // Handle the error or return false, depending on your use case
+  } else {
+    // Set the time part to the current time
+    parsedDate.set({
+      hour: moment().hour(),
+      minute: moment().minute(),
+      second: moment().second(),
+    });
+
+    console.log(parsedDate.format("YYYY-MM-DD HH:mm:ss"));
+  }
+  const isBtwn = parsedDate.isBetween(minDate, maxDate);
   if (isBtwn) return true;
   return false;
 };

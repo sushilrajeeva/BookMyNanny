@@ -62,6 +62,7 @@ const CustomTextareaAutosize = ({
       onChange={onChange}
       onBlur={onBlur}
       required={required}
+      style={{ width: "100%", marginTop: "16px", border: "1px solid black" }}
     />
 
     {error && (
