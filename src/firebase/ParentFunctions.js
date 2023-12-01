@@ -13,8 +13,10 @@ import { v4 as uid } from "uuid";
 
 const createParentListing = async (data) => {
   console.log("data", data);
+  let uuid = uid();
   try {
-    const listingDocRef = doc(db, "Listings", uid());
+    data._id = uuid;
+    const listingDocRef = doc(db, "Listings", uuid);
     await setDoc(listingDocRef, data);
   } catch (error) {
     console.error("Error creating user document:", error);
