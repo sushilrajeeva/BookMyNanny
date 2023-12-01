@@ -18,9 +18,12 @@ const getAllListings = async () => {
 
     const allListings = [];
 
+    // modifying to get only those listings that are active (where parent hasn't selected a nanny yet)
     listingsSnapshot.forEach((doc) => {
       const listingData = doc.data();
-      allListings.push(listingData);
+      if (listingData.selectedNannyID == "") {
+        allListings.push(listingData);
+      }
     });
 
     return allListings;
