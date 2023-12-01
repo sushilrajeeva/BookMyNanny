@@ -24,7 +24,7 @@ function verifiedNannies() {
       <h1>Verified Nannies</h1>
       <ul>
         {nannies.map((nanny) => (
-          <li key={nanny.firstName}>
+          <li key={nanny._id}>
             <p>{nanny.firstName}</p>
           </li>
         ))}
