@@ -21,7 +21,11 @@ const getAllListings = async () => {
     // modifying to get only those listings that are active (where parent hasn't selected a nanny yet)
     listingsSnapshot.forEach((doc) => {
       const listingData = doc.data();
-      if (listingData.selectedNannyID == "") {
+      if (
+        // condition to only push listing if the listing has no selectedNannyID and the status of the listing is pending
+        listingData.selectedNannyID == "" &&
+        listingData.status == "pending"
+      ) {
         allListings.push(listingData);
       }
     });
@@ -98,4 +102,73 @@ const withdrawNannyInterest = async (listingId, nannyId) => {
   }
 };
 
-export { getAllListings, nannyInterested, withdrawNannyInterest };
+// Methods for Active Jobs
+
+// This method will give all the listings in the listings collection firestore whose selectedNannyID matches the current loggedin Nanny's nannyID
+const getActiveJobs = async (nannyID) => {
+  try {
+    console.log("Get active jobs firestore method called");
+    const listingsCollection = collection(db, "Listings");
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const activeJobs = [];
+
+    // modifying to get only those listings where the the listing's selectedNannyID matches the given nannyID and the status is pending
+    listingsSnapshot.forEach((doc) => {
+      const listingData = doc.data();
+      if (
+        listingData.selectedNannyID == nannyID &&
+        listingData.status == "pending"
+      ) {
+        activeJobs.push(listingData);
+      }
+    });
+    console.log("Active jobs : ", activeJobs);
+    return activeJobs;
+  } catch (error) {
+    console.log(error);
+    console.error(
+      "Error getting all Active Job Listings for this nanny!!:",
+      error
+    );
+    throw new Error("Error getting all users");
+  }
+};
+
+const getPastJobs = async (nannyID) => {
+  try {
+    console.log("Get Past jobs firestore method called");
+    const listingsCollection = collection(db, "Listings");
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const pastJobs = [];
+
+    // modifying to get only those listings where the the listing's selectedNannyID matches the given nannyID and the status is completed
+    listingsSnapshot.forEach((doc) => {
+      const listingData = doc.data();
+      if (
+        listingData.selectedNannyID == nannyID &&
+        listingData.status == "completed"
+      ) {
+        pastJobs.push(listingData);
+      }
+    });
+    console.log("Past jobs : ", pastJobs);
+    return pastJobs;
+  } catch (error) {
+    console.log(error);
+    console.error(
+      "Error getting all Past Job Listings for this nanny!!:",
+      error
+    );
+    throw new Error("Error getting all users");
+  }
+};
+
+export {
+  getAllListings,
+  nannyInterested,
+  withdrawNannyInterest,
+  getActiveJobs,
+  getPastJobs,
+};

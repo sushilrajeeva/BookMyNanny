@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { getAllListings, nannyInterested, withdrawNannyInterest } from "../firebase/NannyFunctions";
-import { AuthContext } from "../context/AuthContext";
+import { getAllListings, nannyInterested, withdrawNannyInterest } from "../../firebase/NannyFunctions";
+import { AuthContext } from "../../context/AuthContext";
 
 function formatFirestoreTimestamp(timestamp) {
   // Checking if timestamp is a Firestore Timestamp object

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import ActiveJobs from "../ActiveJobs"
-import PastJobs from "../PastJobs";
-import JobListings from "../JobListings";
+import ActiveJobs from "../NannyComponent/ActiveJobs"
+import PastJobs from "../NannyComponent/PastJobs";
+import JobListings from "../NannyComponent/JobListings";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
