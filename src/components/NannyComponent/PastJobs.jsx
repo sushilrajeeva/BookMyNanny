@@ -1,8 +1,70 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react';
+import { getPastJobs } from "../../firebase/NannyFunctions";
+
+import { AuthContext } from "../../context/AuthContext";
 
 function PastJobs() {
+
+  const [pastJobs, setPastJobs] = useState([]);
+  const { currentUser, userRole } = useContext(AuthContext);
+
+
+  // some css 
+  const tableStyle = {
+    width: '100%',
+    borderCollapse: 'collapse',
+};
+
+const thTdStyle = {
+    border: '1px solid black',
+    padding: '8px',
+    textAlign: 'left',
+};
+
+useEffect(() => {
+    const fetchPastJobs = async () => {
+        try {
+            const jobs = await getPastJobs(currentUser.uid);
+            setPastJobs(jobs);
+        } catch (error) {
+            console.error('Error fetching Past jobs:', error);
+        }
+    };
+
+    fetchPastJobs();
+}, [currentUser.uid]); // Dependency array includes nannyID, so this effect runs when nannyID changes
+
+
   return (
-    <div>PastJobs</div>
+    <div>
+            <h2>Past Jobs</h2>
+            <table style={tableStyle}>
+                <thead>
+                    <tr>
+                        <th style={thTdStyle}>Listing Name</th>
+                        <th style={thTdStyle}>Location</th>
+                        <th style={thTdStyle}>Hourly Rate</th>
+                        <th style={thTdStyle}>Start Date</th>
+                        <th style={thTdStyle}>End Date</th>
+                        <th style={thTdStyle}>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {pastJobs.map(job => (
+                        <tr key={job._id}>
+                            <td style={thTdStyle}>{job.listingName}</td>
+                            <td style={thTdStyle}>{`${job.street}, ${job.city}, ${job.state}, ${job.country} - ${job.pincode}`}</td>
+                            <td style={thTdStyle}>{job.hourlyRate}</td>
+                            <td style={thTdStyle}>{job.jobStartDate}</td>
+                            <td style={thTdStyle}>{job.jobEndDate}</td>
+                            <td style={thTdStyle}>
+                                <button onClick={() => console.log('View job', job._id)}>View Job</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+      </div>
   )
 }
 
