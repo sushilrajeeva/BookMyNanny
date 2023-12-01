@@ -13,6 +13,7 @@ import { nannySchema } from "../schemas/nannysignup.jsx";
 import { validateDate, passwordMatch } from "../helpers";
 import CommonSignUpFields from "./SignUp/CommonFields";
 import NannyFields from "./SignUp/NannyFields.jsx";
+import moment from "moment";
 
 const schema = nannySchema;
 
@@ -57,6 +58,7 @@ function NannySignUp() {
 
       // Create data object for storing in Firestore
       let dataToStore = {
+        displayName: displayName.trim(),
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         emailAddress: email.trim(),
@@ -77,6 +79,7 @@ function NannySignUp() {
         verified: false,
         documents: [],
         wallet: 0,
+        image: "",
       };
 
       console.log("From signup component data:", dataToStore);
@@ -140,7 +143,9 @@ function NannySignUp() {
           validate={(values) => {
             const errors = {};
             if (values.dob) {
-              if (!validateDate(values.dob))
+              const minDate = moment().subtract(100, "y");
+              const maxDate = moment().subtract(13, "y");
+              if (!validateDate(values.dob, minDate, maxDate))
                 errors.dob = "You must be between 13-100 years in age";
             }
             if (values.passwordOne && values.passwordTwo) {

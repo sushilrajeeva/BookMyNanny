@@ -1,13 +1,11 @@
 import moment from "moment";
 
-const validateDate = (date) => {
+const validateDate = (date, minDate, maxDate) => {
   const momentDate = moment(date);
   if (!momentDate.isValid()) return false;
-  const minDate = moment().subtract(100, "y");
-  const maxDate = moment().subtract(13, "y");
   const isBtwn = momentDate.isBetween(minDate, maxDate);
-  if (!isBtwn) return false;
-  return true;
+  if (isBtwn) return true;
+  return false;
 };
 
 const validateJobDate = (date) => {

@@ -9,6 +9,7 @@ import {
   updateDoc,
   arrayUnion,
   setDoc,
+  runTransaction,
 } from "firebase/firestore";
 
 const getAllListings = async () => {
@@ -37,6 +38,24 @@ const getAllListings = async () => {
     throw new Error("Error getting all users");
   }
 };
+
+async function getNannyById(id) {
+  try {
+    const nannyDocRef = doc(db, "Nanny", id);
+    const docSnapshot = await getDoc(nannyDocRef);
+
+    if (docSnapshot.exists()) {
+      const data = docSnapshot.data();
+      // console.log("GETTING DATA FROM PARENT", data);
+      return data;
+    } else {
+      throw new Error("No nanny exists");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error getting user document");
+  }
+}
 
 const nannyInterested = async (listingId, nannyId) => {
   try {
@@ -135,6 +154,26 @@ const getActiveJobs = async (nannyID) => {
   }
 };
 
+const updateNannyData = async (id, imageURL) => {
+  const nannyDocRef = doc(db, "Nanny", id);
+
+  try {
+    await runTransaction(db, async (transaction) => {
+      const nannyDoc = await transaction.get(nannyDocRef);
+      console.log("NannyDoc", nannyDoc);
+      if (!nannyDoc.exists()) {
+        throw new Error("Document does not exist!");
+      }
+      console.log(id, imageURL);
+      transaction.update(nannyDocRef, { image: imageURL });
+      return imageURL;
+    });
+  } catch (e) {
+    console.log(e);
+    throw new Error("Error updating parent data");
+  }
+};
+
 const getPastJobs = async (nannyID) => {
   try {
     console.log("Get Past jobs firestore method called");
@@ -171,4 +210,6 @@ export {
   withdrawNannyInterest,
   getActiveJobs,
   getPastJobs,
+  getNannyById,
+  updateNannyData,
 };

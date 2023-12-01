@@ -25,6 +25,9 @@ const NavigationAuth = () => {
         <li>
           <NavLink to="/account">Account</NavLink>
         </li>
+        <li>
+          <NavLink to="/profile">Profile</NavLink>
+        </li>
         <li className="signoutButton">
           <SignOutButton />
         </li>
