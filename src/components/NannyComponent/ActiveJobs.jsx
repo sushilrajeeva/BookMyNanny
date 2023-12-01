@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { getAllListings, nannyInterested, withdrawNannyInterest, getActiveJobs } from "../../firebase/NannyFunctions";
+import { Button } from "@/components/ui/button"
+ 
 
 import { AuthContext } from "../../context/AuthContext";
 
@@ -55,7 +57,7 @@ const ActiveJobs = () => {
                             <td style={thTdStyle}>{job.jobStartDate}</td>
                             <td style={thTdStyle}>{job.jobEndDate}</td>
                             <td style={thTdStyle}>
-                                <button onClick={() => console.log('View job', job._id)}>View Job</button>
+                                <Button onClick={() => console.log('View job', job._id)}>View Job</Button>
                             </td>
                         </tr>
                     ))}
