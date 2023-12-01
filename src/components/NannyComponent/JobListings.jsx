@@ -3,6 +3,26 @@ import React, { useState, useEffect, useContext } from "react";
 import { getAllListings, nannyInterested, withdrawNannyInterest } from "../../firebase/NannyFunctions";
 import { AuthContext } from "../../context/AuthContext";
 
+// Importing Button from shadcn
+import { Button } from "@/components/ui/button"
+ 
+// Importing card from shadcn
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+
+// Importing Skeleton for showing loading from shadcn
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Importing input ui from shadcn
+import { Input } from "@/components/ui/input"
+
+
 function formatFirestoreTimestamp(timestamp) {
   // Checking if timestamp is a Firestore Timestamp object
   // did this because some posted dates are just strings and some are firestore timestamp functions
@@ -61,6 +81,31 @@ function JobListings() {
     }
   };
 
+  // To conditinoally render on loading animation
+  const renderSkeleton = () => (
+    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px' }}>
+      {Array.from({ length: 10 }).map((_, index) => (
+        <Card key={index} className="w-[300px]">
+          <CardHeader>
+            <Skeleton height="20px" width="70%" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton height="15px" width="90%" />
+            <Skeleton height="15px" width="85%" style={{ marginTop: '10px' }} />
+            <Skeleton height="15px" width="80%" style={{ marginTop: '10px' }} />
+            <Skeleton height="15px" width="75%" style={{ marginTop: '10px' }} />
+          </CardContent>
+          <CardFooter className="flex justify-between items-center">
+            <Skeleton height="35px" width="48%" className="rounded-md" />
+            <Skeleton height="35px" width="48%" className="rounded-md" />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
+  
+  
+
   const handleNannyWithdraw = async (listingId) => {
     const success = await withdrawNannyInterest(listingId, currentUser.uid);
     if (success) {
@@ -85,52 +130,58 @@ function JobListings() {
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        {renderSkeleton()}
+      </div>
+    )
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center min-h-screen pt-10">
       <h1>Job Listings</h1>
-      <input 
-        type="text" 
-        placeholder="Search listings..." 
-        value={searchQuery} 
-        onChange={handleSearchChange} 
-        style={{ marginBottom: '20px' }}
+      <Input
+        type="text"
+        placeholder="Search listings..."
+        value={searchQuery}
+        onChange={handleSearchChange}
+        className="mb-5 w-full max-w-md" 
       />
-      <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px' }}>
+      <div className="flex flex-wrap justify-center gap-5 w-full px-4">
         {filteredListings.map((listing, index) => (
-          <div key={index} style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', width: '300px', position: 'relative' }}>
-            <h2>{listing.listingName}</h2>
-            <div>
+          <Card key={index} className="w-[300px]">
+            <CardHeader>
+              <CardTitle>{listing.listingName}</CardTitle>
+              <CardDescription>
+                <strong>Posted Date:</strong> {formatFirestoreTimestamp(listing.postedDate)}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <p><strong>Description:</strong> {listing.description}</p>
-              <p><strong>Posted Date:</strong> {formatFirestoreTimestamp(listing.postedDate)}</p>
               <p><strong>Hourly Rate:</strong> {listing.hourlyRate}</p>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+            </CardContent>
+            <CardFooter className="flex justify-between">
               <button 
                 onClick={() => console.log('View Listing is called')} 
-                style={{ backgroundColor: 'blue', color: 'white', padding: '10px 15px', borderRadius: '5px', flex: '1', marginRight: '5px' }}
+                className="bg-blue-500 text-white p-2 rounded"
               >
                 View Listing
               </button>
               {listing.interestedNannies && listing.interestedNannies.includes(currentUser.uid) ? (
-                <button 
+                <Button variant="destructive"
                   onClick={() => handleNannyWithdraw(listing._id)}
-                  style={{ backgroundColor: 'red', color: 'white', padding: '10px 15px', borderRadius: '5px', flex: '1', marginLeft: '5px' }}
                 >
-                  Withdraw Request
-                </button>
+                  Withdraw
+                </Button>
               ) : (
-                <button 
+                <Button variant="secondary"
                   onClick={() => handleNannyInterest(listing._id)}
-                  style={{ backgroundColor: 'green', color: 'white', padding: '10px 15px', borderRadius: '5px', flex: '1', marginLeft: '5px' }}
                 >
                   I'm Interested
-                </button>
+                </Button>
               )}
-            </div>
-          </div>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
@@ -138,4 +189,6 @@ function JobListings() {
 }
 
 export default JobListings;
+
+
 
