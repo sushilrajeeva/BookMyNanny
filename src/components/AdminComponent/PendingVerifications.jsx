@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {getPendingVerifications, VerifyNanny } from '../../firebase/AdminFunctions';
+import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+
 
 function PendingVerifications() {
   const [pending, setPending] = useState([]);
@@ -8,6 +12,9 @@ function PendingVerifications() {
     const fetchPendingVerifications = async () => {
       try {
         const pendingVerifications = await getPendingVerifications();
+        if(pendingVerifications.length == 0){
+            console.log("No pending Nannies to verify")
+        }
         setPending(pendingVerifications);
       } catch (error) {
         console.error('Error fetching listings:', error);
@@ -22,6 +29,9 @@ function PendingVerifications() {
       await VerifyNanny(nannyId);
 
       const updatedPendingVerifications = await getPendingVerifications();
+      if(updatedPendingVerifications.length == 0){
+        console.log("No pending Nannies to verify")
+      }
       setPending(updatedPendingVerifications);
     } catch (error) {
       console.error('Error verifying nanny:', error);
@@ -34,14 +44,15 @@ function PendingVerifications() {
       <ul>
         {pending.map((nanny) => (
           <li key={nanny._id}>
-            <p>{nanny.firstName}</p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-              <button 
+            <p>NAME: {nanny.firstName}</p>
+            <p>SSN: {nanny.ssn}</p>
+            <div >
+              <Button 
                 onClick={() => handleVerifyNanny(nanny._id)}
                 style={{ padding: '10px 15px', borderRadius: '5px', flex: '1', marginRight: '5px' }}
               >
                 Verify Nanny
-              </button>
+              </Button>
             </div>
           </li>
         ))}
