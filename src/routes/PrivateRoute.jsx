@@ -1,25 +1,13 @@
-import React, { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-// import { errorAlert } from "store/alert";
+import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const PrivateRoute = ({ requiredRole }) => {
-  const { currentUser, userRole } = useContext(AuthContext);
-  requiredRole = requiredRole ? userRole : undefined;
-
-  if (!currentUser) {
-    // errorAlert("You must be logged in before accessing this route");
-    return <Navigate to="/signin" replace={true} />;
-  }
-
-  if (requiredRole && userRole !== requiredRole) {
-    // errorAlert(
-    //   `You must be logged in as a ${requiredRole} accessing this route`
-    // );
-    return <Navigate to="/" />;
-  }
-
-  return <Outlet />;
+const PrivateRoute = () => {
+  const { currentUser } = useContext(AuthContext);
+  //console.log('Private Route Comp current user', currentUser);
+  // If authorized, return an outlet that will render child elements
+  // If not, return element that will navigate to login page
+  return currentUser ? <Outlet /> : <Navigate to="/signin" replace={true} />;
 };
 
 export default PrivateRoute;
