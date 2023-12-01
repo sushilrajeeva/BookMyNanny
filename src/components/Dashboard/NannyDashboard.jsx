@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ActiveListings from "../ActiveListings";
-import PastListings from "../PastListings";
+import ActiveJobs from "../ActiveJobs"
+import PastJobs from "../PastJobs";
 import JobListings from "../JobListings";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -22,10 +22,10 @@ const NannyDashboard = ({ userRole }) => {
             <Button onClick={() => renderComponent("JobListings")}>
               Job Listings
             </Button>
-            <Button onClick={() => renderComponent("ActiveListings")}>
+            <Button onClick={() => renderComponent("ActiveJobs")}>
               Active Jobs
             </Button>
-            <Button onClick={() => renderComponent("PastListings")}>
+            <Button onClick={() => renderComponent("PastJobs")}>
               Past Jobs
             </Button>
           </>
@@ -33,8 +33,8 @@ const NannyDashboard = ({ userRole }) => {
       </Paper>
 
       <Paper elevation={3} className="component-container">
-        {activeComponent === "ActiveListings" && <ActiveListings />}
-        {activeComponent === "PastListings" && <PastListings />}
+        {activeComponent === "ActiveJobs" && <ActiveJobs />}
+        {activeComponent === "PastJobs" && <PastJobs />}
         {activeComponent === "JobListings" && <JobListings />}
       </Paper>
     </Container>
