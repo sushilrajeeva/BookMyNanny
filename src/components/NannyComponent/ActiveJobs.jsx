@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getAllListings, nannyInterested, withdrawNannyInterest, getActiveJobs } from "../firebase/NannyFunctions";
+import { getAllListings, nannyInterested, withdrawNannyInterest, getActiveJobs } from "../../firebase/NannyFunctions";
 
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const ActiveJobs = () => {
     const [activeJobs, setActiveJobs] = useState([]);
