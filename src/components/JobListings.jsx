@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { getAllListings, nannyInterested } from "../firebase/NannyFunctions";
+import { getAllListings, nannyInterested, withdrawNannyInterest } from "../firebase/NannyFunctions";
 import { AuthContext } from "../context/AuthContext";
 
 function formatFirestoreTimestamp(timestamp) {
@@ -27,6 +27,8 @@ function JobListings() {
     async function fetchListings() {
       try {
         const listings = await getAllListings();
+        console.log("All listings");
+        console.log(listings);
         setJobListings(listings);
       } catch (error) {
         console.error("Error fetching listings:", error);
@@ -42,6 +44,9 @@ function JobListings() {
   };
 
   const handleNannyInterest = async (listingId) => {
+    console.log("Handle nanny interest is called");
+    console.log("ListingID:", listingId);
+    console.log("NannyID:", currentUser.uid);
     const success = await nannyInterested(listingId, currentUser.uid);
     if (success) {
       console.log("Nanny added to InterestedNanny list successfully");
@@ -55,6 +60,22 @@ function JobListings() {
       );
     }
   };
+
+  const handleNannyWithdraw = async (listingId) => {
+    const success = await withdrawNannyInterest(listingId, currentUser.uid);
+    if (success) {
+      console.log("Nanny removed from InterestedNanny list successfully");
+      // Update only the modified listing
+      setJobListings(prevListings =>
+        prevListings.map(listing =>
+          listing._id === listingId
+            ? { ...listing, interestedNannies: listing.interestedNannies.filter(uid => uid !== currentUser.uid) }
+            : listing
+        )
+      );
+    }
+  };
+  
 
   const filteredListings = jobListings.filter(listing => 
     listing.listingName.toLowerCase().includes(searchQuery) ||
@@ -93,21 +114,21 @@ function JobListings() {
               >
                 View Listing
               </button>
-              <button 
-                onClick={() => handleNannyInterest(listing._id)}
-                disabled={listing.interestedNannies && listing.interestedNannies.includes(currentUser.uid)}
-                style={{ 
-                  backgroundColor: listing.interestedNannies && listing.interestedNannies.includes(currentUser.uid) ? '#90EE90' : 'green', 
-                  color: 'white', 
-                  padding: '10px 15px', 
-                  borderRadius: '5px', 
-                  flex: '1', 
-                  marginLeft: '5px',
-                  cursor: listing.interestedNannies && listing.interestedNannies.includes(currentUser.uid) ? 'default' : 'pointer' 
-                }}
-              >
-                I'm Interested
-              </button>
+              {listing.interestedNannies && listing.interestedNannies.includes(currentUser.uid) ? (
+                <button 
+                  onClick={() => handleNannyWithdraw(listing._id)}
+                  style={{ backgroundColor: 'red', color: 'white', padding: '10px 15px', borderRadius: '5px', flex: '1', marginLeft: '5px' }}
+                >
+                  Withdraw Request
+                </button>
+              ) : (
+                <button 
+                  onClick={() => handleNannyInterest(listing._id)}
+                  style={{ backgroundColor: 'green', color: 'white', padding: '10px 15px', borderRadius: '5px', flex: '1', marginLeft: '5px' }}
+                >
+                  I'm Interested
+                </button>
+              )}
             </div>
           </div>
         ))}
