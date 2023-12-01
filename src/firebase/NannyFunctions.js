@@ -98,4 +98,39 @@ const withdrawNannyInterest = async (listingId, nannyId) => {
   }
 };
 
-export { getAllListings, nannyInterested, withdrawNannyInterest };
+// Methods for Active Jobs
+
+// This method will give all the listings in the listings collection firestore whose selectedNannyID matches the current loggedin Nanny's nannyID
+const getActiveJobs = async (nannyID) => {
+  try {
+    console.log("Get active jobs firestore method called");
+    const listingsCollection = collection(db, "Listings");
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const activeJobs = [];
+
+    // modifying to get only those listings where the the listing's selectedNannyID matches the given nannyID and the status is pending
+    listingsSnapshot.forEach((doc) => {
+      const listingData = doc.data();
+      if (
+        listingData.selectedNannyID == nannyID &&
+        listingData.status == "pending"
+      ) {
+        activeJobs.push(listingData);
+      }
+    });
+    console.log("Active jobs : ", activeJobs);
+    return activeJobs;
+  } catch (error) {
+    console.log(error);
+    console.error("Error getting all Listings for this nanny!!:", error);
+    throw new Error("Error getting all users");
+  }
+};
+
+export {
+  getAllListings,
+  nannyInterested,
+  withdrawNannyInterest,
+  getActiveJobs,
+};
