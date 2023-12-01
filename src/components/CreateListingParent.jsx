@@ -20,7 +20,7 @@ import TimePickerFormInput from "./TimePicker";
 import CustomTextareaAutosize from "./TextAreaAutoSize";
 import moment from "moment";
 import { listingSchema } from "../schemas/listing";
-import { validateJobDate } from "../helpers";
+import { validateDate } from "../helpers";
 
 const schema = listingSchema;
 
@@ -110,11 +110,33 @@ function CreateListingParent() {
           validationSchema={schema}
           validate={(values) => {
             const errors = {};
-            if (values.jobDate) {
-              if (!validateJobDate(values.jobDate))
-                errors.jobDate =
+            if (values.jobStartDate) {
+              const minDate = moment();
+              const maxDate = moment().add(1, "year");
+              if (!validateDate(values.jobStartDate, minDate, maxDate))
+                errors.jobStartDate =
                   "Job Date must be between current day to 1 year from today";
             }
+            if (values.jobEndDate) {
+              const minDate = moment();
+              const maxDate = moment().add(1, "year");
+              if (!validateDate(values.jobEndDate, minDate, maxDate))
+                errors.jobEndDate =
+                  "Job Date must be between current day to 1 year from today";
+            }
+            if (values.jobEndDate && values.jobStartDate) {
+              console.log("endDate", moment(values.jobEndDate));
+              console.log("startdate", moment(values.jobStartDate));
+              console.log(
+                moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
+              );
+              if (
+                moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
+              )
+                errors.jobEndDate =
+                  "Job end date cannot be before job start date";
+            }
+            console.log(errors);
             return errors;
           }}
           onSubmit={async (values, { setSubmitting, resetForm }) => {

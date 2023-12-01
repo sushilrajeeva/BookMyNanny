@@ -7,11 +7,18 @@ import moment from "moment";
 
 const DatePickerFormInput = ({
   field,
-  form: { setFieldValue, errors, touched, handleBlur },
+  form: {
+    setFieldValue,
+    setFieldTouched,
+    errors,
+    handleChange,
+    touched,
+    handleBlur,
+  },
   label,
   disabled = false,
-  minDate = moment().subtract(100, "y"),
-  maxDate = moment(),
+  minDate,
+  maxDate,
   required = false,
 }) => {
   return (
@@ -20,11 +27,12 @@ const DatePickerFormInput = ({
         <DatePicker
           label={label}
           disabled={disabled}
-          value={field.value ? moment(field.value, "MM-DD-YYYY") : null}
+          value={field.value ? moment(field.value, "MM-DD-YYYY", true) : null}
           format="MM-DD-YYYY"
           minDate={minDate}
           maxDate={maxDate}
           onChange={(newValue) => {
+            console.log("Hello");
             setFieldValue(
               field.name,
               newValue ? newValue.format("MM-DD-YYYY") : null

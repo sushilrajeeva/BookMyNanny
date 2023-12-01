@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
+import moment from "moment";
 
 import {
   doCreateUserWithEmailAndPassword,
@@ -19,7 +20,6 @@ const schema = parentSchema;
 function ParentSignUp() {
   const { currentUser } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
-  const [formErrors, setFormErrors] = useState({});
 
   const handleSignUpParent = async (values, setSubmitting) => {
     setSubmitting(true);
@@ -61,6 +61,7 @@ function ParentSignUp() {
       // if(!currentUser) throw "no usercreds to do crud"
       //await getNannyDocs()
       let dataToStore = {
+        displayName: displayName.trim(),
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         emailAddress: email.trim(),
@@ -75,6 +76,7 @@ function ParentSignUp() {
         role: "parent",
         password: passwordOne.trim(),
         wallet: 0,
+        image: "",
       };
       console.log("From signup component data:", dataToStore);
       // Create document in Firestore parent collection
@@ -134,7 +136,9 @@ function ParentSignUp() {
             const errors = {};
 
             if (values.dob) {
-              if (!validateDate(values.dob))
+              const minDate = moment().subtract(100, "y");
+              const maxDate = moment().subtract(13, "y");
+              if (!validateDate(values.dob, minDate, maxDate))
                 errors.dob = "You must be between 13-100 years in age";
             }
             if (values.passwordOne && values.passwordTwo) {
