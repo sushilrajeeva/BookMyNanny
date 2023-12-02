@@ -72,7 +72,14 @@ function ChangePassword() {
         doSignOut // I am Passing the sign-out function as a post-alert action so that the user is signed out after the alert is closed
       );
     } catch (error) {
-      showAlert("Error", "Invalid Credential, please try again");
+      console.log(error);
+      console.log(error.code);
+      if(error.code){
+        showAlert("Error", error.message)
+      }else{
+        showAlert("Error", "Something went wrong... Please try again!");
+      }
+      
     }
   };
 
