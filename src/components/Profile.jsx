@@ -4,13 +4,27 @@ import { AlertContext } from "../context/AlertContext";
 import { getParentById, updateParentData } from "../firebase/ParentFunctions";
 import { getNannyById, updateNannyData } from "../firebase/NannyFunctions";
 
+// Importing Shadcn ui components
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+
 const Profile = () => {
   const aRef = useRef(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const { currentUser, userRole } = useContext(AuthContext);
-  const { showAlert } = useContext(AlertContext);
+  //const { showAlert } = useContext(AlertContext);
+  const [alert, setAlert] = useState({ show: false, title: '', description: '' });
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -40,6 +54,14 @@ const Profile = () => {
 
   const resetInput = () => {
     aRef.current.value = null;
+  };
+
+  const showAlert = (title, description) => {
+    setAlert({ show: true, title, description });
+  };
+
+  const closeAlert = () => {
+    setAlert({ show: false, title: '', description: '' });
   };
 
   const submit = async (event) => {
@@ -96,29 +118,62 @@ const Profile = () => {
     }
   };
 
-  return (
-    <div className="profile-container">
-      <form onSubmit={submit} className="form-container">
-        <input
-          ref={aRef}
-          onChange={handleImageChange}
-          type="file"
-          accept="image/*"
-        />
-        <button type="submit" onClick={resetInput} disabled={loading}>
-          {" "}
-          {loading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
+  
 
-      {imageUrl && (
-        <div className="image-container">
-          <p>Current Image:</p>
-          <img src={imageUrl} alt="Profile" />
-        </div>
+  return (
+    <div className="max-w-2xl mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Settings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submit} className="space-y-4">
+            <div>
+              <input
+                ref={aRef}
+                onChange={handleImageChange}
+                type="file"
+                accept="image/*"
+                className="block w-full text-sm text-gray-500
+                           file:mr-4 file:py-2 file:px-4
+                           file:border-0 file:text-sm file:font-semibold
+                           file:bg-violet-50 file:text-violet-700
+                           hover:file:bg-violet-100"
+              />
+            </div>
+            <Button type="submit" onClick={resetInput} disabled={loading} className="w-full">
+              {loading ? "Uploading..." : "Upload"}
+            </Button>
+          </form>
+
+          {imageUrl && (
+            <div className="mt-4">
+              <p className="mb-2 text-sm font-semibold">Current Image:</p>
+              <img src={imageUrl} alt="Profile" className="rounded-lg shadow-md" />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {alert.show && (
+        <AlertDialog open={alert.show} onOpenChange={closeAlert}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{alert.title}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {alert.description}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogAction onClick={closeAlert}>OK</AlertDialogAction>
+            <AlertDialogCancel onClick={closeAlert}>Cancel</AlertDialogCancel>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
+
     </div>
   );
 };
 
 export default Profile;
+
+
