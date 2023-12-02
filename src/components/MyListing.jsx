@@ -3,6 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { getAllListings } from '../firebase/ParentFunctions';
+import DataTable from '../components/ListingTable/data-table';
+
 
 function MyListing() {
   const [listings, setListings] = useState([]);
@@ -23,16 +25,23 @@ function MyListing() {
     fetchListings();
   }, []);
 
+  const columns = [
+    {
+      accessorKey: 'listingName',
+      header: 'Listing Name',
+    },
+    {
+      accessorKey: 'postedDate',
+      header: 'Posted Date',
+    }
+  ];
+
+  
+
   return (
     <div>
       <h1>All Listings</h1>
-      <ul>
-        {listings.map((listing) => (
-          <li key={listing.listingName}>
-            <strong>{listing.listingName}</strong>
-          </li>
-        ))}
-      </ul>
+      <DataTable columns={columns} data={listings} />
     </div>
   );
 }
