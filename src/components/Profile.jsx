@@ -17,8 +17,16 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+
+// References for this page
+// Spinner using tailwind css - https://tailwindcss.com/docs/animation
+// profile ui design reference -  https://ui.shadcn.com/example , https://ui.shadcn.com/docs/components/input
+
 const Profile = () => {
-  const aRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -53,7 +61,7 @@ const Profile = () => {
   };
 
   const resetInput = () => {
-    aRef.current.value = null;
+    fileInputRef.current.value = null;
   };
 
   const showAlert = (title, description) => {
@@ -128,21 +136,31 @@ const Profile = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
-            <div>
-              <input
-                ref={aRef}
-                onChange={handleImageChange}
-                type="file"
+            <div className="grid grid-cols-1 gap-y-2">
+              <div className="text-left">
+                <Label htmlFor="picture">Picture</Label>
+              </div>
+              <Input 
+                ref={fileInputRef}
+                id="picture" 
+                type="file" 
                 accept="image/*"
-                className="block w-full text-sm text-gray-500
-                           file:mr-4 file:py-2 file:px-4
-                           file:border-0 file:text-sm file:font-semibold
-                           file:bg-violet-50 file:text-violet-700
-                           hover:file:bg-violet-100"
+                onChange={handleImageChange}
               />
             </div>
             <Button type="submit" onClick={resetInput} disabled={loading} className="w-full">
-              {loading ? "Uploading..." : "Upload"}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                    {/* Took referene from https://tailwindcss.com/docs/animation */}
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12c5.523 0 10-4.523 10-10z"></path>
+                  </svg>
+                  Uploading...
+                </>
+              ) : (
+                "Upload"
+              )}
             </Button>
           </form>
 
@@ -165,7 +183,6 @@ const Profile = () => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogAction onClick={closeAlert}>OK</AlertDialogAction>
-            <AlertDialogCancel onClick={closeAlert}>Cancel</AlertDialogCancel>
           </AlertDialogContent>
         </AlertDialog>
       )}
