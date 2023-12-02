@@ -5,6 +5,8 @@
 
 
 import { ArrowUpDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
+
 
 // Custom header component for sortable columns
 function DataTableColumnHeader({ column, title }) {
@@ -54,7 +56,7 @@ export const columns = [
   {
     id: 'action',
     header: "Action",
-    cell: (info) => <div onClick={() => console.log('View job', info.row.original._id)} style={{ cursor: 'pointer' }}>View Job</div>,
+    cell: (info) => <Badge onClick={() => console.log('View job', info.row.original._id)} style={{ cursor: 'pointer' }}>View Job</Badge>,
     enableSorting: false, // doing this to disable sorting as i don't want sorting on button actions
   },
 ];

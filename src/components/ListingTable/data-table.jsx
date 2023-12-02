@@ -19,7 +19,14 @@ const DataTable = ({ columns, data }) => {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
     
-
+    function isNumeric(value) {
+        return !isNaN(value) && !isNaN(parseFloat(value));
+      }
+      
+      function isDate(value) {
+        return /^(\d{4})-(\d{2})-(\d{2})$/.test(value);
+      }
+      
     const table = useReactTable({
         data,
         columns,
@@ -52,11 +59,18 @@ const DataTable = ({ columns, data }) => {
                 <TableBody>
                     {table.getRowModel().rows.map((row) => (
                         <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </TableCell>
-                            ))}
+                            {row.getVisibleCells().map((cell) => {
+                const cellValue = cell.getValue();
+                const alignStyle = isNumeric(cellValue) || isDate(cellValue)
+                  ? { textAlign: 'right' }
+                  : { textAlign: 'left' };
+
+                return (
+                  <TableCell key={cell.id} style={alignStyle}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                );
+              })}
                         </TableRow>
                     ))}
                 </TableBody>
