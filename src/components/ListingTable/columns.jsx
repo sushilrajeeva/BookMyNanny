@@ -33,6 +33,15 @@ export const columns = [
   {
     accessorKey: "hourlyRate",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Hourly Rate" />,
+    cell: (info) => {
+      const amount = parseFloat(info.row.original.hourlyRate);
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div>{formatted}</div>;
+    }
   },
   {
     accessorKey: "jobStartDate",
