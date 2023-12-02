@@ -65,6 +65,14 @@ function PastListings() {
       header: 'Status',
       cell: (info) => (isListingPast(info.row.original.jobEndDate) ? 'Past' : 'Active'),
     },
+    {
+      accessorKey: 'jobStartDate',
+      header: 'Start Date',
+    },
+    {
+      accessorKey: 'jobEndDate',
+      header: 'End Date',
+    },
   ];
 
   

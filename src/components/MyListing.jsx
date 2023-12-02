@@ -33,7 +33,15 @@ function MyListing() {
     {
       accessorKey: 'postedDate',
       header: 'Posted Date',
-    }
+    },
+    {
+      accessorKey: 'jobStartDate',
+      header: 'Start Date',
+    },
+    {
+      accessorKey: 'jobEndDate',
+      header: 'End Date',
+    },
   ];
 
   

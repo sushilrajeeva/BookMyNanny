@@ -60,6 +60,14 @@ function ActiveListings() {
       header: 'Status',
       cell: (info) => (isListingActive(info.row.original.jobEndDate) ? 'Active' : 'Past'),
     },
+    {
+      accessorKey: 'jobStartDate',
+      header: 'Start Date',
+    },
+    {
+      accessorKey: 'jobEndDate',
+      header: 'End Date',
+    },
   ];
 
  return (
