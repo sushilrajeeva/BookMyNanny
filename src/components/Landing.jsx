@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "../App.css";
 
+import { Button } from "@/components/ui/button";
+
 function Landing() {
   return (
     <div className="card">
@@ -29,13 +31,13 @@ function Landing() {
           </p>
         </div>
 
-        {/* "Sign Up" button using NavLink */}
-        <div className="card">
-          <NavLink to="/signup">
-            <button className="button">Sign Up</button>
+        {/* "Sign Up" and "Sign In" buttons */}
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <NavLink to="/signup" className="w-full">
+            <Button className="w-full">Sign Up</Button>
           </NavLink>
-          <NavLink to="/signin">
-            <button className="button">Sign In</button>
+          <NavLink to="/signin" className="w-full">
+            <Button variant="secondary" className="w-full">Sign In</Button>
           </NavLink>
         </div>
       </div>
