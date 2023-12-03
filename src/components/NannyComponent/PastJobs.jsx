@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { getPastJobs } from "../../firebase/NannyFunctions";
 import { Button } from "@/components/ui/button"
- 
 
+// Took reference from shadcn -> https://ui.shadcn.com/docs/components/data-table
+ 
+// Importing the Listing Table Component 
+import { columns } from "../ListingTable/columns"
+import DataTable from "../ListingTable/data-table"
 
 import { AuthContext } from "../../context/AuthContext";
 
@@ -12,17 +16,17 @@ function PastJobs() {
   const { currentUser, userRole } = useContext(AuthContext);
 
 
-  // some css 
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-};
+//   // some css 
+//   const tableStyle = {
+//     width: '100%',
+//     borderCollapse: 'collapse',
+// };
 
-const thTdStyle = {
-    border: '1px solid black',
-    padding: '8px',
-    textAlign: 'left',
-};
+// const thTdStyle = {
+//     border: '1px solid black',
+//     padding: '8px',
+//     textAlign: 'left',
+// };
 
 useEffect(() => {
     const fetchPastJobs = async () => {
@@ -38,37 +42,12 @@ useEffect(() => {
 }, [currentUser.uid]); // Dependency array includes nannyID, so this effect runs when nannyID changes
 
 
-  return (
+return (
     <div>
-            <h2>Past Jobs</h2>
-            <table style={tableStyle}>
-                <thead>
-                    <tr>
-                        <th style={thTdStyle}>Listing Name</th>
-                        <th style={thTdStyle}>Location</th>
-                        <th style={thTdStyle}>Hourly Rate</th>
-                        <th style={thTdStyle}>Start Date</th>
-                        <th style={thTdStyle}>End Date</th>
-                        <th style={thTdStyle}>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {pastJobs.map(job => (
-                        <tr key={job._id}>
-                            <td style={thTdStyle}>{job.listingName}</td>
-                            <td style={thTdStyle}>{`${job.street}, ${job.city}, ${job.state}, ${job.country} - ${job.pincode}`}</td>
-                            <td style={thTdStyle}>{job.hourlyRate}</td>
-                            <td style={thTdStyle}>{job.jobStartDate}</td>
-                            <td style={thTdStyle}>{job.jobEndDate}</td>
-                            <td style={thTdStyle}>
-                                <Button onClick={() => console.log('View job', job._id)}>View Job</Button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-      </div>
-  )
+      <h2>Past Jobs</h2>
+      <DataTable columns={columns} data={pastJobs} />
+    </div>
+  );
 }
 
 export default PastJobs

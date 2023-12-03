@@ -71,6 +71,11 @@ function CreateListingParent() {
         chatID: uuid(),
       };
 
+      if (moment(jobEndDate).isBefore(moment(jobStartDate))) {
+        showAlert("error", "End date cannot be greater than start date");
+        return;
+      }
+
       console.log("From createParentListing component data:", dataToStore);
       await createParentListing(dataToStore);
       showAlert("success", "Listing created successfully");
@@ -111,32 +116,21 @@ function CreateListingParent() {
           validate={(values) => {
             const errors = {};
             if (values.jobStartDate) {
-              const minDate = moment();
-              const maxDate = moment().add(1, "year");
+              const dateFormat = "MM-DD-YYYY HH:mm:ss";
+              const minDate = moment().startOf("day").format(dateFormat);
+              const maxDate = moment().add(1, "year").format(dateFormat);
               if (!validateDate(values.jobStartDate, minDate, maxDate))
                 errors.jobStartDate =
                   "Job Date must be between current day to 1 year from today";
             }
             if (values.jobEndDate) {
-              const minDate = moment();
-              const maxDate = moment().add(1, "year");
+              const dateFormat = "MM-DD-YYYY HH:mm:ss";
+              const minDate = moment().startOf("day").format(dateFormat);
+              const maxDate = moment().add(1, "year").format(dateFormat);
               if (!validateDate(values.jobEndDate, minDate, maxDate))
                 errors.jobEndDate =
                   "Job Date must be between current day to 1 year from today";
             }
-            // if (values.jobEndDate && values.jobStartDate) {
-            //   console.log("endDate", moment(values.jobEndDate));
-            //   console.log("startdate", moment(values.jobStartDate));
-            //   console.log(
-            //     moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
-            //   );
-            //   if (
-            //     moment(values.jobEndDate).isBefore(moment(values.jobStartDate))
-            //   )
-            //     errors.jobEndDate =
-            //       "Job end date cannot be before job start date";
-            // }
-            console.log(errors);
             return errors;
           }}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -330,7 +324,11 @@ function CreateListingParent() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
-                  style={{ width: "100%", marginTop: "16px" }}
+                  style={{
+                    width: "100%",
+                    marginTop: "16px",
+                    border: "1px solid black",
+                  }}
                 />
 
                 {touched.kidInfo && errors.kidInfo && (
@@ -343,7 +341,7 @@ function CreateListingParent() {
                   label="Description"
                   minRows={3}
                   name="description"
-                  placeholder="Provide brief description about the work (min 100 characters)"
+                  placeholder="Provide brief description about the work (min 10 characters)"
                   value={values.description}
                   onInput={(e) => {
                     handleChange(e);
@@ -352,7 +350,11 @@ function CreateListingParent() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
-                  style={{ width: "100%", marginTop: "16px" }}
+                  style={{
+                    width: "100%",
+                    marginTop: "16px",
+                    border: "1px solid black",
+                  }}
                 />
 
                 {touched.description && errors.description && (

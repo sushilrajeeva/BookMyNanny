@@ -36,7 +36,8 @@ async function doChangePassword(email, oldPassword, newPassword) {
   await reauthenticateWithCredential(auth.currentUser, credential);
 
   await updatePassword(auth.currentUser, newPassword);
-  await doSignOut();
+  console.log(" reached 1");
+  //await doSignOut();
 }
 
 async function doSignInWithEmailAndPassword(email, password) {

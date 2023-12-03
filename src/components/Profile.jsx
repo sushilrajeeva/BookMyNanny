@@ -4,13 +4,35 @@ import { AlertContext } from "../context/AlertContext";
 import { getParentById, updateParentData } from "../firebase/ParentFunctions";
 import { getNannyById, updateNannyData } from "../firebase/NannyFunctions";
 
+// Importing Shadcn ui components
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+
+// References for this page
+// Spinner using tailwind css - https://tailwindcss.com/docs/animation
+// profile ui design reference -  https://ui.shadcn.com/example , https://ui.shadcn.com/docs/components/input
+
 const Profile = () => {
-  const aRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const { currentUser, userRole } = useContext(AuthContext);
-  const { showAlert } = useContext(AlertContext);
+  //const { showAlert } = useContext(AlertContext);
+  const [alert, setAlert] = useState({ show: false, title: '', description: '' });
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -39,7 +61,15 @@ const Profile = () => {
   };
 
   const resetInput = () => {
-    aRef.current.value = null;
+    fileInputRef.current.value = null;
+  };
+
+  const showAlert = (title, description) => {
+    setAlert({ show: true, title, description });
+  };
+
+  const closeAlert = () => {
+    setAlert({ show: false, title: '', description: '' });
   };
 
   const submit = async (event) => {
@@ -96,29 +126,71 @@ const Profile = () => {
     }
   };
 
-  return (
-    <div className="profile-container">
-      <form onSubmit={submit} className="form-container">
-        <input
-          ref={aRef}
-          onChange={handleImageChange}
-          type="file"
-          accept="image/*"
-        />
-        <button type="submit" onClick={resetInput} disabled={loading}>
-          {" "}
-          {loading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
+  
 
-      {imageUrl && (
-        <div className="image-container">
-          <p>Current Image:</p>
-          <img src={imageUrl} alt="Profile" />
-        </div>
+  return (
+    <div className="max-w-2xl mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Settings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submit} className="space-y-4">
+            <div className="grid grid-cols-1 gap-y-2">
+              <div className="text-left">
+                <Label htmlFor="picture">Picture</Label>
+              </div>
+              <Input 
+                ref={fileInputRef}
+                id="picture" 
+                type="file" 
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
+            <Button type="submit" onClick={resetInput} disabled={loading} className="w-full">
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                    {/* Took referene from https://tailwindcss.com/docs/animation */}
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12c5.523 0 10-4.523 10-10z"></path>
+                  </svg>
+                  Uploading...
+                </>
+              ) : (
+                "Upload"
+              )}
+            </Button>
+          </form>
+
+          {imageUrl && (
+            <div className="mt-4">
+              <p className="mb-2 text-sm font-semibold">Current Image:</p>
+              <img src={imageUrl} alt="Profile" className="rounded-lg shadow-md" />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {alert.show && (
+        <AlertDialog open={alert.show} onOpenChange={closeAlert}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{alert.title}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {alert.description}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogAction onClick={closeAlert}>OK</AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
+
     </div>
   );
 };
 
 export default Profile;
+
+
