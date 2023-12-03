@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {getPendingVerifications, VerifyNanny } from '../../firebase/AdminFunctions';
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import DataTable from '../ListingTable/data-table';
 
 
 
@@ -38,25 +39,34 @@ function PendingVerifications() {
     }
   };
 
+
+  // Define the columns for the DataTable
+  const columns = [
+    {
+      accessorKey: 'firstName',
+      header: 'Name',
+    },
+    {
+      accessorKey: 'ssn',
+      header: 'SSN',
+    },
+    {
+      id: 'action',
+      header: 'Action',
+      cell: (info) => (
+        <Button
+          onClick={() => handleVerifyNanny(info.row.original._id)}
+        >
+          Verify Nanny
+        </Button>
+      ),
+    },
+  ];
+
   return (
     <div>
       <h1>Pending Verifications</h1>
-      <ul>
-        {pending.map((nanny) => (
-          <li key={nanny._id}>
-            <p>NAME: {nanny.firstName}</p>
-            <p>SSN: {nanny.ssn}</p>
-            <div >
-              <Button 
-                onClick={() => handleVerifyNanny(nanny._id)}
-                style={{ padding: '10px 15px', borderRadius: '5px', flex: '1', marginRight: '5px' }}
-              >
-                Verify Nanny
-              </Button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <DataTable columns={columns} data={pending} />
     </div>
   );
 }

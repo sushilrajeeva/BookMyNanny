@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getVerifiedNannies } from '../../firebase/AdminFunctions';
+import DataTable from '../ListingTable/data-table';
+
 
 function verifiedNannies() {
   const [nannies, setNannies] = useState([]);
@@ -19,16 +21,23 @@ function verifiedNannies() {
     fetchNannies();
   }, []);
 
+
+  // Define the columns for the DataTable
+  const columns = [
+    {
+      accessorKey: 'firstName',
+      header: 'Name',
+    },
+    {
+      accessorKey: 'ssn',
+      header: 'SSN',
+    },
+  ];
+
   return (
     <div>
       <h1>Verified Nannies</h1>
-      <ul>
-        {nannies.map((nanny) => (
-          <li key={nanny.firstName}>
-            <p>{nanny.firstName}</p>
-          </li>
-        ))}
-      </ul>
+      <DataTable columns={columns} data={nannies} />
     </div>
   );
 }
