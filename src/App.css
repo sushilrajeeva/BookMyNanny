@@ -135,14 +135,20 @@ input {
   padding: 20px;
 }
 
+.profile-card {
+  max-width: 70%;
+  margin: 0 auto;
+  height: auto;
+  padding: 20px;
+}
+
 /* Example: Profile.css */
 .profile-container {
-  max-width: 400px;
-  margin: auto;
+  max-width: 350px;
+  margin: 0 100px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-container {

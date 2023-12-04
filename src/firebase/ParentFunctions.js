@@ -41,7 +41,7 @@ async function getParentById(id) {
   }
 }
 
-const updateParentData = async (id, imageURL) => {
+const updateParentData = async (id, obj) => {
   const parentDocRef = doc(db, "Parent", id);
 
   try {
@@ -51,9 +51,8 @@ const updateParentData = async (id, imageURL) => {
       if (!parentDoc.exists()) {
         throw new Error("Document does not exist!");
       }
-      console.log(id, imageURL);
-      transaction.update(parentDocRef, { image: imageURL });
-      return imageURL;
+      transaction.update(parentDocRef, obj);
+      return obj.image;
     });
   } catch (e) {
     throw new Error("Error updating parent data");
