@@ -3,9 +3,23 @@ import { AuthContext } from "../context/AuthContext";
 import { AlertContext } from "../context/AlertContext";
 import { getParentById, updateParentData } from "../firebase/ParentFunctions";
 import { getNannyById, updateNannyData } from "../firebase/NannyFunctions";
+// import { Card, CardContent } from "@/components/ui/card";
+import { profile } from "../schemas/profile";
+import ProfileFields from "./ProfileFields";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  TextareaAutosize,
+} from "@mui/material";
+import { Formik, Form } from "formik";
+// import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { nannyProfile } from "@/schemas/nannyProfile";
 
 // Importing Shadcn ui components
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -20,19 +34,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-
 // References for this page
 // Spinner using tailwind css - https://tailwindcss.com/docs/animation
 // profile ui design reference -  https://ui.shadcn.com/example , https://ui.shadcn.com/docs/components/input
 
 const Profile = () => {
-  const fileInputRef = useRef(null);
+  const { currentUser, userRole } = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
+  const aRef = useRef(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { currentUser, userRole } = useContext(AuthContext);
-  //const { showAlert } = useContext(AlertContext);
-  const [alert, setAlert] = useState({ show: false, title: '', description: '' });
+  const [mainLoading, setMainLoading] = useState(true);
+  const [initialValues, setInitialValues] = useState(null);
+
+  let schema;
+  if (userRole === "parent") schema = profile;
+  else if (userRole === "nanny") schema = nannyProfile;
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -40,46 +58,65 @@ const Profile = () => {
         if (currentUser) {
           if (userRole === "parent") {
             const parentData = await getParentById(currentUser.uid);
-            console.log(parentData.image);
             setImageUrl(parentData.image);
-          } else {
+            console.log(parentData);
+            setInitialValues({
+              displayName: parentData.displayName,
+              email: parentData.emailAddress,
+              firstName: parentData.firstName,
+              lastName: parentData.lastName,
+              phoneNumber: parentData.phoneNumber,
+              street: parentData.street,
+              city: parentData.city,
+              state: parentData.state,
+              country: parentData.country,
+              pincode: parentData.pincode,
+              dob: parentData.dob,
+            });
+          } else if (userRole === "nanny") {
             const nannyData = await getNannyById(currentUser.uid);
             console.log(nannyData.image);
             setImageUrl(nannyData.image);
+            setInitialValues({
+              displayName: nannyData.displayName,
+              email: nannyData.emailAddress,
+              firstName: nannyData.firstName,
+              lastName: nannyData.lastName,
+              phoneNumber: nannyData.phoneNumber,
+              street: nannyData.street,
+              city: nannyData.city,
+              state: nannyData.state,
+              country: nannyData.country,
+              pincode: nannyData.pincode,
+              dob: nannyData.dob,
+              bio: nannyData.bio,
+              experience: nannyData.experience,
+              ssn: nannyData.ssn,
+            });
+          } else {
+            setMainLoading(true);
           }
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
+      } finally {
+        setMainLoading(false);
       }
     };
 
     fetchProfileData();
-  }, []);
+  }, [currentUser, userRole]);
 
   const handleImageChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const resetInput = () => {
-    fileInputRef.current.value = null;
-  };
-
-  const showAlert = (title, description) => {
-    setAlert({ show: true, title, description });
-  };
-
-  const closeAlert = () => {
-    setAlert({ show: false, title: '', description: '' });
-  };
-
   const submit = async (event) => {
     event.preventDefault();
-
     if (!file) {
       showAlert("error", "File is empty. Please choose a file.");
       return;
     }
-
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
     if (!allowedTypes.includes(file.type)) {
       showAlert(
@@ -88,17 +125,12 @@ const Profile = () => {
       );
       return;
     }
-
     setLoading(true);
-
     if (file) {
       try {
         const { url } = await fetch("http://localhost:3000/s3Url").then((res) =>
           res.json()
         );
-        console.log(url);
-
-        // post the image direclty to the s3 bucket
         await fetch(url, {
           method: "PUT",
           headers: {
@@ -106,13 +138,11 @@ const Profile = () => {
           },
           body: file,
         });
-
         const newImageUrl = url.split("?")[0];
-        console.log(newImageUrl);
-
+        const imgObj = { image: newImageUrl };
         if (userRole === "parent")
-          await updateParentData(currentUser.uid, newImageUrl);
-        else await updateNannyData(currentUser.uid, newImageUrl);
+          await updateParentData(currentUser.uid, imgObj);
+        else await updateNannyData(currentUser.uid, imgObj);
 
         setImageUrl(newImageUrl);
 
@@ -122,75 +152,287 @@ const Profile = () => {
         showAlert("error", "Error uploading image. Please try again.");
       } finally {
         setLoading(false);
+        aRef.current.value = null;
       }
     }
   };
 
-  
+  const handleProfile = async (values, setSubmitting) => {
+    if (userRole === "parent") {
+      try {
+        setSubmitting(true);
+        const {
+          displayName,
+          firstName,
+          lastName,
+          phoneNumber,
+          street,
+          city,
+          state,
+          country,
+          pincode,
+        } = values;
+        const currentUserData = await getParentById(currentUser.uid);
+        const changedValues = Object.entries({
+          displayName: displayName.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          phoneNumber: phoneNumber,
+          street: street.trim(),
+          city: city.trim(),
+          state: state.trim(),
+          country: country.trim(),
+          pincode: pincode,
+        }).reduce((acc, [key, value]) => {
+          if (currentUserData[key] !== value) {
+            acc[key] = value;
+          }
+          return acc;
+        }, {});
+
+        console.log("Changed values:", changedValues);
+
+        // Update only the changed values
+        if (Object.keys(changedValues).length > 0) {
+          await updateParentData(currentUser.uid, changedValues);
+          showAlert("success", "Profile updated successfully!");
+        } else showAlert("error", "Cannot update with same values");
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        showAlert("error", "Error updating profile. Please try again.");
+      } finally {
+        setSubmitting(false);
+      }
+    } else if (userRole === "nanny") {
+      try {
+        setSubmitting(true);
+        const {
+          displayName,
+          firstName,
+          lastName,
+          phoneNumber,
+          street,
+          city,
+          state,
+          country,
+          pincode,
+          bio,
+          experience,
+        } = values;
+        const currentUserData = await getNannyById(currentUser.uid);
+        const changedValues = Object.entries({
+          displayName: displayName.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          phoneNumber: phoneNumber,
+          street: street.trim(),
+          city: city.trim(),
+          state: state.trim(),
+          country: country.trim(),
+          pincode: pincode,
+          bio: bio.trim(),
+          experience: experience,
+        }).reduce((acc, [key, value]) => {
+          if (currentUserData[key] !== value) {
+            acc[key] = value;
+          }
+          return acc;
+        }, {});
+
+        console.log("Changed values:", changedValues);
+
+        // Update only the changed values
+        if (Object.keys(changedValues).length > 0) {
+          await updateNannyData(currentUser.uid, changedValues);
+          showAlert("success", "Profile updated successfully!");
+        } else showAlert("error", "Cannot update with same values");
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        showAlert("error", "Error updating profile. Please try again.");
+      } finally {
+        setSubmitting(false);
+      }
+    } else {
+      setMainLoading(true);
+    }
+  };
+
+  if (mainLoading) {
+    // Show loading indicator while waiting for user data
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile Settings</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={submit} className="space-y-4">
-            <div className="grid grid-cols-1 gap-y-2">
-              <div className="text-left">
-                <Label htmlFor="picture">Picture</Label>
+    <div className="profile-card">
+      <div className=" flex flex-row">
+        <Card className="w-full h-[340px] md:w-[340px] p-4 ml-9">
+          <CardContent>
+            <form onSubmit={submit}>
+              <div className="flex flex-col items-center space-y-1.5">
+                {console.log(imageUrl)}
+                {imageUrl && (
+                  <Avatar className="w-[220px] h-[220px]">
+                    <AvatarImage src={imageUrl} alt="Profile" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                )}
+
+                <Input
+                  ref={aRef}
+                  onChange={handleImageChange}
+                  type="file"
+                  accept="image/*"
+                  required
+                />
+                <Button
+                  variant="contained"
+                  type="submit"
+                  sx={{
+                    height: "2rem",
+                    width: "6rem",
+                  }}
+                  disabled={loading}
+                >
+                  {loading ? "Uploading..." : "Upload"}
+                </Button>
               </div>
-              <Input 
-                ref={fileInputRef}
-                id="picture" 
-                type="file" 
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
-            <Button type="submit" onClick={resetInput} disabled={loading} className="w-full">
-              {loading ? (
-                <>
-                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                    {/* Took referene from https://tailwindcss.com/docs/animation */}
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12c5.523 0 10-4.523 10-10z"></path>
-                  </svg>
-                  Uploading...
-                </>
-              ) : (
-                "Upload"
+            </form>
+          </CardContent>
+        </Card>
+        <Card className="w-full p-4 ml-9">
+          {!initialValues ? (
+            <p>Loading...</p>
+          ) : (
+            <Formik
+              initialValues={initialValues}
+              validationSchema={schema}
+              validate={(values) => {
+                const errors = {};
+                return errors;
+              }}
+              onSubmit={async (values, { setSubmitting }) => {
+                handleProfile(values, setSubmitting);
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                setFieldValue,
+                handleChange,
+                handleBlur,
+                isSubmitting,
+              }) => (
+                <Form>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 2,
+                      minWidth: "500px",
+                      padding: "2rem",
+
+                      borderRadius: "8px",
+
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    {/* <Typography
+                      variant="h2"
+                      component="h3"
+                      sx={{ textTransform: "uppercase" }}
+                    >
+                      Sign Up as a parent
+                    </Typography> */}
+                    <ProfileFields
+                      values={values}
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      touched={touched}
+                      errors={errors}
+                      setFieldValue={setFieldValue}
+                      userRole={userRole}
+                    />
+                    {userRole === "nanny" && (
+                      <>
+                        <TextField
+                          variant="standard"
+                          label="Experience"
+                          name="experience"
+                          value={values.experience}
+                          onInput={(e) => {
+                            handleChange(e);
+                            setTimeout(() => handleBlur(e), 0);
+                          }}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={
+                            touched.experience && Boolean(errors.experience)
+                          }
+                          helperText={touched.experience && errors.experience}
+                          fullWidth
+                          required
+                        />
+                        <TextareaAutosize
+                          label="Bio"
+                          minRows={6}
+                          name="bio"
+                          placeholder="Enter your bio here..."
+                          value={values.bio}
+                          onInput={(e) => {
+                            handleChange(e);
+                            setTimeout(() => handleBlur(e), 0);
+                          }}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          required
+                          style={{
+                            width: "100%",
+                            marginTop: "16px",
+                            border: "1px solid black",
+                          }}
+                        />
+
+                        {touched.bio && errors.bio && (
+                          <Typography
+                            variant="caption"
+                            color="error"
+                            textAlign="left"
+                          >
+                            {errors.bio}
+                          </Typography>
+                        )}
+                      </>
+                    )}
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      sx={{
+                        height: "3rem",
+                        width: "10rem",
+                      }}
+                      disabled={
+                        !!(
+                          isSubmitting ||
+                          Object.keys(errors).length > 0 ||
+                          JSON.stringify(values) ===
+                            JSON.stringify(initialValues)
+                        )
+                      }
+                    >
+                      {isSubmitting ? <CircularProgress size={24} /> : "Update"}
+                    </Button>
+                  </Box>
+                </Form>
               )}
-            </Button>
-          </form>
-
-          {imageUrl && (
-            <div className="mt-4">
-              <p className="mb-2 text-sm font-semibold">Current Image:</p>
-              <img src={imageUrl} alt="Profile" className="rounded-lg shadow-md" />
-            </div>
+            </Formik>
           )}
-        </CardContent>
-      </Card>
-
-      {alert.show && (
-        <AlertDialog open={alert.show} onOpenChange={closeAlert}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{alert.title}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {alert.description}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogAction onClick={closeAlert}>OK</AlertDialogAction>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
+        </Card>
+      </div>
     </div>
   );
 };
 
 export default Profile;
-
-
