@@ -6,6 +6,8 @@ import {
   getDocs,
   setDoc,
   runTransaction,
+  query,
+  where
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
@@ -60,10 +62,11 @@ const updateParentData = async (id, imageURL) => {
   }
 };
 
-const getAllListings = async () => {
+const getAllListings = async (parentID) => {
   try {
     const listingsCollection = collection(db, "Listings");
-    const listingsSnapshot = await getDocs(listingsCollection);
+    const q = query(listingsCollection, where("parentID", "==", parentID));
+    const listingsSnapshot = await getDocs(q);
 
     const allListings = [];
 

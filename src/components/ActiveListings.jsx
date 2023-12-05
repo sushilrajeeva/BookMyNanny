@@ -1,17 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {getAllListings } from '../firebase/ParentFunctions';
 import DataTable from '../components/ListingTable/data-table';
+import { AuthContext } from "../context/AuthContext";
+
 
 function ActiveListings() {
   const [listings, setListings] = useState([]);
+  const { currentUser, userRole } = useContext(AuthContext);
+  const [loadingListings, setLoadingListings] = useState(true);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const allListings = await getAllListings();
-        setListings(allListings);
+        // Check if there is a logged-in user with the parent role
+        if (currentUser && userRole === 'parent' && currentUser.uid        ) {
+          const parentListings = await getAllListings(currentUser.uid);
+          setListings(parentListings);
+          console.log(parentListings);
+        }
       } catch (error) {
         console.error('Error fetching listings:', error);
+      } finally {
+        setLoadingListings(false);
       }
     };
 
@@ -69,6 +79,14 @@ function ActiveListings() {
       header: 'End Date',
     },
   ];
+
+  if (loadingListings) {
+    return (
+      <div>
+        <h1>Loading....</h1>
+      </div>
+    );
+  }
 
  return (
     <div>
