@@ -1,4 +1,3 @@
-// CommonSignUpFields.jsx
 import React from "react";
 
 import { TextField, TextareaAutosize, Typography } from "@mui/material";

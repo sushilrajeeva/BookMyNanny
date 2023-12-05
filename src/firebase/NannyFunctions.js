@@ -154,7 +154,7 @@ const getActiveJobs = async (nannyID) => {
   }
 };
 
-const updateNannyData = async (id, imageURL) => {
+const updateNannyData = async (id, obj) => {
   const nannyDocRef = doc(db, "Nanny", id);
 
   try {
@@ -164,13 +164,13 @@ const updateNannyData = async (id, imageURL) => {
       if (!nannyDoc.exists()) {
         throw new Error("Document does not exist!");
       }
-      console.log(id, imageURL);
-      transaction.update(nannyDocRef, { image: imageURL });
-      return imageURL;
+
+      transaction.update(nannyDocRef, obj);
+      return obj.image;
     });
   } catch (e) {
     console.log(e);
-    throw new Error("Error updating parent data");
+    throw new Error("Error updating nanny data");
   }
 };
 
