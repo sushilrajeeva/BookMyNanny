@@ -45,24 +45,7 @@ function MyListing() {
     // Add your logic to redirect or perform any action when viewing a listing
   };
 
-  const columns = [
-    {
-      accessorKey: 'listingName',
-      header: 'Listing Name',
-    },
-    {
-      accessorKey: 'postedDate',
-      header: 'Posted Date',
-    },
-    {
-      accessorKey: 'jobStartDate',
-      header: 'Start Date',
-    },
-    {
-      accessorKey: 'jobEndDate',
-      header: 'End Date',
-    },
-  ];
+  
 
   if (loadingListings) {
     return (
