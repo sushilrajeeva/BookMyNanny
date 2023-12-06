@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, TextField } from "@mui/material";
+import { Stack, TextField, MenuItem } from "@mui/material";
 
 const AdressFields = ({
   values,
@@ -70,18 +70,18 @@ const AdressFields = ({
           variant="standard"
           label="Country"
           name="country"
+          select
           value={values.country}
-          onInput={(e) => {
-            handleChange(e);
-            setTimeout(() => handleBlur(e), 0);
-          }}
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.country && Boolean(errors.country)}
           helperText={touched.country && errors.country}
           fullWidth
           required
-        />
+        >
+          <MenuItem value="United States">United States</MenuItem>
+          <MenuItem value="Canada">Canada</MenuItem>
+        </TextField>
       </Stack>
 
       <TextField
