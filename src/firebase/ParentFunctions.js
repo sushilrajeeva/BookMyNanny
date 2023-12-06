@@ -7,7 +7,7 @@ import {
   setDoc,
   runTransaction,
   query,
-  where
+  where,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
@@ -80,5 +80,27 @@ const getAllListings = async (parentID) => {
     throw new Error("Error getting all users");
   }
 };
+
+// const getParentListings = async (parentID) => {
+//   try {
+//     const listingsCollection = collection(db, "Listings");
+//     const listingsSnapshot = await getDocs(listingsCollection);
+
+//     const allListings = [];
+
+//     listingsSnapshot.forEach((doc) => {
+//       const listingData = doc.data();
+//       if (listingData.parentID == parentID) {
+//         allListings.push(listingData);
+//       }
+//     });
+
+//     return allListings;
+//   } catch (error) {
+//     console.log(error);
+//     console.error("Error getting all Listings for this nanny!!:", error);
+//     throw new Error("Error getting all users");
+//   }
+// };
 
 export { createParentListing, getAllListings, getParentById, updateParentData };

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import {getAllListings } from '../firebase/ParentFunctions';
 import DataTable from '../components/ListingTable/data-table';
 import { AuthContext } from "../context/AuthContext";
+import { columns } from "../components/ListingTable/columns"
 
 
 function ActiveListings() {
@@ -60,25 +61,25 @@ function ActiveListings() {
     isListingActive(listing.jobEndDate)
   );
 
-  const columns = [
-    {
-      accessorKey: 'listingName',
-      header: 'Listing Name',
-    },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      cell: (info) => (isListingActive(info.row.original.jobEndDate) ? 'Active' : 'Past'),
-    },
-    {
-      accessorKey: 'jobStartDate',
-      header: 'Start Date',
-    },
-    {
-      accessorKey: 'jobEndDate',
-      header: 'End Date',
-    },
-  ];
+  // const columns = [
+  //   {
+  //     accessorKey: 'listingName',
+  //     header: 'Listing Name',
+  //   },
+  //   {
+  //     accessorKey: 'status',
+  //     header: 'Status',
+  //     cell: (info) => (isListingActive(info.row.original.jobEndDate) ? 'Active' : 'Past'),
+  //   },
+  //   {
+  //     accessorKey: 'jobStartDate',
+  //     header: 'Start Date',
+  //   },
+  //   {
+  //     accessorKey: 'jobEndDate',
+  //     header: 'End Date',
+  //   },
+  // ];
 
   if (loadingListings) {
     return (
