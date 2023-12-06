@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import AdressFields from "./AdressFields";
+import React from "react";
+import AdressFields from "../AdressFields";
 import { Typography, InputAdornment, Stack, TextField } from "@mui/material";
 import moment from "moment";
 
@@ -47,10 +47,9 @@ const ProfileFields = ({
   return (
     <>
       <DisplayProfileField label="Email" value={values.email} />
-
       <DisplayProfileField
         label="Date of Birth"
-        value={moment(values.dob).format("MMMM DD, YYYY")}
+        value={moment(values.dob).format("LL")}
       />
 
       {userRole === "nanny" && (

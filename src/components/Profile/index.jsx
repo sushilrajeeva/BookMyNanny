@@ -1,10 +1,13 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { AlertContext } from "../context/AlertContext";
-import { getParentById, updateParentData } from "../firebase/ParentFunctions";
-import { getNannyById, updateNannyData } from "../firebase/NannyFunctions";
+import { AuthContext } from "../../context/AuthContext";
+import { AlertContext } from "../../context/AlertContext";
+import {
+  getParentById,
+  updateParentData,
+} from "../../firebase/ParentFunctions";
+import { getNannyById, updateNannyData } from "../../firebase/NannyFunctions";
 // import { Card, CardContent } from "@/components/ui/card";
-import { profile } from "../schemas/profile";
+import { profile } from "../../schemas/profile";
 import ProfileFields from "./ProfileFields";
 import {
   Box,
