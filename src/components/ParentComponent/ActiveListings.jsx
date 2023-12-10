@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {getAllListings } from '../firebase/ParentFunctions';
-import DataTable from '../components/ListingTable/data-table';
-import { AuthContext } from "../context/AuthContext";
-import { columns } from "../components/ListingTable/columns"
+import {getAllListings } from '../../firebase/ParentFunctions';
+import DataTable from '../ListingTable/data-table';
+import { AuthContext } from "../../context/AuthContext";
+import { columns } from "../ListingTable/columns"
 
 
 function ActiveListings() {

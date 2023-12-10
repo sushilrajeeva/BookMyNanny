@@ -8,6 +8,7 @@ import {
   runTransaction,
   query,
   where,
+  updateDoc
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
@@ -81,6 +82,17 @@ const getAllListings = async (parentID) => {
   }
 };
 
+const updateListing = async (listingId, updatedData) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    console.log(updatedData)
+    await updateDoc(listingDocRef, updatedData);
+  } catch (error) {
+    console.error("Error updating parent listing:", error);
+    throw new Error("Error updating parent listing");
+  }
+};
+
 // const getParentListings = async (parentID) => {
 //   try {
 //     const listingsCollection = collection(db, "Listings");
@@ -103,4 +115,4 @@ const getAllListings = async (parentID) => {
 //   }
 // };
 
-export { createParentListing, getAllListings, getParentById, updateParentData };
+export { createParentListing, getAllListings, getParentById, updateParentData, updateListing };
