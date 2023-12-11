@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import ActiveListings from "../ActiveListings";
-import PastListings from "../PastListings";
-import MyListing from "../MyListing";
-import CreateListingParent from "../CreateListingParent";
+import ActiveListings from "../ParentComponent/ActiveListings";
+import PastListings from "../ParentComponent/PastListings";
+import MyListing from "../ParentComponent/MyListing";
+import CreateListingParent from "../ParentComponent/CreateListingParent";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
