@@ -93,6 +93,28 @@ const updateListing = async (listingId, updatedData) => {
   }
 };
 
+const addSelectedNanny = async (listingId, nannyID) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+
+    // Get the current data of the listing
+    const listingDoc = await getDoc(listingDocRef);
+    if (!listingDoc.exists()) {
+      throw new Error("Listing document does not exist!");
+    }
+
+    const currentData = listingDoc.data();
+
+    // Check if the nannyID is not already the selectedNannyID
+    if (currentData.selectedNannyID !== nannyID) {
+      // Update the listing document with the new selectedNannyID
+      await updateDoc(listingDocRef, { selectedNannyID: nannyID });
+    }
+  } catch (error) {
+    console.error("Error adding selected nanny:", error);
+    throw new Error("Error adding selected nanny");
+  }
+};
 // const getParentListings = async (parentID) => {
 //   try {
 //     const listingsCollection = collection(db, "Listings");
@@ -115,4 +137,4 @@ const updateListing = async (listingId, updatedData) => {
 //   }
 // };
 
-export { createParentListing, getAllListings, getParentById, updateParentData, updateListing };
+export { createParentListing, getAllListings, getParentById, updateParentData, updateListing, addSelectedNanny };
