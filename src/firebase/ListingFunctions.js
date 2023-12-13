@@ -13,6 +13,7 @@ import {
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
 import { v4 as uid } from "uuid";
+import { getNannyById } from "./NannyFunctions.js";
 
 const createParentListing = async (data) => {
   console.log("data", data);
@@ -73,4 +74,20 @@ const getAllListings = async () => {
   const applyToListing = async () => {};
 };
 
-export { getAllListings, getListingById };
+const getInterestedNannies = async (listingID) => {
+  try {
+    const interestedNanny = [];
+    const listData = await getListingById(listingID);
+    const interestedNannies = listData.interestedNannies;
+    interestedNannies.forEach(async (nannyID) => {
+      const nannyData = await getNannyById(nannyID);
+      interestedNanny.push(nannyData);
+    });
+    return interestedNanny;
+  } catch (error) {
+    console.error("Error getting interested nannies.", error);
+    throw new Error("Error getting interested nannies");
+  }
+};
+
+export { getAllListings, getListingById, getInterestedNannies };
