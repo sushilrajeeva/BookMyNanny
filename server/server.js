@@ -23,6 +23,8 @@ app.get("/s3Url", async (req, res) => {
 app.post("/api/create-checkout-session", async (req, res) => {
   try {
     const { transaction } = req.body;
+    // this is to keep track of my total amount
+    let totalAmount = 0;
     const lineItems = transaction.map((product) => ({
       price_data: {
         currency: "usd",
