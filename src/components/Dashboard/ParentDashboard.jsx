@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import Wallet from "../EssentialComponents/Wallet"
 
 const ParentDashboard = ({ userRole }) => {
   const [activeComponent, setActiveComponent] = useState("MyListing");
@@ -32,6 +33,9 @@ const ParentDashboard = ({ userRole }) => {
             <Button onClick={() => renderComponent("PastListings")}>
               Past Listings
             </Button>
+            <Button onClick={() => renderComponent("Wallet")}>
+              Wallet
+            </Button>
           </>
         </Box>
       </Paper>
@@ -41,6 +45,7 @@ const ParentDashboard = ({ userRole }) => {
         {activeComponent === "ActiveListings" && <ActiveListings />}
         {activeComponent === "PastListings" && <PastListings />}
         {activeComponent === "MyListing" && <MyListing />}
+        {activeComponent === "Wallet" && <Wallet />}
       </Paper>
     </Container>
   );
