@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useContext} from "react";
 import { useParams } from "react-router-dom";
 import "../App.css";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import {Card,CardActions,CardContent,Button,Typography}from "@mui/material";
 import Chat from "./Chat";
 import { getListingById } from "@/firebase/ListingFunctions";
+import { AuthContext } from "@/context/AuthContext";
 
 function ListingFullDetails(props) {
   const { id } = useParams();
   const [listing, setListing] = useState(null);
-
+  const { currentUser, userRole } = useContext(AuthContext);
+  console.log(currentUser)
+  console.log(userRole)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,9 +56,14 @@ function ListingFullDetails(props) {
           </CardActions>
         </Card>
       )}
-      <div className="chat-card">
-        {listing && <Chat room={id} />}
+      <div className="card">
+        {listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) ? (
+          <Chat room={id} />
+        ) : (
+          <Typography>Chat is available only for the selected nanny and the owner of the listing</Typography>
+        )}
       </div>
+
     </div>
   );
 }
