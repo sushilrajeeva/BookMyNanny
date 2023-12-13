@@ -69,6 +69,8 @@ const getAllListings = async () => {
     console.error("Error getting all Listings for this nanny!!:", error);
     throw new Error("Error getting all users");
   }
+
+  const applyToListing = async () => {};
 };
 
 export { getAllListings, getListingById };
