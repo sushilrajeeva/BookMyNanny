@@ -32,13 +32,14 @@ function ListingFullDetails(props) {
       {listing && (
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            <Typography variant="h4" 
+             gutterBottom>
               Listing title: {listing.listingName}
             </Typography>
-            <Typography variant="h5" component="div">
+            <Typography variant="body2" component="div">
               Listing Description: {listing.description}
             </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            <Typography sx={{ mb: 1.5 }} >
               Listing Job Start Date: {listing.jobStartDate}
             </Typography>
             <Typography variant="body2">
