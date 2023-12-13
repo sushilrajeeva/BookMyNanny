@@ -12,6 +12,8 @@ import ListingFullDetails from '../components/ListingFullDetails'
 import { AuthProvider } from "../context/AuthContext";
 import { AlertProvider } from "../context/AlertContext";
 import PrivateRoute from "../routes/PrivateRoute";
+import PaymentSuccess from "../components/EssentialComponents/PaymentSuccess"
+import PaymentFailure from "../components/EssentialComponents/PaymentFailure"
 
 function Routes() {
   return (
@@ -37,6 +39,8 @@ function Routes() {
             </Route>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+            <Route path="/paymentFailure" element={<PaymentFailure />} />
           </AppRoutes>
         </div>
       </AlertProvider>

@@ -8,7 +8,7 @@ import {
   runTransaction,
   query,
   where,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
@@ -82,10 +82,20 @@ const getAllListings = async (parentID) => {
   }
 };
 
+const getWalletBalance = async (parentID) => {
+  try {
+    const parent = await getParentById(parentID);
+    return parent.wallet;
+  } catch (error) {
+    console.error("Error getting all users:", error);
+    throw new Error("Error getting all users");
+  }
+};
+
 const updateListing = async (listingId, updatedData) => {
   try {
     const listingDocRef = doc(db, "Listings", listingId);
-    console.log(updatedData)
+    console.log(updatedData);
     await updateDoc(listingDocRef, updatedData);
   } catch (error) {
     console.error("Error updating parent listing:", error);
@@ -137,4 +147,12 @@ const addSelectedNanny = async (listingId, nannyID) => {
 //   }
 // };
 
-export { createParentListing, getAllListings, getParentById, updateParentData, updateListing, addSelectedNanny };
+export {
+  createParentListing,
+  getAllListings,
+  getParentById,
+  updateParentData,
+  updateListing,
+  addSelectedNanny,
+  getWalletBalance,
+};
