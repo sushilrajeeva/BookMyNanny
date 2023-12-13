@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-
+import { Link } from "react-router-dom";
 import { getAllListings, nannyInterested, withdrawNannyInterest } from "../../firebase/NannyFunctions";
 import { AuthContext } from "../../context/AuthContext";
-
+import ListingFullDetails from "../ListingFullDetails";
 // Importing Button from shadcn
 import { Button } from "@/components/ui/button"
  
@@ -161,12 +161,12 @@ function JobListings() {
               <p><strong>Hourly Rate:</strong> {listing.hourlyRate}</p>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <button 
+              <Link to={`/listing/${listing._id}`}><button 
                 onClick={() => console.log('View Listing is called')} 
                 className="bg-blue-500 text-white p-2 rounded"
               >
                 View Listing
-              </button>
+              </button></Link>
               {listing.interestedNannies && listing.interestedNannies.includes(currentUser.uid) ? (
                 <Button variant="destructive"
                   onClick={() => handleNannyWithdraw(listing._id)}

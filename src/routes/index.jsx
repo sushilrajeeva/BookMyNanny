@@ -8,6 +8,7 @@ import Navigation from "../components/Navigation";
 import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 import Profile from "../components/Profile";
+import ListingFullDetails from '../components/ListingFullDetails'
 import { AuthProvider } from "../context/AuthContext";
 import { AlertProvider } from "../context/AlertContext";
 import PrivateRoute from "../routes/PrivateRoute";
@@ -30,6 +31,9 @@ function Routes() {
             </Route>
             <Route path="/profile" element={<PrivateRoute />}>
               <Route path="/profile" element={<Profile />} />
+            </Route>
+            <Route path="/listing/:id" element={<PrivateRoute />}>
+              <Route path="/listing/:id" element={<ListingFullDetails />} />
             </Route>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
