@@ -12,6 +12,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Link } from 'react-router-dom';
 
 function MyListing() {
   const [listings, setListings] = useState([]);
@@ -115,12 +116,18 @@ function MyListing() {
               <p><strong>Hourly Rate:</strong> {listing.hourlyRate}</p>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <button
+            <Link to={`/listing/${listing._id}`}><button 
+                onClick={() => console.log('View Listing is called')} 
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                View Listing
+              </button></Link>
+              {/* <button
                 onClick={() => handleViewListingClick(listing._id)}
                 className="bg-blue-500 text-white p-2 rounded"
               >
                 View Listing
-              </button>
+              </button> */}
               <button
                 onClick={() => handleEditListingClick(listing._id)}
                 className="bg-blue-500 text-white p-2 rounded"
