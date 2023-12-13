@@ -10,6 +10,7 @@ const Navigation = () => {
 };
 
 const NavigationAuth = () => {
+  const { userRole } = useContext(AuthContext);
   return (
     <nav className="navigation">
       <ul>
@@ -25,9 +26,12 @@ const NavigationAuth = () => {
         <li>
           <NavLink to="/account">Account</NavLink>
         </li>
-        <li>
-          <NavLink to="/profile">Profile</NavLink>
-        </li>
+        {userRole !== "admin" && (
+          <li>
+            <NavLink to="/profile">Profile</NavLink>
+          </li>
+        )}
+
         <li className="signoutButton">
           <SignOutButton />
         </li>
