@@ -3,6 +3,19 @@ import cors from "cors";
 import { generateUploadURL } from "./s3.js";
 import dotenv from "dotenv";
 import Stripe from "stripe";
+import db from "./firebase-config.js";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  runTransaction,
+  query,
+  where,
+  updateDoc,
+} from "firebase/firestore";
 
 dotenv.config();
 
@@ -52,6 +65,33 @@ app.post("/api/create-checkout-session", async (req, res) => {
     res
       .status(500)
       .json({ error: "Internal Server Error", msg: error.message });
+  }
+});
+const getAllListings = async () => {
+  try {
+    const listingsCollection = collection(db, "Listings");
+
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const allListings = [];
+
+    listingsSnapshot.forEach((doc) => {
+      const listData = doc.data();
+      allListings.push(listData);
+    });
+
+    return allListings;
+  } catch (error) {
+    console.error("Error getting all users:", error);
+    throw new Error("Error getting all users");
+  }
+};
+app.get("/listings", async (req, res) => {
+  try {
+    let data = await getAllListings();
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
   }
 });
 
