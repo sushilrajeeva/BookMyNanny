@@ -10,7 +10,7 @@ import SignUp from "../components/SignUp";
 import { AuthProvider } from "../context/AuthContext";
 import { AlertProvider } from "../context/AlertContext";
 import PrivateRoute from "../routes/PrivateRoute";
-
+import ListingFullDetails from "../components/ListingFullDetails";
 function Routes() {
   return (
     <AuthProvider>
@@ -26,6 +26,9 @@ function Routes() {
             </Route>
             <Route path="/account" element={<PrivateRoute />}>
               <Route path="/account" element={<Account />} />
+            </Route>
+            <Route path="/listing/:id" element={<PrivateRoute />}>
+              <Route path="/listing/:id" element={<ListingFullDetails />} />
             </Route>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
