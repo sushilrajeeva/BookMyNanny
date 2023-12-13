@@ -8,10 +8,19 @@ import {
   } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {loadStripe} from '@stripe/stripe-js';
+
+// using uuid to generate unique transaction id for stripe payment 
+// reference - https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
+// also referred npm uuidv4 documentation -> https://www.npmjs.com/package/uuidv4
+import { v4 as uuid } from 'uuid';
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export function Wallet() {
     const [amount, setAmount] = useState(0);
     const totalBalance = 250;
+   
 
   const handleIncrement = () => {
     setAmount(prevAmount => prevAmount + 1);
@@ -25,6 +34,45 @@ export function Wallet() {
     const value = parseInt(e.target.value, 10);
     setAmount(Number.isNaN(value) ? 0 : value);
   };
+
+  // Payment Integration
+  // I referred the npm documentation for stripe - reference -> https://www.npmjs.com/package/@stripe/stripe-js
+  const makePayment = async() =>{
+    // Here I am pasting my stripe developer account publishing key
+    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    //console.log("This is my publishable key - ", publishableKey);
+    const stripe = await loadStripe(publishableKey);
+    const body = {
+        transaction: [
+            {
+                id: uuid(),
+                description: "Add Money to Wallet",
+                price: amount
+            }
+        ]
+    }
+    const headers = {
+        "Content-Type": "application/json"
+    }
+    const response = await fetch("http://localhost:3000/api/create-checkout-session", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body)
+    });
+
+    console.log("response i got from server", response);
+
+    // generating sessionID for stripe 
+    const session = await response.json();
+
+    const result = stripe.redirectToCheckout({
+        sessionId: session.id
+    })
+    if(result.error){
+        console.log("Error in stripe payment", result.error);
+    }
+
+  }
 
   // For the design I am refering to shadcn card - ref -> https://ui.shadcn.com/docs/components/card
   // I am basing my add money to wallet design from the Move Goal card theme in shadcn - ref -> https://ui.shadcn.com/themes
@@ -100,7 +148,7 @@ export function Wallet() {
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-center">
-                    <Button>Add Amount</Button>
+                    <Button onClick = {makePayment}>Add Amount</Button>
                 </CardFooter>
             </Card>
         </div>
