@@ -3,7 +3,7 @@
 
 "use client";
 
-
+import { Link } from "react-router-dom";
 import { ArrowUpDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge"
 
@@ -56,7 +56,7 @@ export const columns = [
   {
     id: 'action',
     header: "Action",
-    cell: (info) => <Badge onClick={() => console.log('View job', info.row.original._id)} style={{ cursor: 'pointer' }}>View Job</Badge>,
+    cell: (info) => <Link to={`/listing/${info.row.original._id}`}><Badge onClick={() => console.log('View job', info.row.original._id)} style={{ cursor: 'pointer' }}>View Job</Badge></Link>,
     enableSorting: false, // doing this to disable sorting as i don't want sorting on button actions
   },
 ];
