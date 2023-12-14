@@ -9,6 +9,7 @@ import {
   query,
   where,
   updateDoc,
+  deleteField,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
@@ -70,8 +71,6 @@ const getAllListings = async () => {
     console.error("Error getting all Listings for this nanny!!:", error);
     throw new Error("Error getting all users");
   }
-
-  const applyToListing = async () => {};
 };
 
 const getInterestedNannies = async (listingID) => {
@@ -79,10 +78,10 @@ const getInterestedNannies = async (listingID) => {
     const interestedNanny = [];
     const listData = await getListingById(listingID);
     const interestedNannies = listData.interestedNannies;
-    interestedNannies.forEach(async (nannyID) => {
+    for (const nannyID of interestedNannies) {
       const nannyData = await getNannyById(nannyID);
       interestedNanny.push(nannyData);
-    });
+    }
     return interestedNanny;
   } catch (error) {
     console.error("Error getting interested nannies.", error);
@@ -90,4 +89,33 @@ const getInterestedNannies = async (listingID) => {
   }
 };
 
-export { getAllListings, getListingById, getInterestedNannies };
+const approveNanny = async (listingID, nannyID) => {
+  const listingDocRef = doc(db, "Listings", listingID);
+  await updateDoc(listingDocRef, {
+    selectedNannyID: nannyID,
+  });
+};
+
+const unapproveNanny = async (listingID, nannyID) => {
+  const listingDocRef = doc(db, "Listings", listingID);
+
+  // Retrieve the current data to check if selectedNannyID matches the provided nannyID
+  const listingSnapshot = await getDoc(listingDocRef);
+  const currentSelectedNannyID = listingSnapshot.data().selectedNannyID;
+
+  // Check if the current selectedNannyID matches the provided nannyID
+  if (currentSelectedNannyID === nannyID) {
+    // Use deleteField to remove the selectedNannyID field
+    await updateDoc(listingDocRef, {
+      selectedNannyID: "",
+    });
+  }
+};
+
+export {
+  getAllListings,
+  getListingById,
+  getInterestedNannies,
+  approveNanny,
+  unapproveNanny,
+};

@@ -14,6 +14,8 @@ import { AlertProvider } from "../context/AlertContext";
 import PrivateRoute from "../routes/PrivateRoute";
 import PaymentSuccess from "../components/EssentialComponents/PaymentSuccess"
 import PaymentFailure from "../components/EssentialComponents/PaymentFailure"
+import ShowProfile from "@/components/Profile/ShowProfile";
+import ProfileFullView from "@/components/Profile/ProfileFullView";
 
 function Routes() {
   return (
@@ -37,6 +39,7 @@ function Routes() {
             <Route path="/listing/:id" element={<PrivateRoute />}>
               <Route path="/listing/:id" element={<ListingFullDetails />} />
             </Route>
+            <Route path="/profile-details/:id" element={<ProfileFullView/>}/>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/paymentSuccess" element={<PaymentSuccess />} />
