@@ -17,7 +17,7 @@ const NavigationAuth = () => {
         <li className="logo">
           <NavLink to="/">
             {" "}
-            <img src="./favicon.ico" alt="BookMyNanny Logo" />
+            <img src="/favicon.ico" alt="BookMyNanny Logo" />
           </NavLink>
         </li>
         <li>
