@@ -1,27 +1,40 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
-import { getInterestedNannies, approveNanny, unapproveNanny } from "@/firebase/ListingFunctions";
+import { getInterestedNannies, approveNanny, unapproveNanny ,getListingById} from "@/firebase/ListingFunctions";
 import { Link } from "react-router-dom";
 
 function InterestedNanny({ id }) {
   const [nannyData, setNannyData] = useState([]);
   const [selectedNanny, setSelectedNanny] = useState(null);
+  const [approvedNanny, setApprovedNanny] = useState(null);
   const [isUnapproveConfirmationOpen, setIsUnapproveConfirmationOpen] = useState(false);
 
+
+  const fetchApprovedNanny = async () => {
+    try {
+      const listing = await getListingById(id);
+      console.log('Listing inside fetch approved nanny', listing.selectedNannyID);
+      if(listing.selectedNannyID && listing.selectedNannyID!==''){
+      setApprovedNanny(listing.selectedNannyID);
+      }else{
+      setApprovedNanny(null)
+      }
+    } catch (error) {
+      console.error("Error fetching Approved nanny:", error);
+    }
+  };
+
   const handleApproveNanny = async (nannyID) => {
-    // Call the function to approve the nanny here
     await approveNanny(id, nannyID);
-    // Refetch the interested nannies after approval
     fetchNannies();
+    fetchApprovedNanny()
   };
 
   const handleUnapproveNanny = async () => {
-    // Call the function to unapprove the nanny here
     await unapproveNanny(id, selectedNanny._id);
-    // Refetch the interested nannies after unapproval
     fetchNannies();
-    // Close the confirmation popup
     setIsUnapproveConfirmationOpen(false);
+    fetchApprovedNanny()
   };
 
   const fetchNannies = async () => {
@@ -33,8 +46,11 @@ function InterestedNanny({ id }) {
     }
   };
 
+  
+
   useEffect(() => {
     fetchNannies();
+    fetchApprovedNanny();
   }, [id]);
 
   const openUnapproveConfirmation = (nanny) => {
@@ -42,7 +58,7 @@ function InterestedNanny({ id }) {
     setIsUnapproveConfirmationOpen(true);
   };
 
-  console.log('stateData',nannyData)
+  
 
   return (
     <div>
@@ -53,20 +69,25 @@ function InterestedNanny({ id }) {
             <Card>
               <CardContent>
                 <img src={nanny.image} alt={`${nanny.displayName}'s profile`} />
-                <Link to={`/profile-details/${nanny._id}`}><Typography variant="h3">{nanny.displayName}</Typography></Link>
+                <Link to={`/profile-details/${nanny._id}`}>
+                  <Typography variant="h3">{nanny.displayName}</Typography>
+                </Link>
                 <Typography>Email: {nanny.emailAddress}</Typography>
                 <Typography>Phone Number: {nanny.phoneNumber}</Typography>
-                <Button onClick={() => handleApproveNanny(nanny._id)}>Approve Nanny</Button>
-                <Button onClick={() => openUnapproveConfirmation(nanny)}>Unapprove Nanny</Button>
+                <Button
+                  onClick={() => handleApproveNanny(nanny._id)}
+                  disabled={approvedNanny !== null}
+                >
+                  Approve Nanny
+                </Button>
+                <Button
+                  onClick={() => openUnapproveConfirmation(nanny)}
+                  disabled={nanny._id !== approvedNanny}
+                >
+                  Unapprove Nanny
+                </Button>
               </CardContent>
             </Card>
-            {/* {nanny.isApproved && (
-              // Conditionally render the Chat component if nanny is approved
-              <div>
-                <Typography>Chat with {nanny.displayName}</Typography>
-                <Chat room={id} />
-              </div>
-            )} */}
           </li>
         ))}
       </ul>
