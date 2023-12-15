@@ -125,27 +125,49 @@ const addSelectedNanny = async (listingId, nannyID) => {
     throw new Error("Error adding selected nanny");
   }
 };
-// const getParentListings = async (parentID) => {
-//   try {
-//     const listingsCollection = collection(db, "Listings");
-//     const listingsSnapshot = await getDocs(listingsCollection);
 
-//     const allListings = [];
+const jobCompleteVerification = async (listingId) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    const listing = await getDoc(listingDocRef);
 
-//     listingsSnapshot.forEach((doc) => {
-//       const listingData = doc.data();
-//       if (listingData.parentID == parentID) {
-//         allListings.push(listingData);
-//       }
-//     });
+    if (listing) {
+      const { status, hoursWorked, hourlyRate } = listing.data();
+      if (status === "completed") {
+        const payableAmount = hoursWorked * hourlyRate;
+        return payableAmount;
+      } else {
+        throw "Job is not completed.";
+      }
+    } else {
+      throw "Listing does not exist.";
+    }
+  } catch (error) {
+    console.error("Error verifying job:", error);
+    return null;
+  }
+};
 
-//     return allListings;
-//   } catch (error) {
-//     console.log(error);
-//     console.error("Error getting all Listings for this nanny!!:", error);
-//     throw new Error("Error getting all users");
-//   }
-// };
+const jobClose = async (listingId) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    const listing = await getDoc(listingDocRef);
+
+    if (listing) {
+      const { progressBar } = listing.data();
+      if (progressBar === 0) {
+        await updateDoc(listingDocRef, { progressBar: 100 });
+      } else {
+        throw "Job is already completed.";
+      }
+    } else {
+      throw "Listing does not exist.";
+    }
+  } catch (error) {
+    console.error("Error verifying job:", error);
+    return null;
+  }
+};
 
 export {
   createParentListing,
@@ -155,4 +177,6 @@ export {
   updateListing,
   addSelectedNanny,
   getWalletBalance,
+  jobCompleteVerification,
+  jobClose,
 };
