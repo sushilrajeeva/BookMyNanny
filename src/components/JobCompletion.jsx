@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState , useContext } from "react";
 import { onJobComplete } from "@/firebase/NannyFunctions";
+import { AuthContext } from "@/context/AuthContext";
+import {checkNumber} from "../helpers/index.js"
 
 
 function JobCompletion({ listing }) {
   const [showForm, setShowForm] = useState(false);
   const [hoursWorked, setHoursWorked] = useState(0);
+  const auth = useContext(AuthContext)
 
   const handleCompleteJob = () => {
     setShowForm(true);
@@ -12,14 +15,16 @@ function JobCompletion({ listing }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform any validation if needed
-    // Call the data function to update the listing with hoursWorked
-    console.log(hoursWorked)
-    console.log(listing._id)
-    await onJobComplete(listing._id, hoursWorked);
+    try {
+    checkNumber(hoursWorked,"hours worked")
+    await onJobComplete(listing._id, hoursWorked, auth.currentUser.uid);
     // Reset state
     setHoursWorked(0);
     setShowForm(false);
+    } catch (error) {
+      console.error(`Error completing job: ${error}`)
+    }
+    
   };
 
   return (
