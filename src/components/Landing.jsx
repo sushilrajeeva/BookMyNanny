@@ -1,6 +1,5 @@
-import React from "react";
+import React ,{useState, useContext} from "react";
 import { NavLink } from "react-router-dom";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,8 +8,11 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { AuthContext } from "@/context/AuthContext";
 
 function Landing() {
+
+  const { currentUser } = useContext(AuthContext);
   const FeatureCard = ({ title, description }) => (
     <Card className="mb-4 transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-105">
       <CardHeader>
@@ -48,14 +50,14 @@ function Landing() {
         />
       </div>
 
-      <div className="flex justify-center gap-4 mt-8">
+      {currentUser?<></>:<div className="flex justify-center gap-4 mt-8">
         <NavLink to="/signup" className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto px-4 py-2">Sign Up</Button>
         </NavLink>
         <NavLink to="/signin" className="w-full sm:w-auto">
           <Button variant="secondary" className="w-full sm:w-auto px-4 py-2">Sign In</Button>
         </NavLink>
-      </div>
+      </div>}
     </div>
   );
 }

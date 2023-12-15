@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate , useNavigate} from "react-router-dom";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import moment from "moment";
@@ -8,6 +8,7 @@ import {
   doCreateUserWithEmailAndPassword,
   createUserDocument,
   createParentDocument,
+  doSignOut
 } from "../firebase/AuthFunctions";
 import { AuthContext } from "../context/AuthContext";
 import { AlertContext } from "../context/AlertContext";
@@ -20,7 +21,7 @@ const schema = parentSchema;
 function ParentSignUp() {
   const { currentUser } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
-
+  const navigate = useNavigate()
   const handleSignUpParent = async (values, setSubmitting) => {
     setSubmitting(true);
     const {
@@ -96,6 +97,8 @@ function ParentSignUp() {
       }
     } finally {
       setSubmitting(false);
+      doSignOut();
+      navigate("/signin");
     }
   };
 
