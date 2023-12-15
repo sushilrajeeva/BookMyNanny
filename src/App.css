@@ -163,3 +163,15 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px; /* This adds space around the card */
+}
+
+.left-aligned-content {
+  text-align: left;
+}
+
