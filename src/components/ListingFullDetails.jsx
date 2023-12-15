@@ -60,7 +60,7 @@ function ListingFullDetails(props) {
       
       {listing && (currentUser.uid === listing.parentID) ? ( 
         <div className="card">
-      <InterestedNanny id={id} />
+      <InterestedNanny id={id} listing={listing}/>
       </div>):<></>}
       
       <div className="card">
