@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
 import { getInterestedNannies, approveNanny, unapproveNanny ,getListingById} from "@/firebase/ListingFunctions";
 import { Link } from "react-router-dom";
-
+import { deleteAllMessagesByJobId } from "@/firebase/ChatFunctions";
 function InterestedNanny({ id }) {
   const [nannyData, setNannyData] = useState([]);
   const [selectedNanny, setSelectedNanny] = useState(null);
@@ -32,6 +32,8 @@ function InterestedNanny({ id }) {
 
   const handleUnapproveNanny = async () => {
     await unapproveNanny(id, selectedNanny._id);
+    //once a nanny is unapproved messages in chatroom will be deleted
+    await deleteAllMessagesByJobId(id)
     fetchNannies();
     setIsUnapproveConfirmationOpen(false);
     fetchApprovedNanny()

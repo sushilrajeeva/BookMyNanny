@@ -6,6 +6,9 @@ import {
   getDocs,
   setDoc,
   deleteDoc,
+  onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import db from "../main.jsx";
@@ -28,14 +31,26 @@ const getMessageById = async (id) => {
     console.error("Error getting message document:", error);
   }
 };
-const deleteAllMessgaesByJobId = async (jobId) => {
-  //once job is done or the listing expires this function is used to auto delete all messages in the chat
-  const messageRef = doc(db, "messages");
-  const queryMessageAndDelete = query(messageRef, where("jobId", "==", jobId));
+
+const deleteAllMessagesByJobId = async (jobId) => {
   try {
-    await deleteDoc(queryMessageAndDelete);
+    const messageCollection = collection(db, "messages");
+    const q = query(messageCollection, where("jobId", "==", jobId));
+    const querySnapshot = await getDocs(q);
+
+    console.log("Number of messages to delete:", querySnapshot.size);
+
+    const deletePromises = Array.from(querySnapshot.docs).map(async (doc) => {
+      console.log("Deleting message:", doc.id);
+      await deleteDoc(doc.ref);
+    });
+
+    await Promise.all(deletePromises);
+
+    console.log("Messages for job", jobId, "deleted successfully!");
   } catch (error) {
-    console.error("Error delete message document:", error);
+    console.error("Error deleting messages:", error);
   }
 };
-export { sendMessage, getMessageById, deleteAllMessgaesByJobId };
+
+export { sendMessage, getMessageById, deleteAllMessagesByJobId };

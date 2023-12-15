@@ -204,6 +204,28 @@ const getPastJobs = async (nannyID) => {
   }
 };
 
+const onJobComplete = async (listingId, hoursWorked) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    const listing = await getDoc(listingDocRef);
+
+    if (listing) {
+      const currentStatus = listing.data().status;
+      if (currentStatus && currentStatus === "pending") {
+        // If the current status is "pending", update the status to "completed"
+        await updateDoc(listingDocRef, { status: "completed", hoursWorked });
+        console.log("Job marked as completed successfully!");
+      } else {
+        throw "Job is not in pending status.";
+      }
+    } else {
+      throw `Listing: ${listingId} does not exist.`;
+    }
+  } catch (error) {
+    console.error("Error updating listing:", error);
+  }
+};
+
 export {
   getAllListings,
   nannyInterested,
@@ -212,4 +234,5 @@ export {
   getPastJobs,
   getNannyById,
   updateNannyData,
+  onJobComplete,
 };

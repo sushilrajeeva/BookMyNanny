@@ -6,6 +6,8 @@ import Chat from "./Chat";
 import InterestedNanny from "./ParentComponent/InterestedNanny"; // Import the InterestedNanny component
 import { getListingById } from "@/firebase/ListingFunctions";
 import { AuthContext } from "@/context/AuthContext";
+import JobCompletion from "./JobCompletion";
+import PaymentDetails from "./PaymentDetails";
 
 function ListingFullDetails(props) {
   const { id } = useParams();
@@ -58,7 +60,7 @@ function ListingFullDetails(props) {
         </Card>
       )}
       
-      {listing && (currentUser.uid === listing.parentID) ? ( 
+      {listing && (currentUser.uid === listing.parentID) && (listing.progressBar === 0) ? ( 
         <div className="card">
       <InterestedNanny id={id} listing={listing}/>
       </div>):<></>}
@@ -72,6 +74,9 @@ function ListingFullDetails(props) {
           </Typography>
         )}
       </div>
+      {listing && (currentUser.uid === listing.selectedNannyID)?<JobCompletion listing={listing}/>:<></>}
+      {listing && (currentUser.uid === listing.parentID) && listing.status==='completed' ?<PaymentDetails listing={listing}/>:<></>}
+      
     </div>
   );
 }
