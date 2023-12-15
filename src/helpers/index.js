@@ -41,4 +41,15 @@ const passwordMatch = (password1, password2) => {
   return true;
 };
 
-export { validateDate, passwordMatch, validateJobDate };
+const checkNumber = (num, varName) => {
+  if (num === undefined || num === null) {
+    throw `Error: You must supply a ${varName}!`;
+  }
+  if (typeof num !== "number") {
+    throw `Error: ${varName} must be a number!`;
+  }
+  if (num < 0) throw `Error: ${varName} must be a positive number!`;
+  return num;
+};
+
+export { validateDate, passwordMatch, validateJobDate, checkNumber };

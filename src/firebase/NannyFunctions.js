@@ -204,7 +204,7 @@ const getPastJobs = async (nannyID) => {
   }
 };
 
-const onJobComplete = async (listingId, hoursWorked) => {
+const onJobComplete = async (listingId, hoursWorked, nannyId) => {
   try {
     const listingDocRef = doc(db, "Listings", listingId);
     const listing = await getDoc(listingDocRef);
@@ -212,9 +212,13 @@ const onJobComplete = async (listingId, hoursWorked) => {
     if (listing) {
       const currentStatus = listing.data().status;
       if (currentStatus && currentStatus === "pending") {
-        // If the current status is "pending", update the status to "completed"
-        await updateDoc(listingDocRef, { status: "completed", hoursWorked });
-        console.log("Job marked as completed successfully!");
+        if (listing.selectedNannyID === nannyId) {
+          // If the current status is "pending", update the status to "completed"
+          await updateDoc(listingDocRef, { status: "completed", hoursWorked });
+          console.log("Job marked as completed successfully!");
+        } else {
+          throw "You are not the approved nanny for this job";
+        }
       } else {
         throw "Job is not in pending status.";
       }
