@@ -22,6 +22,10 @@ export const nannySchema = Yup.object().shape({
   passwordOne: Yup.string()
     .required("Password is required")
     .min(6, "Password must be at least 6 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 6 characters long"
+    )
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
@@ -74,15 +78,6 @@ export const nannySchema = Yup.object().shape({
       "Cannot be empty. Enter valid characters",
       (value) => value.trim() !== ""
     ),
-  country: Yup.string()
-    .required("Country is required")
-    .min(3, "Country must be at least 3 characters")
-    .matches("^[a-zA-Z ]*$", "Invalid Country name")
-    .test(
-      "is-not-empty-after-trim",
-      "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
-    ),
   pincode: Yup.string()
     .required("Zip code is required")
     .min(4, "Zip code must be between 4-16 characters")
@@ -90,16 +85,23 @@ export const nannySchema = Yup.object().shape({
     .matches(/^\d+$/, "Pincode must be a number"),
   phoneNumber: Yup.string()
     .required("Phone Number is required")
-    .matches(/^\d{10}$/, "Invalid Phone Number: Must be 10 digits"),
+    .matches(/^\d{10}$/, "Invalid Phone Number"),
   dob: Yup.string("Invalid DOB").required("DOB is required"),
   experience: Yup.string()
     .required("Experience is required")
-    .matches(/^\d+$/, "Experience must be a number")
-    .test("is-valid-range", "Invalid Experience", (value) => {
-      if (!value) return true;
-      const numericValue = parseInt(value, 10);
-      return numericValue >= 0 && numericValue <= 100;
-    }),
+    .matches(
+      /^-?\d*\.?\d{0,2}$/,
+      "Experience must be a number with up to 2 decimal points"
+    )
+    .test(
+      "is-valid-range",
+      "Invalid Experience : Enter between 10-100",
+      (value) => {
+        if (!value) return true;
+        const numericValue = parseFloat(value);
+        return numericValue >= 0 && numericValue <= 100;
+      }
+    ),
   ssn: Yup.string().required("SSN is required"),
   bio: Yup.string()
     .required("Bio is required")

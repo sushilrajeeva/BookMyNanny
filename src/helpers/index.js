@@ -1,24 +1,13 @@
 import moment from "moment";
 
 const validateDate = (date, minDate, maxDate) => {
-  const parsedDate = moment(date, "MM-DD-YYYY", true);
-
-  console.log("Min", minDate);
-  console.log("Max", maxDate);
-  if (!parsedDate.isValid()) {
-    console.error("Invalid date format");
-    // Handle the error or return false, depending on your use case
-  } else {
-    // Set the time part to the current time
-    parsedDate.set({
-      hour: moment().hour(),
-      minute: moment().minute(),
-      second: moment().second(),
-    });
-
-    console.log(parsedDate.format("YYYY-MM-DD HH:mm:ss"));
-  }
-  const isBtwn = parsedDate.isBetween(minDate, maxDate);
+  let parsedDate = moment(date, "MM-DD-YYYY", true);
+  parsedDate.set({
+    hour: moment().hour(),
+    minute: moment().minute(),
+    second: moment().second(),
+  });
+  const isBtwn = parsedDate.isBetween(minDate, maxDate, null, "[]");
   if (isBtwn) return true;
   return false;
 };
@@ -52,4 +41,22 @@ const checkNumber = (num, varName) => {
   return num;
 };
 
-export { validateDate, passwordMatch, validateJobDate, checkNumber };
+function capitalize(inputString) {
+  const words = inputString.split(" ");
+  const capitalizedWords = words.map((word) => {
+    if (!isNaN(word)) {
+      return word;
+    }
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
+  const resultString = capitalizedWords.join(" ");
+  return resultString;
+}
+
+export {
+  validateDate,
+  passwordMatch,
+  validateJobDate,
+  checkNumber,
+  capitalize,
+};

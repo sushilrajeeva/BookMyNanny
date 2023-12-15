@@ -5,6 +5,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  deleteDoc,
   runTransaction,
   query,
   where,
@@ -57,7 +58,6 @@ const getAllListings = async () => {
     listingsSnapshot.forEach((doc) => {
       const listingData = doc.data();
       if (
-        // condition to only push listing if the listing has no selectedNannyID and the status of the listing is pending
         listingData.selectedNannyID == "" &&
         listingData.status == "pending"
       ) {
@@ -71,6 +71,10 @@ const getAllListings = async () => {
     console.error("Error getting all Listings for this nanny!!:", error);
     throw new Error("Error getting all users");
   }
+};
+
+const deleteListing = async (listingID) => {
+  await deleteDoc(doc(db, "Listings", listingID));
 };
 
 const getInterestedNannies = async (listingID) => {
@@ -118,4 +122,5 @@ export {
   getInterestedNannies,
   approveNanny,
   unapproveNanny,
+  deleteListing,
 };

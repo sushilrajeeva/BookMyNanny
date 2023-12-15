@@ -58,15 +58,7 @@ export const profile = Yup.object().shape({
       "Cannot be empty. Enter valid characters",
       (value) => value.trim() !== ""
     ),
-  country: Yup.string()
-    .required("Country is required")
-    .min(3, "Country must be at least 3 characters")
-    .matches("^[a-zA-Z ]*$", "Invalid Country name")
-    .test(
-      "is-not-empty-after-trim",
-      "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
-    ),
+
   pincode: Yup.string()
     .required("Zip code is required")
     .min(4, "Zip code must be between 4-16 characters")

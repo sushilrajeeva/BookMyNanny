@@ -1,9 +1,9 @@
 // MyListing.js
-import React, { useState, useContext, useEffect } from 'react';
-import { getAllListings, updateListing } from '../../firebase/ParentFunctions'; // Assuming there is an updateListing function
+import React, { useState, useContext, useEffect } from "react";
+import { getAllListings, updateListing } from "../../firebase/ParentFunctions"; // Assuming there is an updateListing function
 import { AuthContext } from "../../context/AuthContext";
-import ViewListing from './ViewListing';
-import EditListing from './EditListing';
+import { deleteListing } from "@/firebase/ListingFunctions";
+import ViewListing from "./ViewListing";
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function MyListing() {
   const [listings, setListings] = useState([]);
@@ -21,38 +21,41 @@ function MyListing() {
 
   // State to track the selected listing for view or edit
   const [selectedListing, setSelectedListing] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
 
   useEffect(() => {
     // Fetch all listings when the component mounts
     const fetchListings = async () => {
       try {
         // Check if there is a logged-in user with the parent role
-        if (currentUser && userRole === 'parent' && currentUser.uid) {
+        if (currentUser && userRole === "parent" && currentUser.uid) {
           const parentListings = await getAllListings(currentUser.uid);
           setListings(parentListings);
           console.log(parentListings);
         }
       } catch (error) {
-        console.error('Error fetching listings:', error);
+        console.error("Error fetching listings:", error);
       } finally {
         setLoadingListings(false);
+        setIsDelete(false);
       }
     };
 
     fetchListings();
-  }, []);
+  }, [isDelete]);
 
   const handleViewListingClick = (listingId) => {
-    const selectedListing = listings.find(listing => listing._id === listingId);
+    const selectedListing = listings.find(
+      (listing) => listing._id === listingId
+    );
     setSelectedListing(selectedListing);
     setIsEditing(false);
   };
 
-  const handleEditListingClick = (listingId) => {
-    const selectedListing = listings.find(listing => listing._id === listingId);
-    setSelectedListing(selectedListing);
-    setIsEditing(true);
+  const handleDeleteListingClick = (listingId) => {
+    deleteListing(listingId);
+    alert("Done");
+    setIsDelete(true);
   };
 
   const handleBackToListings = () => {
@@ -63,16 +66,16 @@ function MyListing() {
   const handleSaveChanges = async (listingId, updatedData) => {
     try {
       // Assuming there is an updateListing function to update the listing in the backend
-      console.log('Updating listing with ID:', listingId);
-      console.log('Updated Data:', updatedData.updatedData);
+      console.log("Updating listing with ID:", listingId);
+      console.log("Updated Data:", updatedData.updatedData);
       await updateListing(listingId, updatedData.updatedData);
- 
+
       // Fetch updated listings
       const parentListings = await getAllListings(currentUser.uid);
       setListings(parentListings);
-      console.log('Listings updated successfully:', parentListings);
+      console.log("Listings updated successfully:", parentListings);
     } catch (error) {
-      console.error('Error updating listing:', error);
+      console.error("Error updating listing:", error);
     } finally {
       setSelectedListing(null);
       setIsEditing(false);
@@ -93,13 +96,7 @@ function MyListing() {
         <ViewListing
           listing={selectedListing}
           onBackClick={handleBackToListings}
-          onEditClick={handleEditListingClick}
-        />
-      ) : selectedListing && isEditing ? (
-        <EditListing
-          listing={selectedListing}
-          onSaveClick={(updatedListing) => handleSaveChanges(selectedListing._id, updatedListing)}
-          onCancelClick={handleBackToListings}
+          onEditClick={handleDeleteListingClick}
         />
       ) : (
         listings.map((listing, index) => (
@@ -112,16 +109,22 @@ function MyListing() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p><strong>Description:</strong> {listing.description}</p>
-              <p><strong>Hourly Rate:</strong> {listing.hourlyRate}</p>
+              <p>
+                <strong>Description:</strong> {listing.description}
+              </p>
+              <p>
+                <strong>Hourly Rate:</strong> {listing.hourlyRate}
+              </p>
             </CardContent>
             <CardFooter className="flex justify-between">
-            <Link to={`/listing/${listing._id}`}><button 
-                onClick={() => console.log('View Listing is called')} 
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                View Listing
-              </button></Link>
+              <Link to={`/listing/${listing._id}`}>
+                <button
+                  onClick={() => console.log("View Listing is called")}
+                  className="bg-blue-500 text-white p-2 rounded"
+                >
+                  View Listing
+                </button>
+              </Link>
               {/* <button
                 onClick={() => handleViewListingClick(listing._id)}
                 className="bg-blue-500 text-white p-2 rounded"
@@ -129,10 +132,10 @@ function MyListing() {
                 View Listing
               </button> */}
               <button
-                onClick={() => handleEditListingClick(listing._id)}
-                className="bg-blue-500 text-white p-2 rounded"
+                onClick={() => handleDeleteListingClick(listing._id)}
+                className="bg-red-500 text-white p-2 rounded"
               >
-                Edit Listing
+                Delete Listing
               </button>
             </CardFooter>
           </Card>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   CardHeader,
   CardTitle,
@@ -21,7 +21,7 @@ const ViewListing = ({ listing, onBackClick, onEditClick }) => {
         setSelectedNannyDetails([selectedNannyDetail]);
       } else {
         // Fetch details of interested nannies when component mounts
-        const nannyDetailsPromises = listing.interestedNannies.map(nannyId =>
+        const nannyDetailsPromises = listing.interestedNannies.map((nannyId) =>
           getNannyById(nannyId)
         );
         const nannyDetails = await Promise.all(nannyDetailsPromises);
@@ -47,33 +47,53 @@ const ViewListing = ({ listing, onBackClick, onEditClick }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p><strong>Description:</strong> {listing.description}</p>
-        <p><strong>Hourly Rate:</strong> {listing.hourlyRate}</p>
-        <p><strong>Job Start Date:</strong> {listing.jobStartDate}</p>
-        <p><strong>Job End Date:</strong> {listing.jobEndDate}</p>
-        <p><strong>Payable Hours:</strong> {listing.payableHours}</p>
-        <p><strong>Kid Info:</strong> {listing.kidInfo}</p>
-        <p><strong>Nannies:</strong></p>
-        {selectedNannyDetails.length > 0 ? (
-          // Display details of the selected nanny
-          selectedNannyDetails.map((nanny, index) => (
-            <div key={index}>
-              <p><strong>Nanny Name:</strong> {nanny.displayName}</p>
-              <p><strong>Nanny Experience:</strong> {nanny.experience}</p>
-            </div>
-          ))
-        ) : (
-          // Display details of interested nannies
-          interestedNanniesDetails.map((nanny, index) => (
-            <div key={index}>
-              <p><strong>Nanny Name:</strong> {nanny.displayName}</p>
-              <p><strong>Nanny Experience:</strong> {nanny.experience}</p>
-              <button onClick={() => handleSelectNanny(nanny._id)}>
-                Select Nanny
-              </button>
-            </div>
-          ))
-        )}
+        <p>
+          <strong>Description:</strong> {listing.description}
+        </p>
+        <p>
+          <strong>Hourly Rate:</strong> {listing.hourlyRate}
+        </p>
+        <p>
+          <strong>Job Start Date:</strong> {listing.jobStartDate}
+        </p>
+        <p>
+          <strong>Job End Date:</strong> {listing.jobEndDate}
+        </p>
+        <p>
+          <strong>Payable Hours:</strong> {listing.payableHours}
+        </p>
+        <p>
+          <strong>Kid Info:</strong> {listing.kidInfo}
+        </p>
+        <p>
+          <strong>Nannies:</strong>
+        </p>
+        {selectedNannyDetails.length > 0
+          ? // Display details of the selected nanny
+            selectedNannyDetails.map((nanny, index) => (
+              <div key={index}>
+                <p>
+                  <strong>Nanny Name:</strong> {nanny.displayName}
+                </p>
+                <p>
+                  <strong>Nanny Experience:</strong> {nanny.experience}
+                </p>
+              </div>
+            ))
+          : // Display details of interested nannies
+            interestedNanniesDetails.map((nanny, index) => (
+              <div key={index}>
+                <p>
+                  <strong>Nanny Name:</strong> {nanny.displayName}
+                </p>
+                <p>
+                  <strong>Nanny Experience:</strong> {nanny.experience}
+                </p>
+                <button onClick={() => handleSelectNanny(nanny._id)}>
+                  Select Nanny
+                </button>
+              </div>
+            ))}
       </CardContent>
       <CardFooter className="flex justify-between">
         <button
