@@ -16,11 +16,9 @@ import {
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import DatePickerFormInput from "../DatePicker";
-import TimePickerFormInput from "../TimePicker";
-import CustomTextareaAutosize from "../TextAreaAutoSize";
 import moment from "moment";
 import { listingSchema } from "../../schemas/listing";
-import { validateDate } from "../../helpers";
+import { capitalize, validateDate } from "../../helpers";
 
 const schema = listingSchema;
 
@@ -35,11 +33,8 @@ function CreateListingParent() {
       street,
       city,
       state,
-      country,
       pincode,
       hourlyRate,
-      startTime,
-      endTime,
       jobStartDate,
       jobEndDate,
       payableHours,
@@ -51,11 +46,11 @@ function CreateListingParent() {
       // Create data object for storing in Firestore
       let dataToStore = {
         parentID: currentUser.uid,
-        listingName: listingName.trim(),
-        street: street.trim(),
-        city: city.trim(),
-        state: state.trim(),
-        country: country.trim(),
+        listingName: capitalize(listingName.trim()),
+        street: capitalize(street.trim()),
+        city: capitalize(city.trim()),
+        state: capitalize(state.trim()),
+        country: "United States",
         pincode,
         hourlyRate,
         jobStartDate: jobStartDate,
@@ -73,15 +68,19 @@ function CreateListingParent() {
 
       if (moment(jobEndDate).isBefore(moment(jobStartDate))) {
         showAlert("error", "End date cannot be greater than start date");
-        return;
+        return true;
       }
 
       console.log("From createParentListing component data:", dataToStore);
       await createParentListing(dataToStore);
       showAlert("success", "Listing created successfully");
+      return false; // No error
     } catch (error) {
       console.log(error);
       showAlert("error", error.message || "Unexpected error occurred");
+      return true; // Error occurred
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -103,7 +102,6 @@ function CreateListingParent() {
             street: "",
             city: "",
             state: "",
-            country: "",
             pincode: "",
             hourlyRate: "",
             jobStartDate: "",
@@ -134,16 +132,16 @@ function CreateListingParent() {
             return errors;
           }}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
-            handleCreateListing(values, setSubmitting);
-            resetForm({ values: "" });
+            const error = await handleCreateListing(values, setSubmitting);
+            if (!error) {
+              resetForm({ values: "" });
+            }
           }}
         >
           {({
             values,
             errors,
             touched,
-            setFieldValue,
-            setFieldError,
             handleChange,
             handleBlur,
             isSubmitting,
@@ -212,26 +210,7 @@ function CreateListingParent() {
                     </Grid>
                   </Grid>
                 </Stack>
-                {/* <Stack marginTop={1}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Field
-                        name="startTime"
-                        component={TimePickerFormInput}
-                        label="Start Time"
-                        required
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Field
-                        name="endTime"
-                        component={TimePickerFormInput}
-                        label="End Time"
-                        required
-                      />
-                    </Grid>
-                  </Grid>
-                </Stack> */}
+
                 <TextField
                   variant="standard"
                   label="Payable Hours"
@@ -265,52 +244,6 @@ function CreateListingParent() {
                   fullWidth
                   required
                 />
-
-                {/* <div className="form-group">
-        <label>
-          Start Time:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="startTime"
-            type="datetime-local"
-            placeholder="Start Time"
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          End Time:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="endTime"
-            type="datetime-local"
-            placeholder="End Time"
-            onChange={handleChange}
-          />
-        </label>
-      </div> */}
-
-                {/* <div className="form-group">
-        <label>
-          Job Date:
-          <br />
-          <input
-            className="form-control"
-            required
-            name="jobDate"
-            type="text"
-            placeholder="Job Date"
-            onChange={handleChange}
-          />
-        </label>
-      </div> */}
-
                 <TextareaAutosize
                   label="Kid Info"
                   minRows={3}

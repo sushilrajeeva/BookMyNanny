@@ -1,12 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { AlertContext } from "../../context/AlertContext";
-import {
-  getParentById,
-  updateParentData,
-} from "../../firebase/ParentFunctions";
-import { getNannyById, updateNannyData } from "../../firebase/NannyFunctions";
-// import { Card, CardContent } from "@/components/ui/card";
 import { profile } from "../../schemas/profile";
 import ProfileFields from "./ProfileFields";
 import {
@@ -17,29 +11,10 @@ import {
   TextareaAutosize,
 } from "@mui/material";
 import { Formik, Form } from "formik";
-// import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { nannyProfile } from "@/schemas/nannyProfile";
-
-// Importing Shadcn ui components
-// import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
-
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-// References for this page
-// Spinner using tailwind css - https://tailwindcss.com/docs/animation
-// profile ui design reference -  https://ui.shadcn.com/example , https://ui.shadcn.com/docs/components/input
 
 const Profile = () => {
   const { currentUser, userRole } = useContext(AuthContext);
@@ -60,7 +35,10 @@ const Profile = () => {
       try {
         if (currentUser) {
           if (userRole === "parent") {
-            const parentData = await getParentById(currentUser.uid);
+            const response = await fetch(
+              `http://localhost:3000/getParent/${currentUser.uid}`
+            );
+            const parentData = await response.json();
             setImageUrl(parentData.image);
             console.log(parentData);
             setInitialValues({
@@ -77,8 +55,10 @@ const Profile = () => {
               dob: parentData.dob,
             });
           } else if (userRole === "nanny") {
-            const nannyData = await getNannyById(currentUser.uid);
-            console.log(nannyData.image);
+            const response = await fetch(
+              `http://localhost:3000/getNanny/${currentUser.uid}`
+            );
+            const nannyData = await response.json();
             setImageUrl(nannyData.image);
             setInitialValues({
               displayName: nannyData.displayName,
@@ -143,13 +123,40 @@ const Profile = () => {
         });
         const newImageUrl = url.split("?")[0];
         const imgObj = { image: newImageUrl };
-        if (userRole === "parent")
-          await updateParentData(currentUser.uid, imgObj);
-        else await updateNannyData(currentUser.uid, imgObj);
-
+        if (userRole === "parent") {
+          const response = await fetch(
+            `http://localhost:3000/updateParent/${currentUser.uid}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(imgObj),
+            }
+          );
+          if (response.ok) {
+            showAlert("success", "Image uploaded successfully!");
+          } else {
+            showAlert("error", "Error uploading image. Please try again.");
+          }
+        } else {
+          const response = await fetch(
+            `http://localhost:3000/updateNanny/${currentUser.uid}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(imgObj),
+            }
+          );
+          if (response.ok) {
+            showAlert("success", "Image uploaded successfully!");
+          } else {
+            showAlert("error", "Error uploading image. Please try again.");
+          }
+        }
         setImageUrl(newImageUrl);
-
-        showAlert("success", "Image uploaded successfully!");
       } catch (error) {
         console.error("Error uploading image:", error);
         showAlert("error", "Error uploading image. Please try again.");
@@ -175,7 +182,10 @@ const Profile = () => {
           country,
           pincode,
         } = values;
-        const currentUserData = await getParentById(currentUser.uid);
+        const response = await fetch(
+          `http://localhost:3000/getParent/${currentUser.uid}`
+        );
+        const currentUserData = await response.json();
         const changedValues = Object.entries({
           displayName: displayName.trim(),
           firstName: firstName.trim(),
@@ -197,8 +207,21 @@ const Profile = () => {
 
         // Update only the changed values
         if (Object.keys(changedValues).length > 0) {
-          await updateParentData(currentUser.uid, changedValues);
-          showAlert("success", "Profile updated successfully!");
+          const response = await fetch(
+            `http://localhost:3000/updateParent/${currentUser.uid}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(changedValues),
+            }
+          );
+          if (response.ok) {
+            showAlert("success", "Profile updated successfully!");
+          } else {
+            showAlert("error", "Update not successful");
+          }
         } else showAlert("error", "Cannot update with same values");
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -222,7 +245,10 @@ const Profile = () => {
           bio,
           experience,
         } = values;
-        const currentUserData = await getNannyById(currentUser.uid);
+        const response = await fetch(
+          `http://localhost:3000/getNanny/${currentUser.uid}`
+        );
+        const currentUserData = await response.json();
         const changedValues = Object.entries({
           displayName: displayName.trim(),
           firstName: firstName.trim(),
@@ -243,11 +269,22 @@ const Profile = () => {
         }, {});
 
         console.log("Changed values:", changedValues);
-
-        // Update only the changed values
         if (Object.keys(changedValues).length > 0) {
-          await updateNannyData(currentUser.uid, changedValues);
-          showAlert("success", "Profile updated successfully!");
+          const response = await fetch(
+            `http://localhost:3000/updateNanny/${currentUser.uid}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(changedValues),
+            }
+          );
+          if (response.ok) {
+            showAlert("success", "Profile updated successfully!");
+          } else {
+            showAlert("error", "Update not successful");
+          }
         } else showAlert("error", "Cannot update with same values");
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -272,7 +309,6 @@ const Profile = () => {
           <CardContent>
             <form onSubmit={submit}>
               <div className="flex flex-col items-center space-y-1.5">
-                {console.log(imageUrl)}
                 {imageUrl && (
                   <Avatar className="w-[220px] h-[220px]">
                     <AvatarImage src={imageUrl} alt="Profile" />

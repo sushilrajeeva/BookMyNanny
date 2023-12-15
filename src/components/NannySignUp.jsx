@@ -11,7 +11,7 @@ import {
 import { AuthContext } from "../context/AuthContext.jsx";
 import { AlertContext } from "../context/AlertContext";
 import { nannySchema } from "../schemas/nannysignup.jsx";
-import { validateDate, passwordMatch } from "../helpers";
+import { validateDate, passwordMatch, capitalize } from "../helpers";
 import CommonSignUpFields from "./SignUp/CommonFields";
 import NannyFields from "./SignUp/NannyFields.jsx";
 import moment from "moment";
@@ -36,7 +36,7 @@ function NannySignUp() {
       street,
       city,
       state,
-      country,
+
       pincode,
       dob,
       experience,
@@ -59,16 +59,16 @@ function NannySignUp() {
 
       // Create data object for storing in Firestore
       let dataToStore = {
-        displayName: displayName.trim(),
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+        displayName: capitalize(displayName.trim()),
+        firstName: capitalize(firstName.trim()),
+        lastName: capitalize(lastName.trim()),
         emailAddress: email.trim(),
         countryCode: "+1",
         phoneNumber: phoneNumber,
-        street: street.trim(),
-        city: city.trim(),
-        state: state.trim(),
-        country: country.trim(),
+        street: capitalize(street.trim()),
+        city: capitalize(city.trim()),
+        state: capitalize(state.trim()),
+        country: "United States",
         pincode: pincode,
         password: passwordOne.trim(),
         dob: dob,
@@ -135,7 +135,6 @@ function NannySignUp() {
             street: "",
             city: "",
             state: "",
-            country: "",
             pincode: "",
             dob: "",
             ssn: "",

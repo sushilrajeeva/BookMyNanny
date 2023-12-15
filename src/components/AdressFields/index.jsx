@@ -1,6 +1,59 @@
 import React from "react";
 import { Stack, TextField, MenuItem } from "@mui/material";
 
+const stateList = [
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming",
+];
+
 const AdressFields = ({
   values,
   handleChange,
@@ -26,7 +79,6 @@ const AdressFields = ({
         fullWidth
         required
       />
-
       <TextField
         variant="standard"
         label="City"
@@ -51,37 +103,34 @@ const AdressFields = ({
         }}
       >
         <TextField
+          select
           variant="standard"
           label="State"
           name="state"
           value={values.state}
-          onInput={(e) => {
-            handleChange(e);
-            setTimeout(() => handleBlur(e), 0);
-          }}
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.state && Boolean(errors.state)}
           helperText={touched.state && errors.state}
           fullWidth
           required
-        />
+        >
+          {stateList.map((state) => (
+            <MenuItem key={state} value={state}>
+              {state}
+            </MenuItem>
+          ))}
+        </TextField>
+
         <TextField
           variant="standard"
           label="Country"
           name="country"
-          select
-          value={values.country}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.country && Boolean(errors.country)}
-          helperText={touched.country && errors.country}
+          value="United States"
           fullWidth
           required
-        >
-          <MenuItem value="United States">United States</MenuItem>
-          <MenuItem value="Canada">Canada</MenuItem>
-        </TextField>
+          disabled
+        />
       </Stack>
 
       <TextField

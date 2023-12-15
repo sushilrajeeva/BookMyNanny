@@ -49,7 +49,7 @@ const ProfileFields = ({
       <DisplayProfileField label="Email" value={values.email} />
       <DisplayProfileField
         label="Date of Birth"
-        value={moment(values.dob).format("LL")}
+        value={moment(values.dob, "MM-DD-YYYY").format("MMMM D, YYYY")}
       />
 
       {userRole === "nanny" && (
