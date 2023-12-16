@@ -7,6 +7,7 @@ import {
   withdrawNannyInterest,
   nannyInterested,
 } from "../firebase/NannyFunctions";
+import InterestedNanny from "./ParentComponent/InterestedNanny";
 import { getListingById } from "@/firebase/ListingFunctions";
 import { AuthContext } from "@/context/AuthContext";
 import JobCompletion from "./JobCompletion";
