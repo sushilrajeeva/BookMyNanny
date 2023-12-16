@@ -4,7 +4,6 @@ import { generateUploadURL } from "./s3.js";
 import dotenv from "dotenv";
 import Stripe from "stripe";
 import db from "./firebase-config.js";
-import { client } from "./config/redisConfig.js";
 import {
   addDoc,
   collection,
@@ -17,6 +16,12 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
+
+// Implemented the redis using professor's lecture code
+import redis from "redis";
+const redisClient = redis.createClient();
+redisClient.connect().then(() => {});
+
 dotenv.config();
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -61,11 +66,27 @@ app.post("/api/create-checkout-session", async (req, res) => {
 
 async function getNannyById(id) {
   try {
+    // Creating cache key
+    const cacheKey = `nanny:${id}`;
+    const cachedNanny = await redisClient.get(cacheKey);
+
+    // checking if the nanny is already cached or not
+    // if it is cached i will return it from my redis cache
+    if (cachedNanny) {
+      console.log("Serving from Cache");
+      return JSON.parse(cachedNanny);
+    }
+
     const nannyDocRef = doc(db, "Nanny", id);
     const docSnapshot = await getDoc(nannyDocRef);
 
+    // If i reached this far then the nanny is not cached
+    // hence i will return from the firebase data
+    // Then i will set this to the redis cache
+    // for consistency of data, I am setting the expiery time of the cache to be 1 hour
     if (docSnapshot.exists()) {
       const data = docSnapshot.data();
+      await redisClient.setEx(cacheKey, 3600, JSON.stringify(data)); // cache for 1 hour
       return data;
     } else {
       throw new Error("No nanny exists");
@@ -86,6 +107,8 @@ const updateNannyData = async (id, obj) => {
       }
       transaction.update(nannyDocRef, obj);
     });
+    // If any update happens I will delete the cached data from redis for consistency
+    await redisClient.del(`nanny:${id}`); // Invalidate cache
   } catch (e) {
     console.log(e);
     throw new Error("Error updating nanny data");
@@ -95,21 +118,10 @@ const updateNannyData = async (id, obj) => {
 app.get("/getNanny/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const authCach = await client.exists(`nanny-${id}`);
-    if (authCach) {
-      console.log("From cache");
-      const data = await client.json.get(`nanny-${id}`);
-      return res.status(200).json(data);
-    } else {
-      console.log("Not from cache");
-      let data = await getNannyById(id);
-      if (data.length !== 0) {
-        await client.json.set(`nanny-${id}`, "$", data);
-      }
-      return res.status(200).json(data);
-    }
+    let data = await getNannyById(id);
+    return res.status(200).json(data);
   } catch (error) {
-    throw error;
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -118,43 +130,59 @@ app.patch("/updateNanny/:id", async (req, res) => {
     const { id } = req.params;
     const updatedData = req.body;
     await updateNannyData(id, updatedData);
-    const nannyData = await getNannyById(id);
-    await client.json.set(`nanny-${id}`, "$", nannyData);
     res.status(200).json({ success: true });
   } catch (error) {
-    throw error;
+    res.status(500).json({ error: error.message });
   }
 });
 
 async function getParentById(id) {
   try {
+    // Creating cache key
+    const cacheKey = `parent:${id}`;
+    const cachedParent = await redisClient.get(cacheKey);
+
+    // checking if the parent is already cached or not
+    // if it is cached i will return it from my redis cache
+    if (cachedParent) {
+      console.log("Serving from Cache");
+      return JSON.parse(cachedParent);
+    }
+
     const parentDocRef = doc(db, "Parent", id);
     const docSnapshot = await getDoc(parentDocRef);
 
+    // If i reached this far then the parent is not cached
+    // hence i will return from the firebase data
+    // Then i will set this to the redis cache
+    // for consistency of data, I am setting the expiery time of the cache to be 1 hour
     if (docSnapshot.exists()) {
       const data = docSnapshot.data();
+      await redisClient.setEx(cacheKey, 3600, JSON.stringify(data)); // cache for 1 hour
       return data;
     } else {
       throw new Error("No parent exists");
     }
   } catch (error) {
-    throw new Error("Error getting user document");
+    console.log(error);
+    throw new Error("Error getting parent document");
   }
 }
 
 const updateParentData = async (id, obj) => {
   const parentDocRef = doc(db, "Parent", id);
-
   try {
     await runTransaction(db, async (transaction) => {
       const parentDoc = await transaction.get(parentDocRef);
-      console.log("ParentDoc", parentDoc);
       if (!parentDoc.exists()) {
-        throw new Error("Document does not exist!");
+        throw new Error("Document doesn't exist!!");
       }
       transaction.update(parentDocRef, obj);
     });
+    // If any update happens I will delete the cached data from redis for consistency
+    await redisClient.del(`parent:${id}`); // Invalidate cache
   } catch (e) {
+    console.log(e);
     throw new Error("Error updating parent data");
   }
 };
@@ -162,21 +190,10 @@ const updateParentData = async (id, obj) => {
 app.get("/getParent/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const authCach = await client.exists(`parent-${id}`);
-    if (authCach) {
-      console.log("From cache");
-      const data = await client.json.get(`parent-${id}`);
-      return res.status(200).json(data);
-    } else {
-      console.log("Not from cache");
-      let data = await getParentById(id);
-      if (data.length !== 0) {
-        await client.json.set(`parent-${id}`, "$", data);
-      }
-      return res.status(200).json(data);
-    }
+    let data = await getParentById(id);
+    res.status(200).json(data);
   } catch (error) {
-    throw error;
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -186,11 +203,9 @@ app.patch("/updateParent/:id", async (req, res) => {
     const updatedData = req.body;
     console.log("DATA", updatedData);
     await updateParentData(id, updatedData);
-    const parentData = await getParentById(id);
-    await client.json.set(`parent-${id}`, "$", parentData);
     res.status(200).json({ success: true });
   } catch (error) {
-    throw error;
+    res.status(500).json({ error: error.message });
   }
 });
 
