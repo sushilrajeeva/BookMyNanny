@@ -207,7 +207,7 @@ function JobListings() {
                   variant="secondary"
                   onClick={() => handleNannyInterest(listing._id)}
                 >
-                  I'm Interested
+                  Apply
                 </Button>
               )}
             </CardFooter>
