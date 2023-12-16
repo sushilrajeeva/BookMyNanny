@@ -176,6 +176,7 @@ app.get("/getParent/:id", async (req, res) => {
       return res.status(200).json(data);
     }
   } catch (error) {
+    console.log(error);
     throw error;
   }
 });

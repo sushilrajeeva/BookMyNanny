@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { nannyProfile } from "@/schemas/nannyProfile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
 
 const Profile = () => {
   const { currentUser, userRole } = useContext(AuthContext);
@@ -35,10 +36,10 @@ const Profile = () => {
       try {
         if (currentUser) {
           if (userRole === "parent") {
-            const response = await fetch(
+            const { data } = await axios.get(
               `http://localhost:3000/getParent/${currentUser.uid}`
             );
-            const parentData = await response.json();
+            const parentData = data;
             setImageUrl(parentData.image);
             console.log(parentData);
             setInitialValues({
@@ -55,10 +56,10 @@ const Profile = () => {
               dob: parentData.dob,
             });
           } else if (userRole === "nanny") {
-            const response = await fetch(
+            const response = await axios.get(
               `http://localhost:3000/getNanny/${currentUser.uid}`
             );
-            const nannyData = await response.json();
+            const nannyData = response.data;
             setImageUrl(nannyData.image);
             setInitialValues({
               displayName: nannyData.displayName,
@@ -111,46 +112,31 @@ const Profile = () => {
     setLoading(true);
     if (file) {
       try {
-        const { url } = await fetch("http://localhost:3000/s3Url").then((res) =>
-          res.json()
-        );
-        await fetch(url, {
-          method: "PUT",
+        const { data } = await axios.get("http://localhost:3000/s3Url");
+        const { url } = data;
+        await axios.put(url, file, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          body: file,
         });
         const newImageUrl = url.split("?")[0];
         const imgObj = { image: newImageUrl };
         if (userRole === "parent") {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateParent/${currentUser.uid}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(imgObj),
-            }
+            imgObj
           );
-          if (response.ok) {
+          if (response.status === 200) {
             showAlert("success", "Image uploaded successfully!");
           } else {
             showAlert("error", "Error uploading image. Please try again.");
           }
         } else {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateNanny/${currentUser.uid}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(imgObj),
-            }
+            imgObj
           );
-          if (response.ok) {
+          if (response.status === 200) {
             showAlert("success", "Image uploaded successfully!");
           } else {
             showAlert("error", "Error uploading image. Please try again.");
@@ -182,10 +168,10 @@ const Profile = () => {
           country,
           pincode,
         } = values;
-        const response = await fetch(
+        const { data } = await axios.get(
           `http://localhost:3000/getParent/${currentUser.uid}`
         );
-        const currentUserData = await response.json();
+        const currentUserData = data;
         const changedValues = Object.entries({
           displayName: displayName.trim(),
           firstName: firstName.trim(),
@@ -207,17 +193,11 @@ const Profile = () => {
 
         // Update only the changed values
         if (Object.keys(changedValues).length > 0) {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateParent/${currentUser.uid}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(changedValues),
-            }
+            changedValues
           );
-          if (response.ok) {
+          if (response.status === 200) {
             showAlert("success", "Profile updated successfully!");
           } else {
             showAlert("error", "Update not successful");
@@ -245,10 +225,10 @@ const Profile = () => {
           bio,
           experience,
         } = values;
-        const response = await fetch(
+        const { data } = await axios.get(
           `http://localhost:3000/getNanny/${currentUser.uid}`
         );
-        const currentUserData = await response.json();
+        const currentUserData = data;
         const changedValues = Object.entries({
           displayName: displayName.trim(),
           firstName: firstName.trim(),
@@ -270,17 +250,11 @@ const Profile = () => {
 
         console.log("Changed values:", changedValues);
         if (Object.keys(changedValues).length > 0) {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateNanny/${currentUser.uid}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(changedValues),
-            }
+            changedValues
           );
-          if (response.ok) {
+          if (response.status === 200) {
             showAlert("success", "Profile updated successfully!");
           } else {
             showAlert("error", "Update not successful");
