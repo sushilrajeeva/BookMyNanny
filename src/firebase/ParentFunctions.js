@@ -169,6 +169,36 @@ const jobClose = async (listingId) => {
   }
 };
 
+const getPastParentJobs = async (parentID) => {
+  try {
+    console.log("Get Past jobs firestore method called");
+    const listingsCollection = collection(db, "Listings");
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const pastJobs = [];
+
+    // modifying to get only those listings where the the listing's selectedNannyID matches the given nannyID and the status is completed
+    listingsSnapshot.forEach((doc) => {
+      const listingData = doc.data();
+      if (
+        listingData.parentID == parentID &&
+        listingData.status == "completed"
+      ) {
+        pastJobs.push(listingData);
+      }
+    });
+    console.log("Past jobs : ", pastJobs);
+    return pastJobs;
+  } catch (error) {
+    console.log(error);
+    console.error(
+      "Error getting all Past Job Listings for this nanny!!:",
+      error
+    );
+    throw new Error("Error getting all users");
+  }
+};
+
 export {
   createParentListing,
   getAllListings,
@@ -179,4 +209,5 @@ export {
   getWalletBalance,
   jobCompleteVerification,
   jobClose,
+  getPastParentJobs,
 };
