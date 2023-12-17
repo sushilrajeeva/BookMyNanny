@@ -27,6 +27,7 @@ import {
 import { getParentById } from "@/firebase/ParentFunctions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getNannyById } from "@/firebase/NannyFunctions";
+import CustomLoading from "./EssentialComponents/CustomLoading";
 
 function ListingFullDetails(props) {
   const { id } = useParams();
@@ -36,7 +37,9 @@ function ListingFullDetails(props) {
   const [isInterested, setIsInterested] = useState(false);
 
   const [chatUserDoc, setChatUserDoc] = useState(null);
-  const [nannyUser, setNannyUser] = useState('');
+
+  // to keep track of data loading in useEffect
+  const [isLoading, setIsLoading] = useState(true);
 
 
   // Writing logic for checking if show chat dialogue box is enabled or not
@@ -48,37 +51,33 @@ function ListingFullDetails(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // using this loader to ensure the component loads after data is set in state
+        setIsLoading(true);
         const data = await getListingById(id);
-        setIsInterested(data.interestedNannies.includes(currentUser.uid));
-        console.log("Data -> ", data.parentID);
         const parentDoc = await getParentById(data.parentID);
-        console.log(parentDoc.image);
-        setParentDP(parentDoc)
 
-        // if loggedin user is a parent then chat user is nanny
-        // console.log("user role", userRole);
-        // if(userRole.toLowerCase() === 'parent' && data.selectedNannyID){
-        //   const nannyDoc = await getNannyById(data.selectedNannyID);
-        //   setChatUserDoc(nannyDoc)
-
-        // }else if (userRole.toLowerCase() === 'nanny'){
-        //   const par = await getNannyById(data.selectedNannyID);
-        //   setChatUserDoc(par)
-        // }
-
-        // if(currentUser == "nanny"){
-        //   const nannyDoc = await getNannyById();
-
-        // }
-        // const nannyDP = await getNannyById()
         setListing(data);
+        setParentDP(parentDoc);
+        setIsInterested(data.interestedNannies.includes(currentUser.uid));
+
+        if (userRole) {
+          if (userRole.toLowerCase() === 'parent' && data.selectedNannyID) {
+            const nannyDoc = await getNannyById(data.selectedNannyID);
+            setChatUserDoc(nannyDoc);
+          } else if (userRole.toLowerCase() === 'nanny') {
+            setChatUserDoc(parentDoc);
+          }
+        }
+
       } catch (error) {
         console.error(error);
+      } finally{
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [id, currentUser.uid]);
+  }, [id, currentUser.uid, userRole]);
 
   const handleNannyInterest = async (listingId) => {
     const success = await nannyInterested(listingId, currentUser.uid);
@@ -93,6 +92,19 @@ function ListingFullDetails(props) {
       setIsInterested(false);
     }
   };
+
+  if (isLoading) {
+    return <CustomLoading />;
+  }
+
+  if(!userRole){
+    return <CustomLoading/>
+  }
+
+  if(!listing){
+    return <CustomLoading/>
+  }
+  
 
   return (
     <div>
@@ -197,11 +209,12 @@ function ListingFullDetails(props) {
       <div >
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}  className="max-w-lg mx-auto">
+        {console.log("Our chat user is - ", chatUserDoc)}
           {
-            listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) && (listing.selectedNannyID) ?
+            listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) && (listing.selectedNannyID)  ?
             (<div>
-              <DialogContent style={{ height: '80%' }} className="flex flex-col w-full">
-              <Chat room={id} className="h-[80%] overflow-hidden"/>
+              <DialogContent style={{ height: '90%' }} className="flex flex-col w-full">
+              <Chat room={id} chatUser = {chatUserDoc}/>
               </DialogContent>
             </div> ): (<div>
               <DialogContent>
@@ -209,6 +222,7 @@ function ListingFullDetails(props) {
                   {console.log(" curent user ", currentUser.uid)}
                   {console.log(" parent ", parentDP._id)}
                   {console.log("checkinggggg", currentUser.uid === parentDP._id)}
+                  
                   { (currentUser.uid === parentDP._id) ? (<span>No user has been approved</span>): (<span>Chat is available only for the selected nanny and the owner of the listing</span>)}
                 </Typography>
               </DialogContent>

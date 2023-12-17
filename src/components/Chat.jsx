@@ -15,35 +15,48 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import CustomLoading from "./EssentialComponents/CustomLoading.jsx";
 
 // For developing this Chat UI I referred shadcn ui for the design ref -> https://ui.shadcn.com/themes
 // shadcn ui didn't implement the code but they just provided a reference
 // and the code and design i referred from tailwind css -> https://tailwindcomponents.com/component/chat
 
-const Chat = ({ room }) => {
+const Chat = ({ room, chatUser }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const { currentUser } = useContext(AuthContext);
   const messagesEndRef = useRef(null);
   const messagesRef = collection(db, "messages");
 
+  // For setting message loading
+  const [isMessagesLoading, setIsMessagesLoading] = useState(true);
+
+
 
   // This is my useEffect for fetching messages
   useEffect(() => {
+    setIsMessagesLoading(true); // Start loading before fetching messages
+  
     const queryMessages = query(
       messagesRef,
       where("jobId", "==", room),
       orderBy("createdAt")
     );
+  
     const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
       });
       setMessages(messages);
+  
+      setIsMessagesLoading(false); // Stop loading after messages are fetched
     });
+  
     return () => unsubscribe();
   }, [room]);
+  
 
   // Implementing Scroll to the bottom every time messages changes
   // Referred Tailwind css implementation of chat -> https://tailwindcomponents.com/component/chat
@@ -64,9 +77,32 @@ const Chat = ({ room }) => {
     setNewMessage("");
   };
 
+  if(!currentUser){
+    return <CustomLoading/>
+  }
+
+  if (isMessagesLoading) {
+    return <CustomLoading />;
+  }
+  
+
+  console.log("chatteeeeeer", chatUser);
   return (
     <div className="flex flex-col w-full h-full "> {/* CSS is a mess !!! tried a lot of combinations to get it right ... */}
-      <div className="flex flex-col h-full "> {/* Removed padding, border, and shadow */}
+      
+
+      <div className="flex items-center p-4">
+        <Avatar>
+          <AvatarImage src={chatUser.image} alt={`${chatUser.firstName} ${chatUser.lastName}`} />
+          <AvatarFallback>{chatUser.firstName[0]}{chatUser.lastName[0]}</AvatarFallback>
+        </Avatar>
+        <div className="ml-4">
+          <div className="font-bold">{chatUser.firstName} {chatUser.lastName}</div>
+          <div className="text-sm text-gray-500">{chatUser.emailAddress}</div>
+        </div>
+      </div>
+      
+      <div className="flex flex-col h-full overflow-y-auto space-y-4 p-3 flex-grow "> 
         {/* Message display */}
         <div className="overflow-y-auto space-y-4 p-3 flex-grow">
           {messages.map((message) => (
@@ -88,7 +124,7 @@ const Chat = ({ room }) => {
           <div ref={messagesEndRef} />
         </div>
         {/* Message input */}
-        <div className="p-4">
+        <div className="p-0">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <Input
               type="text"

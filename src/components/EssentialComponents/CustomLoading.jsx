@@ -2,7 +2,7 @@ import React from 'react'
 
 // I referred -> https://flowbite.com/docs/components/spinner/
 // to create this custom loading animation
-const customLoading = () => {
+const CustomLoading = () => {
     return (
         <div className="flex justify-center items-center h-screen">
             <div role="status">
@@ -16,4 +16,4 @@ const customLoading = () => {
       )
 }
 
-export default customLoading
+export default CustomLoading
