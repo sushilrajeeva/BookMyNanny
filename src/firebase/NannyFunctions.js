@@ -212,7 +212,9 @@ const onJobComplete = async (listingId, hoursWorked, nannyId) => {
     if (listing) {
       const currentStatus = listing.data().status;
       if (currentStatus && currentStatus === "pending") {
-        if (listing.selectedNannyID === nannyId) {
+        console.log("ID", listing.selectedNannyID, nannyId);
+
+        if (listing.data().selectedNannyID === nannyId) {
           // If the current status is "pending", update the status to "completed"
           await updateDoc(listingDocRef, { status: "completed", hoursWorked });
           console.log("Job marked as completed successfully!");
