@@ -22,7 +22,7 @@ function Routes() {
     <AuthProvider>
       <AlertProvider>
         <div className="App">
-          <header className="App-header card">
+          <header >
             <Navigation />
           </header>
           <AppRoutes>

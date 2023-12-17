@@ -4,6 +4,7 @@ import "../App.css";
 import ParentDashboard from "./Dashboard/ParentDashboard";
 import NannyDashboard from "./Dashboard/NannyDashboard";
 import AdminDashboard from "./Dashboard/AdminDashboard";
+import CustomLoading from "./EssentialComponents/CustomLoading";
 
 // import Dashboard from "./Dashboard";
 
@@ -25,7 +26,7 @@ function Home() {
         ) : userRole === "admin" ? (
           <AdminDashboard />
         ) : (
-          <p>Loading...</p>
+          <CustomLoading/>
         )}
       </div>
     </div>

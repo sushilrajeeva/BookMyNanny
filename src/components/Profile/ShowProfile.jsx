@@ -7,6 +7,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import moment from "moment";
+import CustomLoading from "../EssentialComponents/CustomLoading";
 
 const ShowProfile = () => {
   const { currentUser, userRole } = useContext(AuthContext);
@@ -74,7 +75,7 @@ const ShowProfile = () => {
 
   if (mainLoading) {
     // Show loading indicator while waiting for user data
-    return <p>Loading...</p>;
+    return <CustomLoading/>;
   }
 
   const DisplayProfileField = ({ label, value }) => {
