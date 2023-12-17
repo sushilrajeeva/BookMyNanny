@@ -3,6 +3,7 @@ import {getAllListings } from '../../firebase/ParentFunctions';
 import DataTable from '../ListingTable/data-table';
 import { AuthContext } from "../../context/AuthContext";
 import { columns } from "../ListingTable/columns"
+import CustomLoading from '../EssentialComponents/CustomLoading';
 
 
 function ActiveListings() {
@@ -84,7 +85,7 @@ function ActiveListings() {
   if (loadingListings) {
     return (
       <div>
-        <h1>Loading....</h1>
+        <CustomLoading/>
       </div>
     );
   }
