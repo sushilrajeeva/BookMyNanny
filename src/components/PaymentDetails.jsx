@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
-import { jobClose } from "@/firebase/ParentFunctions";
+import { Button as DeclineBtn } from "@/components/ui/button";
+import { jobClose, jobDecline } from "@/firebase/ParentFunctions";
 
-const PaymentDetails = ({ listing }) => {
-  const [listingData, setListingData] = useState(listing);
+const PaymentDetails = ({ listing, onUpdatedListing }) => {
   const payableAmount = listing.hoursWorked * listing.hourlyRate;
 
   const handleJobCompletion = async () => {
     try {
       await jobClose(listing._id);
-      // Show success message to the user
-      alert("Job successfully marked as completed!");
+      onUpdatedListing();
     } catch (error) {
       // Handle error and notify the user
       console.error("Error closing job:", error);
@@ -18,7 +17,16 @@ const PaymentDetails = ({ listing }) => {
     }
   };
 
-  console.log("LISTINGS", listingData);
+  const handleDecline = async () => {
+    try {
+      await jobDecline(listing._id);
+      onUpdatedListing();
+    } catch (error) {
+      // Handle error and notify the user
+      console.error("Error closing job:", error);
+      alert("Error marking job complete. Please try again later.");
+    }
+  };
 
   return listing.status === "completed" && listing.progressBar === 0 ? (
     <Card>
@@ -31,6 +39,16 @@ const PaymentDetails = ({ listing }) => {
         <br />
         <Button variant="contained" onClick={handleJobCompletion}>
           Mark Job Completed
+        </Button>
+        <br />
+        <br />
+        <Button
+          // sx={{ backgroundColor: "red" }}
+          color="error"
+          variant="contained"
+          onClick={handleDecline}
+        >
+          Decline
         </Button>
       </CardContent>
     </Card>

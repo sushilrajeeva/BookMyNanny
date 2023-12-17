@@ -1,23 +1,33 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
-import { getInterestedNannies, approveNanny, unapproveNanny ,getListingById} from "@/firebase/ListingFunctions";
+import {
+  getInterestedNannies,
+  approveNanny,
+  unapproveNanny,
+  getListingById,
+} from "@/firebase/ListingFunctions";
 import { Link } from "react-router-dom";
 import { deleteAllMessagesByJobId } from "@/firebase/ChatFunctions";
 function InterestedNanny({ id }) {
   const [nannyData, setNannyData] = useState([]);
   const [selectedNanny, setSelectedNanny] = useState(null);
   const [approvedNanny, setApprovedNanny] = useState(null);
-  const [isUnapproveConfirmationOpen, setIsUnapproveConfirmationOpen] = useState(false);
-
+  const [listingData, setListingData] = useState(null);
+  const [isUnapproveConfirmationOpen, setIsUnapproveConfirmationOpen] =
+    useState(false);
 
   const fetchApprovedNanny = async () => {
     try {
       const listing = await getListingById(id);
-      console.log('Listing inside fetch approved nanny', listing.selectedNannyID);
-      if(listing.selectedNannyID && listing.selectedNannyID!==''){
-      setApprovedNanny(listing.selectedNannyID);
-      }else{
-      setApprovedNanny(null)
+      setListingData(listing);
+      console.log(
+        "Listing inside fetch approved nanny",
+        listing.selectedNannyID
+      );
+      if (listing.selectedNannyID && listing.selectedNannyID !== "") {
+        setApprovedNanny(listing.selectedNannyID);
+      } else {
+        setApprovedNanny(null);
       }
     } catch (error) {
       console.error("Error fetching Approved nanny:", error);
@@ -27,16 +37,16 @@ function InterestedNanny({ id }) {
   const handleApproveNanny = async (nannyID) => {
     await approveNanny(id, nannyID);
     fetchNannies();
-    fetchApprovedNanny()
+    fetchApprovedNanny();
   };
 
   const handleUnapproveNanny = async () => {
     await unapproveNanny(id, selectedNanny._id);
     //once a nanny is unapproved messages in chatroom will be deleted
-    await deleteAllMessagesByJobId(id)
+    await deleteAllMessagesByJobId(id);
     fetchNannies();
     setIsUnapproveConfirmationOpen(false);
-    fetchApprovedNanny()
+    fetchApprovedNanny();
   };
 
   const fetchNannies = async () => {
@@ -48,8 +58,6 @@ function InterestedNanny({ id }) {
     }
   };
 
-  
-
   useEffect(() => {
     fetchNannies();
     fetchApprovedNanny();
@@ -59,8 +67,6 @@ function InterestedNanny({ id }) {
     setSelectedNanny(nanny);
     setIsUnapproveConfirmationOpen(true);
   };
-
-  
 
   return (
     <div>
@@ -84,7 +90,10 @@ function InterestedNanny({ id }) {
                 </Button>
                 <Button
                   onClick={() => openUnapproveConfirmation(nanny)}
-                  disabled={nanny._id !== approvedNanny}
+                  disabled={
+                    nanny._id !== approvedNanny ||
+                    listingData.status === "completed"
+                  }
                 >
                   Unapprove Nanny
                 </Button>
@@ -96,9 +105,13 @@ function InterestedNanny({ id }) {
 
       {isUnapproveConfirmationOpen && (
         <div>
-          <Typography variant="p">Are you sure you want to unapprove the nanny?</Typography>
+          <Typography variant="p">
+            Are you sure you want to unapprove the nanny?
+          </Typography>
           <Button onClick={handleUnapproveNanny}>Yes</Button>
-          <Button onClick={() => setIsUnapproveConfirmationOpen(false)}>No</Button>
+          <Button onClick={() => setIsUnapproveConfirmationOpen(false)}>
+            No
+          </Button>
         </div>
       )}
     </div>
