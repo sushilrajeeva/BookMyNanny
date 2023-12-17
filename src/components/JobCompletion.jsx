@@ -1,9 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { onJobComplete } from "@/firebase/NannyFunctions";
 import { AuthContext } from "@/context/AuthContext";
 import { checkNumber } from "../helpers/index.js";
+import { Card, CardContent } from "./ui/card.jsx";
+import { Typography } from "@mui/material";
 
-function JobCompletion({ listing }) {
+function JobCompletion({ listing, onUpdatedListing }) {
   const [showForm, setShowForm] = useState(false);
   const [hoursWorked, setHoursWorked] = useState(0);
   const auth = useContext(AuthContext);
@@ -18,6 +20,7 @@ function JobCompletion({ listing }) {
       checkNumber(parseFloat(hoursWorked), "hours worked");
       console.log("LID", listing._id);
       await onJobComplete(listing._id, hoursWorked, auth.currentUser.uid);
+      onUpdatedListing();
       // Reset state
       setHoursWorked(0);
       setShowForm(false);
@@ -26,7 +29,7 @@ function JobCompletion({ listing }) {
     }
   };
 
-  return (
+  return listing.status === "pending" && listing.progressBar === 0 ? (
     <div>
       <button onClick={handleCompleteJob}>Complete Job</button>
       {showForm && (
@@ -43,6 +46,18 @@ function JobCompletion({ listing }) {
         </form>
       )}
     </div>
+  ) : listing.status === "completed" && listing.progressBar === 0 ? (
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Your request has been submitted</Typography>
+      </CardContent>
+    </Card>
+  ) : (
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Payment Completed</Typography>
+      </CardContent>
+    </Card>
   );
 }
 

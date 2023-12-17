@@ -169,6 +169,22 @@ const jobClose = async (listingId) => {
   }
 };
 
+const jobDecline = async (listingId) => {
+  try {
+    const listingDocRef = doc(db, "Listings", listingId);
+    const listing = await getDoc(listingDocRef);
+
+    if (listing) {
+      await updateDoc(listingDocRef, { status: "pending" });
+    } else {
+      throw "Listing does not exist.";
+    }
+  } catch (error) {
+    console.error("Error verifying job:", error);
+    return null;
+  }
+};
+
 const getPastParentJobs = async (parentID) => {
   try {
     console.log("Get Past jobs firestore method called");
@@ -209,5 +225,6 @@ export {
   getWalletBalance,
   jobCompleteVerification,
   jobClose,
+  jobDecline,
   getPastParentJobs,
 };
