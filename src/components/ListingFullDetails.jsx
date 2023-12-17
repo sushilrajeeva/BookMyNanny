@@ -25,19 +25,21 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { getParentById } from "@/firebase/ParentFunctions";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getNannyById } from "@/firebase/NannyFunctions";
+import CustomLoading from "./EssentialComponents/CustomLoading";
 
 function ListingFullDetails(props) {
   const { id } = useParams();
+  const [updateCounter, setUpdateCounter] = useState(0);
   const [listing, setListing] = useState(null);
   const { currentUser, userRole } = useContext(AuthContext);
   const [parentDP, setParentDP] = useState("");
   const [isInterested, setIsInterested] = useState(false);
 
   const [chatUserDoc, setChatUserDoc] = useState(null);
-  const [nannyUser, setNannyUser] = useState('');
-
+  // to keep track of data loading in useEffect
+  const [isLoading, setIsLoading] = useState(true);
 
   // Writing logic for checking if show chat dialogue box is enabled or not
   // I referred shadcn ui dialogue component -> https://ui.shadcn.com/docs/components/dialog
@@ -48,37 +50,36 @@ function ListingFullDetails(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // using this loader to ensure the component loads after data is set in state
+        setIsLoading(true);
         const data = await getListingById(id);
-        setIsInterested(data.interestedNannies.includes(currentUser.uid));
-        console.log("Data -> ", data.parentID);
         const parentDoc = await getParentById(data.parentID);
-        console.log(parentDoc.image);
-        setParentDP(parentDoc)
-
-        // if loggedin user is a parent then chat user is nanny
-        // console.log("user role", userRole);
-        // if(userRole.toLowerCase() === 'parent' && data.selectedNannyID){
-        //   const nannyDoc = await getNannyById(data.selectedNannyID);
-        //   setChatUserDoc(nannyDoc)
-
-        // }else if (userRole.toLowerCase() === 'nanny'){
-        //   const par = await getNannyById(data.selectedNannyID);
-        //   setChatUserDoc(par)
-        // }
-
-        // if(currentUser == "nanny"){
-        //   const nannyDoc = await getNannyById();
-
-        // }
-        // const nannyDP = await getNannyById()
         setListing(data);
+        setParentDP(parentDoc);
+        setIsInterested(data.interestedNannies.includes(currentUser.uid));
+
+        if (userRole) {
+          if (userRole.toLowerCase() === "parent" && data.selectedNannyID) {
+            const nannyDoc = await getNannyById(data.selectedNannyID);
+            setChatUserDoc(nannyDoc);
+          } else if (userRole.toLowerCase() === "nanny") {
+            setChatUserDoc(parentDoc);
+          }
+        }
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [id, currentUser.uid]);
+  }, [id, currentUser.uid, userRole, updateCounter]);
+
+  const handleUpdate = () => {
+    // Increment the counter to trigger a re-render
+    setUpdateCounter((prevCounter) => prevCounter + 1);
+  };
 
   const handleNannyInterest = async (listingId) => {
     const success = await nannyInterested(listingId, currentUser.uid);
@@ -93,6 +94,18 @@ function ListingFullDetails(props) {
       setIsInterested(false);
     }
   };
+
+  if (isLoading) {
+    return <CustomLoading />;
+  }
+
+  if (!userRole) {
+    return <CustomLoading />;
+  }
+
+  if (!listing) {
+    return <CustomLoading />;
+  }
 
   return (
     <div>
@@ -109,7 +122,7 @@ function ListingFullDetails(props) {
                 </Avatar>
                 <div>
                   <p className="text-lg font-medium leading-none">
-                    {parentDP.firstName}
+                    {parentDP.firstName} {parentDP.emailAddress}
                   </p>
                 </div>
               </div>
@@ -151,6 +164,7 @@ function ListingFullDetails(props) {
                   variant="destructive"
                   className="flex-1 mr-2"
                   onClick={() => handleNannyWithdraw(listing._id)}
+                  disabled={listing.status === "completed"}
                 >
                   Withdraw
                 </Button>
@@ -166,7 +180,7 @@ function ListingFullDetails(props) {
         currentUser.uid === listing.parentID &&
         listing.progressBar === 0 ? (
           <div className="card">
-            <InterestedNanny id={id} listing={listing} />
+            <InterestedNanny id={id} />
           </div>
         ) : (
           <></>
@@ -182,39 +196,61 @@ function ListingFullDetails(props) {
           )}
         </div> */}
         {listing && currentUser.uid === listing.selectedNannyID ? (
-          <JobCompletion listing={listing} />
+          <JobCompletion listing={listing} onUpdatedListing={handleUpdate} />
         ) : (
           <></>
         )}
         {listing &&
         currentUser.uid === listing.parentID &&
         listing.status === "completed" ? (
-          <PaymentDetails listing={listing} />
+          <PaymentDetails listing={listing} onUpdatedListing={handleUpdate} />
         ) : (
           <></>
         )}
       </div>
-      <div >
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}  className="max-w-lg mx-auto">
-          {
-            listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) && (listing.selectedNannyID) ?
-            (<div>
-              <DialogContent style={{ height: '80%' }} className="flex flex-col w-full">
-              <Chat room={id} className="h-[80%] overflow-hidden"/>
+
+      <div>
+        <Dialog
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          className="max-w-lg mx-auto"
+        >
+          {console.log("Our chat user is - ", chatUserDoc)}
+          {listing &&
+          (currentUser.uid === listing.selectedNannyID ||
+            currentUser.uid === listing.parentID) &&
+          listing.selectedNannyID ? (
+            <div>
+              <DialogContent
+                style={{ height: "90%" }}
+                className="flex flex-col w-full"
+              >
+                <Chat room={id} chatUser={chatUserDoc} />
               </DialogContent>
-            </div> ): (<div>
+            </div>
+          ) : (
+            <div>
               <DialogContent>
                 <Typography>
                   {console.log(" curent user ", currentUser.uid)}
                   {console.log(" parent ", parentDP._id)}
-                  {console.log("checkinggggg", currentUser.uid === parentDP._id)}
-                  { (currentUser.uid === parentDP._id) ? (<span>No user has been approved</span>): (<span>Chat is available only for the selected nanny and the owner of the listing</span>)}
+                  {console.log(
+                    "checkinggggg",
+                    currentUser.uid === parentDP._id
+                  )}
+
+                  {currentUser.uid === parentDP._id ? (
+                    <span>No user has been approved</span>
+                  ) : (
+                    <span>
+                      Chat is available only for the selected nanny and the
+                      owner of the listing
+                    </span>
+                  )}
                 </Typography>
               </DialogContent>
-            </div>)
-          }
-        
+            </div>
+          )}
         </Dialog>
       </div>
     </div>

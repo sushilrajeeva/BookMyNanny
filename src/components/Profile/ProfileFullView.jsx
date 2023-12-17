@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { getUserRole } from "@/firebase/AuthFunctions";
 import { getNannyById } from "@/firebase/NannyFunctions";
 import { getParentById } from "@/firebase/ParentFunctions"
+import CustomLoading from "../EssentialComponents/CustomLoading";
 
 function ProfileFullView() {
   const { id } = useParams();
@@ -34,7 +35,7 @@ function ProfileFullView() {
     fetchUserData();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <CustomLoading/>;
 
   if (!userData) return <div>User not found.</div>;
 

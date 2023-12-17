@@ -13,6 +13,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import CustomLoading from "../EssentialComponents/CustomLoading";
 
 function MyListing() {
   const [listings, setListings] = useState([]);
@@ -85,7 +86,7 @@ function MyListing() {
   if (loadingListings) {
     return (
       <div>
-        <h1>Loading....</h1>
+        <CustomLoading/>
       </div>
     );
   }

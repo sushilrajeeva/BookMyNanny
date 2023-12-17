@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { nannyProfile } from "@/schemas/nannyProfile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import CustomLoading from "../EssentialComponents/CustomLoading";
 
 const Profile = () => {
   const { currentUser, userRole } = useContext(AuthContext);
@@ -299,7 +300,7 @@ const Profile = () => {
 
   if (mainLoading) {
     // Show loading indicator while waiting for user data
-    return <p>Loading...</p>;
+    return <CustomLoading/>;
   }
 
   return (
@@ -340,7 +341,7 @@ const Profile = () => {
         </Card>
         <Card className="w-full p-4 ml-9">
           {!initialValues ? (
-            <p>Loading...</p>
+            <CustomLoading/>
           ) : (
             <Formik
               initialValues={initialValues}
