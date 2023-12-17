@@ -25,7 +25,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { getParentById } from "@/firebase/ParentFunctions";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getNannyById } from "@/firebase/NannyFunctions";
 
 function ListingFullDetails(props) {
   const { id } = useParams();
@@ -33,6 +34,10 @@ function ListingFullDetails(props) {
   const { currentUser, userRole } = useContext(AuthContext);
   const [parentDP, setParentDP] = useState("");
   const [isInterested, setIsInterested] = useState(false);
+
+  const [chatUserDoc, setChatUserDoc] = useState(null);
+  const [nannyUser, setNannyUser] = useState('');
+
 
   // Writing logic for checking if show chat dialogue box is enabled or not
   // I referred shadcn ui dialogue component -> https://ui.shadcn.com/docs/components/dialog
@@ -48,7 +53,18 @@ function ListingFullDetails(props) {
         console.log("Data -> ", data.parentID);
         const parentDoc = await getParentById(data.parentID);
         console.log(parentDoc.image);
-        setParentDP(parentDoc);
+        setParentDP(parentDoc)
+
+        // if loggedin user is a parent then chat user is nanny
+        // console.log("user role", userRole);
+        // if(userRole.toLowerCase() === 'parent' && data.selectedNannyID){
+        //   const nannyDoc = await getNannyById(data.selectedNannyID);
+        //   setChatUserDoc(nannyDoc)
+
+        // }else if (userRole.toLowerCase() === 'nanny'){
+        //   const par = await getNannyById(data.selectedNannyID);
+        //   setChatUserDoc(par)
+        // }
 
         // if(currentUser == "nanny"){
         //   const nannyDoc = await getNannyById();
@@ -178,20 +194,27 @@ function ListingFullDetails(props) {
           <></>
         )}
       </div>
-      <div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent>
-            {listing &&
-            (currentUser.uid === listing.selectedNannyID ||
-              currentUser.uid === listing.parentID) ? (
-              <Chat room={id} />
-            ) : (
-              <Typography>
-                Chat is available only for the selected nanny and the owner of
-                the listing
-              </Typography>
-            )}
-          </DialogContent>
+      <div >
+        
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}  className="max-w-lg mx-auto">
+          {
+            listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) && (listing.selectedNannyID) ?
+            (<div>
+              <DialogContent style={{ height: '80%' }} className="flex flex-col w-full">
+              <Chat room={id} className="h-[80%] overflow-hidden"/>
+              </DialogContent>
+            </div> ): (<div>
+              <DialogContent>
+                <Typography>
+                  {console.log(" curent user ", currentUser.uid)}
+                  {console.log(" parent ", parentDP._id)}
+                  {console.log("checkinggggg", currentUser.uid === parentDP._id)}
+                  { (currentUser.uid === parentDP._id) ? (<span>No user has been approved</span>): (<span>Chat is available only for the selected nanny and the owner of the listing</span>)}
+                </Typography>
+              </DialogContent>
+            </div>)
+          }
+        
         </Dialog>
       </div>
     </div>
