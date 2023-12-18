@@ -90,7 +90,7 @@ const NavigationAuth = () => {
               <NavLink className="px-4" to="/profile">Profile</NavLink>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <NavLink className="px-4" to="/account">Account</NavLink>
+              <NavLink className="px-4" to="/account">Change Password</NavLink>
             </DropdownMenuItem>
             <div className="dropdown-separator"></div>
             <DropdownMenuItem asChild>
