@@ -16,6 +16,7 @@ import PaymentSuccess from "../components/EssentialComponents/PaymentSuccess"
 import PaymentFailure from "../components/EssentialComponents/PaymentFailure"
 import ShowProfile from "@/components/Profile/ShowProfile";
 import ProfileFullView from "@/components/Profile/ProfileFullView";
+import  Error404Page  from "@/components/EssentialComponents/Error404Page";
 
 function Routes() {
   return (
@@ -42,8 +43,9 @@ function Routes() {
             <Route path="/profile-details/:id" element={<ProfileFullView/>}/>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/paymentSuccess" element={<PaymentSuccess />} />
-            <Route path="/paymentFailure" element={<PaymentFailure />} />
+            {/* <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+            <Route path="/paymentFailure" element={<PaymentFailure />} /> */}
+            <Route path="/*" element={<Error404Page />}></Route>
           </AppRoutes>
         </div>
       </AlertProvider>
