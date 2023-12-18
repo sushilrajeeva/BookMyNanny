@@ -33,9 +33,9 @@ const ParentDashboard = ({ userRole }) => {
             <Button onClick={() => renderComponent("PastListings")}>
               Past Listings
             </Button>
-            <Button onClick={() => renderComponent("Wallet")}>
+            {/* <Button onClick={() => renderComponent("Wallet")}>
               Wallet
-            </Button>
+            </Button> */}
           </>
         </Box>
       </Paper>
@@ -45,7 +45,7 @@ const ParentDashboard = ({ userRole }) => {
         {activeComponent === "ActiveListings" && <ActiveListings />}
         {activeComponent === "PastListings" && <PastListings />}
         {activeComponent === "MyListing" && <MyListing />}
-        {activeComponent === "Wallet" && <Wallet />}
+        {/* {activeComponent === "Wallet" && <Wallet />} */}
       </Paper>
     </Container>
   );
