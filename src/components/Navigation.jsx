@@ -106,12 +106,13 @@ const NavigationAuth = () => {
 
 const NavigationNonAuth = () => {
   return (
-    <nav className="flex items-center space-x-4 lg:space-x-6">
+    <nav className="flex items-center space-x-4 lg:space-x-6 pt-4">
+      <div className="flex space-x-4 lg:space-x-6">
       <NavLink
         to="/"
         className="text-sm font-medium transition-colors hover:text-primary"
       >
-        Landing
+        Home
       </NavLink>
       <NavLink
         to="/signup"
@@ -125,6 +126,7 @@ const NavigationNonAuth = () => {
       >
         Sign-In
       </NavLink>
+      </div>
     </nav>
   );
 };
