@@ -16,6 +16,8 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
+import { ModeToggle } from "./mode-toggle";
+
 // For this navbar Development I referred the shadcn ui navbar design 
 // citation : https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/dashboard/components/user-nav.tsx
 // Also referred various tailwind css articles on making ui designs related to navbar
@@ -37,7 +39,7 @@ const Navigation = () => {
 // This is to make the navbar fixed
 const FixedNavbar = ({ children }) => {
   return (
-    <div className="fixed top-0 h-14 left-0 w-full bg-white bg-opacity-75 backdrop-filter backdrop-blur-lg z-50 border-b border-gray-200">
+    <div className="fixed top-0 h-14 left-0 w-full bg-opacity-75 backdrop-filter backdrop-blur-lg z-50 border-b border-gray-200">
       {children}
     </div>
     
@@ -64,7 +66,11 @@ const NavigationAuth = () => {
           Dashboard
         </NavLink>
       </div>
-      <div className="ml-auto p-2">
+
+      <div className="ml-auto">
+      <ModeToggle /> {/* Add ModeToggle here */}
+      </div>
+      <div className="p-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
