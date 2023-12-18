@@ -11,7 +11,7 @@ const SignUp = () => {
   };
 
   return (
-    <div>
+    <div className="mt-16">
       <ToggleButtonGroup
         color="primary"
         value={alignment}

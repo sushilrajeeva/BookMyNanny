@@ -3,7 +3,7 @@ import {doSignOut} from '../firebase/AuthFunctions';
 
 const SignOutButton = () => {
   return (
-    <button className='button' type='button' onClick={doSignOut}>
+    <button className='button mt-16' type='button' onClick={doSignOut}>
       Sign Out
     </button>
   );

@@ -8,11 +8,11 @@ import CustomLoading from "./EssentialComponents/CustomLoading";
 
 // import Dashboard from "./Dashboard";
 
-function Home() {
+function Dashboard() {
   const { currentUser, userRole } = useContext(AuthContext);
   console.log(currentUser);
   return (
-    <div>
+    <div className="mt-16">
       <h2>
         Hello {currentUser && currentUser.displayName}, this is the Protected
         Home page The user role is :{userRole}
@@ -33,4 +33,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Dashboard;
