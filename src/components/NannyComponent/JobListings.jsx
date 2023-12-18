@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   getAllListings,
+  getNannyById,
   nannyInterested,
   withdrawNannyInterest,
 } from "../../firebase/NannyFunctions";
 import { AuthContext } from "../../context/AuthContext";
-import ListingFullDetails from "../ListingFullDetails";
-// Importing Button from shadcn
 import { Button } from "@/components/ui/button";
 
 // Importing card from shadcn
@@ -25,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // Importing input ui from shadcn
 import { Input } from "@/components/ui/input";
+import { getParentById } from "@/firebase/ParentFunctions";
 
 function formatFirestoreTimestamp(timestamp) {
   // Checking if timestamp is a Firestore Timestamp object
@@ -41,6 +41,7 @@ function formatFirestoreTimestamp(timestamp) {
 
 function JobListings() {
   const [jobListings, setJobListings] = useState([]);
+  const [parentDetails, setParentDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const { currentUser, userRole } = useContext(AuthContext);
@@ -49,9 +50,22 @@ function JobListings() {
     async function fetchListings() {
       try {
         const listings = await getAllListings();
+
         console.log("All listings");
         console.log(listings);
-        setJobListings(listings);
+
+        // Fetch parent data for each listing
+        const listingsWithParentData = await Promise.all(
+          listings.map(async (listing) => {
+            const parentData = await getParentById(listing.parentID);
+            return {
+              ...listing,
+              parentData,
+            };
+          })
+        );
+
+        setJobListings(listingsWithParentData);
       } catch (error) {
         console.error("Error fetching listings:", error);
       }
@@ -65,7 +79,8 @@ function JobListings() {
     setSearchQuery(e.target.value.toString().toLowerCase());
   };
 
-  const handleNannyInterest = async (listingId) => {
+  const handleNannyInterest = async (listingId, e) => {
+    e.preventDefault();
     console.log("Handle nanny interest is called");
     console.log("ListingID:", listingId);
     console.log("NannyID:", currentUser.uid);
@@ -119,7 +134,8 @@ function JobListings() {
     </div>
   );
 
-  const handleNannyWithdraw = async (listingId) => {
+  const handleNannyWithdraw = async (listingId, e) => {
+    e.preventDefault();
     const success = await withdrawNannyInterest(listingId, currentUser.uid);
     if (success) {
       console.log("Nanny removed from InterestedNanny list successfully");
@@ -158,63 +174,81 @@ function JobListings() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen pt-10">
-      <h1>Job Listings</h1>
-      <Input
-        type="text"
-        placeholder="Search listings..."
-        value={searchQuery}
-        onChange={handleSearchChange}
-        className="mb-5 w-full max-w-md"
-      />
-      <div className="flex flex-wrap justify-center gap-5 w-full px-4">
-        {filteredListings.map((listing, index) => (
-          <Card key={index} className="w-[300px]">
-            <CardHeader>
-              <CardTitle>{listing.listingName}</CardTitle>
-              <CardDescription>
-                <strong>Posted Date:</strong>{" "}
-                {formatFirestoreTimestamp(listing.postedDate)}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                <strong>Description:</strong> {listing.description}
-              </p>
-              <p>
-                <strong>Hourly Rate:</strong> {listing.hourlyRate}
-              </p>
-            </CardContent>
-            <CardFooter className="flex justify-between">
+    <>
+      <div className="flex flex-col items-center min-h-screen pt-10">
+        <h1>Job Listings</h1>
+        <Input
+          type="text"
+          placeholder="Search listings..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="mb-5 w-full max-w-md"
+        />
+        <div className="flex flex-wrap justify-center gap-4 w-full px-4">
+          {filteredListings.map((listing, index) => (
+            <div key={index} className="w-[800px] h-[150px] mb-20">
               <Link to={`/listing/${listing._id}`}>
-                <button
-                  onClick={() => console.log("View Listing is called")}
-                  className="bg-blue-500 text-white p-2 rounded"
-                >
-                  View Listing
-                </button>
+                <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out bg-white rounded-lg p-4">
+                  <CardHeader>
+                    <div className="flex flex-col items-center space-x-4">
+                      <img
+                        src={listing.parentData?.image}
+                        alt={`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
+                        className="w-[80px] h-[80px] rounded-full"
+                      />
+                      <div>
+                        <CardDescription className="text-gray-900">
+                          {`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <div className="text-gray-500 text-sm">
+                      Posted Date:{" "}
+                      {formatFirestoreTimestamp(listing.postedDate)}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <CardTitle className="text-xl font-semibold">
+                      {listing.listingName}
+                    </CardTitle>
+                    <p>
+                      <strong>Job Start Date:</strong> {listing.jobStartDate}
+                    </p>
+                    <p>
+                      <strong>Job End Date:</strong> {listing.jobEndDate}
+                    </p>
+                    <p>
+                      <strong>Pincode:</strong> {listing.pincode}
+                    </p>
+                    <p>
+                      <strong>Hourly Rate:</strong> {listing.hourlyRate}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    {listing.interestedNannies &&
+                    listing.interestedNannies.includes(currentUser.uid) ? (
+                      <Button
+                        variant="destructive"
+                        onClick={(e) => handleNannyWithdraw(listing._id, e)}
+                      >
+                        Withdraw
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        onClick={(e) => handleNannyInterest(listing._id, e)}
+                      >
+                        Apply
+                      </Button>
+                    )}
+                  </CardFooter>
+                </Card>
               </Link>
-              {listing.interestedNannies &&
-              listing.interestedNannies.includes(currentUser.uid) ? (
-                <Button
-                  variant="destructive"
-                  onClick={() => handleNannyWithdraw(listing._id)}
-                >
-                  Withdraw
-                </Button>
-              ) : (
-                <Button
-                  variant="secondary"
-                  onClick={() => handleNannyInterest(listing._id)}
-                >
-                  Apply
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-        ))}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
