@@ -304,7 +304,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-card">
+    <div className="profile-card mt-16">
       <div className=" flex flex-row">
         <Card className="w-full h-[340px] md:w-[340px] p-4 ml-9">
           <CardContent>

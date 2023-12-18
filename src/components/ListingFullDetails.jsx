@@ -115,7 +115,7 @@ function ListingFullDetails(props) {
   }
 
   return (
-    <div>
+    <div className="mt-16">
       <div className="card-container">
         {listing && (
           <Card className="w-[550px] mx-auto shadow-lg">
@@ -274,14 +274,24 @@ function ListingFullDetails(props) {
           open={isInterestedDialogOpen}
           onOpenChange={setIsInterestedDialogOpen}
           className="max-w-lg mx-auto"
->
-          <DialogContent className="flex flex-col w-full h-[700px] overflow-y-auto" style={{ maxWidth: '600px' }}>
-            {listing && currentUser.uid === listing.parentID && listing.progressBar === 0 ? (
-            <InterestedNanny id={id} />
-            ) : (
-              <Typography>No nannies have shown interest to this listing yet!</Typography>
-            )}
-          </DialogContent>
+        >
+          {
+            listing && currentUser.uid === listing.parentID && listing.progressBar === 0 ? (
+              <div>
+                <DialogContent className="flex flex-col w-full h-[700px] overflow-y-auto" style={{ maxWidth: '600px' }}>
+                  <InterestedNanny id={id} />
+                </DialogContent>
+            </div>
+            ):(
+              <div>
+                <DialogContent >
+                  <Typography>No nannies have shown interest to this listing yet!</Typography>
+                </DialogContent>
+              </div>
+            )
+            
+          }
+          
         </Dialog>
 
       </div>

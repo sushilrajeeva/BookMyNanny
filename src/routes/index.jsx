@@ -2,7 +2,7 @@ import React from "react";
 import "../App.css";
 import { Route, Routes as AppRoutes } from "react-router-dom";
 import Account from "../components/Account";
-import Home from "../components/Home";
+import Home from "../components/Dashboard";
 import Landing from "../components/Landing";
 import Navigation from "../components/Navigation";
 import SignIn from "../components/SignIn";
@@ -17,6 +17,8 @@ import PaymentFailure from "../components/EssentialComponents/PaymentFailure"
 import ShowProfile from "@/components/Profile/ShowProfile";
 import ProfileFullView from "@/components/Profile/ProfileFullView";
 import  Error404Page  from "@/components/EssentialComponents/Error404Page";
+import SignOutButton from "@/components/SignOut";
+import Dashboard from "../components/Dashboard"
 
 function Routes() {
   return (
@@ -29,7 +31,10 @@ function Routes() {
           <AppRoutes>
             <Route path="/" element={<Landing />} />
             <Route path="/home" element={<PrivateRoute />}>
-              <Route path="/home" element={<Home />} />
+              <Route path="/home" element={<Landing />} />
+            </Route>
+            <Route path="/dashboard" element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="/account" element={<PrivateRoute />}>
               <Route path="/account" element={<Account />} />
@@ -43,6 +48,7 @@ function Routes() {
             <Route path="/profile-details/:id" element={<ProfileFullView/>}/>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/signout" element={<SignOutButton />} />
             {/* <Route path="/paymentSuccess" element={<PaymentSuccess />} />
             <Route path="/paymentFailure" element={<PaymentFailure />} /> */}
             <Route path="/*" element={<Error404Page />}></Route>

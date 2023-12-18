@@ -40,7 +40,8 @@ function ProfileFullView() {
   if (!userData) return <div>User not found.</div>;
 
   return (
-    <Grid container justifyContent="center">
+    <div className="mt-16">
+      <Grid container justifyContent="center">
       <Grid item xs={12} md={6}>
         <Card>
           <CardMedia component="img" alt="User Image" height="300" image={userData.image} />
@@ -69,6 +70,7 @@ function ProfileFullView() {
         </Card>
       </Grid>
     </Grid>
+    </div>
   );
 }
 
