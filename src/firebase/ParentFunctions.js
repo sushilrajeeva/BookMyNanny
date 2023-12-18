@@ -82,6 +82,36 @@ const getAllListings = async (parentID) => {
   }
 };
 
+// Methods for Active Listings of the given parent
+
+// This method will give all the listings in the listings collection firestore whose parentID matches the current loggedin Nanny's nannyID
+const getActiveListings = async (parentID) => {
+  try {
+    console.log("Get active jobs firestore method called");
+    const listingsCollection = collection(db, "Listings");
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const activeListings = [];
+
+    // modifying to get only those listings where the the listing's parentID matches the given parentID and the status is pending
+    listingsSnapshot.forEach((doc) => {
+      const listingData = doc.data();
+      if (listingData.parentID == parentID && listingData.status == "pending") {
+        activeListings.push(listingData);
+      }
+    });
+    console.log("Active Listings : ", activeListings);
+    return activeListings;
+  } catch (error) {
+    console.log(error);
+    console.error(
+      "Error getting all Active Listings Listings for this Parent!!:",
+      error
+    );
+    throw new Error("Error getting all users");
+  }
+};
+
 const getWalletBalance = async (parentID) => {
   try {
     const parent = await getParentById(parentID);
@@ -227,4 +257,5 @@ export {
   jobClose,
   jobDecline,
   getPastParentJobs,
+  getActiveListings,
 };
