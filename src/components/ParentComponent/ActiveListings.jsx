@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {getAllListings } from '../../firebase/ParentFunctions';
+import {getAllListings, getActiveListings } from '../../firebase/ParentFunctions';
 import DataTable from '../ListingTable/data-table';
 import { AuthContext } from "../../context/AuthContext";
 import { columns } from "../ListingTable/columns"
@@ -16,7 +16,7 @@ function ActiveListings() {
       try {
         // Check if there is a logged-in user with the parent role
         if (currentUser && userRole === 'parent' && currentUser.uid        ) {
-          const parentListings = await getAllListings(currentUser.uid);
+          const parentListings = await getActiveListings(currentUser.uid);
           setListings(parentListings);
           console.log(parentListings);
         }
