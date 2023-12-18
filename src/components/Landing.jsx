@@ -34,19 +34,19 @@ function Landing() {
       <div className="grid md:grid-cols-2 gap-6">
         <FeatureCard
           title="Find Experienced Nannies"
-          description="Discover qualified and caring nannies for your children."
+          description="Explore a tailored marketplace where parents effortlessly post nanny job listings, and skilled caregivers apply, allowing you to discover the perfect match for your family's unique needs."
         />
         <FeatureCard
           title="Easy Booking Process"
-          description="Effortlessly book the perfect nanny for your needs."
+          description="Simplify your search for the ideal nanny with our user-friendly booking process. Parents can seamlessly post job listings, while nannies apply, creating an efficient and straightforward connection between families and caregivers."
         />
         <FeatureCard
           title="Safe and Reliable"
-          description="Our nannies undergo thorough background checks for your peace of mind."
+          description="Ensure the safety of your loved ones with our thorough background checks on all applying nannies. Our commitment to reliability means you can confidently browse and choose from a pool of trustworthy caregivers."
         />
         <FeatureCard
-          title="Secure Payments"
-          description="Enjoy safe and secure payment methods for your bookings."
+          title="Flexible Payments"
+          description="Embrace financial transparency with our platform – take control of your payments directly. Connect with applied nannies, engage in open communication, and make informed decisions as you discover the perfect match for your family's specific requirements."
         />
       </div>
 
