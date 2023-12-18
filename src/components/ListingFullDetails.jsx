@@ -44,8 +44,15 @@ function ListingFullDetails(props) {
   // Writing logic for checking if show chat dialogue box is enabled or not
   // I referred shadcn ui dialogue component -> https://ui.shadcn.com/docs/components/dialog
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Adding state of show interest button dialouge box
+  const [isInterestedDialogOpen, setIsInterestedDialogOpen] = useState(false);
+
   // This funciton just toggles the chat on or not
   const toggleDialog = () => setIsDialogOpen(!isDialogOpen);
+  // This funciton just toggles the show intrested nannies
+  const toggleInterestedDialog = () => setIsInterestedDialogOpen(!isInterestedDialogOpen);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,6 +158,16 @@ function ListingFullDetails(props) {
               </CardDescription>
             </CardContent>
             <CardFooter className="flex justify-between p-4">
+              {userRole === "parent" && (
+                <Button
+                  variant="outline"
+                  className="flex-1 mr-2"
+                  onClick={toggleInterestedDialog}
+                >
+                  View Interested Nannies
+                </Button>
+              )}
+
               {userRole === "nanny" && !isInterested ? (
                 <Button
                   variant="outline"
@@ -176,7 +193,7 @@ function ListingFullDetails(props) {
           </Card>
         )}
 
-        {listing &&
+        {/* {listing &&
         currentUser.uid === listing.parentID &&
         listing.progressBar === 0 ? (
           <div className="card">
@@ -184,7 +201,7 @@ function ListingFullDetails(props) {
           </div>
         ) : (
           <></>
-        )}
+        )} */}
 
         {/* <div className="card">
           {listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) ? ( 
@@ -252,6 +269,21 @@ function ListingFullDetails(props) {
             </div>
           )}
         </Dialog>
+
+        <Dialog
+          open={isInterestedDialogOpen}
+          onOpenChange={setIsInterestedDialogOpen}
+          className="max-w-lg mx-auto"
+>
+          <DialogContent className="flex flex-col w-full h-[700px] overflow-y-auto" style={{ maxWidth: '600px' }}>
+            {listing && currentUser.uid === listing.parentID && listing.progressBar === 0 ? (
+            <InterestedNanny id={id} />
+            ) : (
+              <Typography>No nannies have shown interest to this listing yet!</Typography>
+            )}
+          </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );
