@@ -1,38 +1,35 @@
 import React, { useState } from "react";
 import VerifiedNannies from "../AdminComponent/VerifiedNannies";
 import PendingVerifications from "../AdminComponent/PendingVerifications";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import Overview from "../AdminComponent/Overview";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AdminDashboard = ({ userRole }) => {
-  const [activeComponent, setActiveComponent] = useState("PendingVerifications");
+  const [tabValue, setTabValue] = useState("Overview");
 
-  const renderComponent = (component) => {
-    setActiveComponent(component);
-  };
+// For dashboard design i referred -> https://ui.shadcn.com/examples/dashboard
+// and https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/dashboard/page.tsx
 
   return (
-    <Container maxWidth="lg" className="dashboard">
-      <Paper elevation={3} className="navigation">
-        <Box>
-          <>
-            <Button onClick={() => renderComponent("VerifiedNannies")}>
-              Verified Nannies
-            </Button>
-            <Button onClick={() => renderComponent("PendingVerifications")}>
-              Pending Verifications
-            </Button>
-          </>
-        </Box>
-      </Paper>
-
-      <Paper elevation={3} className="component-container">
-        {activeComponent === "VerifiedNannies" && <VerifiedNannies />}
-        {activeComponent === "PendingVerifications" && <PendingVerifications />}
-      </Paper>
-    </Container>
+    <div className="min-h-screen p-6">
+      <h2 className="text-3xl font-bold  mb-6">Admin Dashboard</h2>
+      <Tabs value={tabValue} onValueChange={setTabValue} >
+        <TabsList className="justify-left mb-4">
+          <TabsTrigger value="Overview" className="text-current">Overview</TabsTrigger>
+          <TabsTrigger value="VerifiedNannies" className="text-current">Verified Nannies</TabsTrigger>
+          <TabsTrigger value="PendingVerifications" className="text-current">Pending Verifications</TabsTrigger>
+        </TabsList>
+        <TabsContent value="Overview">
+          <Overview />
+        </TabsContent>
+        <TabsContent value="VerifiedNannies">
+          <VerifiedNannies />
+        </TabsContent>
+        <TabsContent value="PendingVerifications">
+          <PendingVerifications />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
