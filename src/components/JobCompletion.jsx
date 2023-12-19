@@ -56,8 +56,8 @@ function JobCompletion({ listing, onUpdatedListing }) {
   };
 
   return (
-    <Card className="mt-5">
-      <CardContent>
+    <Card className=" flex flex-col pt-8 items-center mt-5">
+      <CardContent className="flex flex-col items-center">
         {listing.status === "pending" && listing.progressBar === 0 && (
           <Box>
             <Button
@@ -95,18 +95,6 @@ function JobCompletion({ listing, onUpdatedListing }) {
               <Button onClick={handleCancel} variant="destructive" mt={2}>
                 Cancel
               </Button>
-              {/* {calculate && (
-              <div className="p-4 border border-gray-400 bg-white rounded-lg">
-                <p>{totalPay}</p>
-                <div className="text-gray-700 text-base mb-4">
-                  Are you sure you want to submit the Hours worked?
-                </div>
-                <Button onClick={handleConfirmSubmission}>Yes</Button>
-                <Button variant="secondary" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </div>
-            )} */}
               {calculate && (
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -136,7 +124,7 @@ function JobCompletion({ listing, onUpdatedListing }) {
         )}
 
         {listing.status === "completed" && listing.progressBar === 0 && (
-          <CardContent>
+          <CardContent className="flex flex-col items-center">
             <CheckCircleIcon fontSize="large" color="warning" />
             <Typography variant="h6" mt={2}>
               Request Submitted
@@ -160,7 +148,7 @@ function JobCompletion({ listing, onUpdatedListing }) {
         )}
 
         {listing.status === "completed" && listing.progressBar === 100 && (
-          <CardContent>
+          <CardContent className="flex flex-col items-center">
             <CheckCircleIcon fontSize="large" color="success" />
             <Typography variant="h6" mt={2}>
               Payment Completed
