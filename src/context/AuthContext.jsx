@@ -27,7 +27,9 @@ export const AuthProvider = ({ children }) => {
             _id: userDetails._id,
             emailAddress: userDetails.emailAddress,
             image: userDetails.image,
-            displayName: userDetails.firstName + userDetails.lastName,
+            displayName: userDetails.firstName + " " + userDetails.lastName,
+            firstName: userDetails.firstName,
+            lastName: userDetails.lastName
           };
           setUserView(userDoc);
         } catch (error) {

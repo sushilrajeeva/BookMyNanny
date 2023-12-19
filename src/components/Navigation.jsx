@@ -39,11 +39,20 @@ const Navigation = () => {
 // This is to make the navbar fixed
 const FixedNavbar = ({ children }) => {
   return (
-    <div className="fixed top-0 h-14 left-0 w-full bg-opacity-75 backdrop-filter backdrop-blur-lg z-50 border-b border-gray-200">
+    <div className="fixed top-0 h-14 left-0 w-full bg-opacity-75 backdrop-filter backdrop-blur-lg z-50 border-b">
       {children}
     </div>
     
   );
+};
+
+// Wrote a custom function to get initials from displayName
+const getInitials = (name) => {
+  const parts = name.split(' ');
+  const initials = parts.length > 1
+    ? `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`
+    : parts[0].charAt(0);
+  return initials.toUpperCase();
 };
 
 
@@ -75,7 +84,7 @@ const NavigationAuth = () => {
           <DropdownMenuTrigger asChild>
             <Avatar>
               <AvatarImage src={userView.image} alt={userView.displayName} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>{getInitials(userView.displayName)}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-auto p-2" align="end">
@@ -92,7 +101,7 @@ const NavigationAuth = () => {
             <DropdownMenuItem asChild>
               <NavLink className="px-4" to="/account">Change Password</NavLink>
             </DropdownMenuItem>
-            <div className="dropdown-separator"></div>
+            
             <DropdownMenuItem asChild>
               <span onClick={doSignOut} className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer">Sign Out</span>
             </DropdownMenuItem>
