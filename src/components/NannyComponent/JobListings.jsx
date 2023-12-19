@@ -104,36 +104,15 @@ function JobListings() {
     }
   };
 
-  // To conditinoally render on loading animation
-  const renderSkeleton = () => (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: "20px",
-      }}
-    >
-      {Array.from({ length: 10 }).map((_, index) => (
-        <Card key={index} className="w-[300px]">
-          <CardHeader>
-            <Skeleton height="20px" width="70%" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton height="15px" width="90%" />
-            <Skeleton height="15px" width="85%" style={{ marginTop: "10px" }} />
-            <Skeleton height="15px" width="80%" style={{ marginTop: "10px" }} />
-            <Skeleton height="15px" width="75%" style={{ marginTop: "10px" }} />
-          </CardContent>
-          <CardFooter className="flex justify-between items-center">
-            <Skeleton height="35px" width="48%" className="rounded-md" />
-            <Skeleton height="35px" width="48%" className="rounded-md" />
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
-  );
-
+  // Wrote a custom function to get initials from displayName
+const getInitials = (name) => {
+  const parts = name.split(' ');
+  const initials = parts.length > 1
+    ? `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`
+    : parts[0].charAt(0);
+  return initials.toUpperCase();
+};
+  
   const handleNannyWithdraw = async (listingId, e) => {
     e.preventDefault();
     const success = await withdrawNannyInterest(listingId, currentUser.uid);
@@ -165,17 +144,53 @@ function JobListings() {
       listing.hourlyRate.toString().toLowerCase().includes(searchQuery)
   );
 
+  // To conditinoally render on loading animation
+  const SkeletonCard = () => (
+    <div className="w-full max-w-[800px] mb-20">
+      <Card className="hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
+        <CardHeader>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              <Skeleton className="w-[80px] h-[80px] rounded-full mr-4" />
+              <div>
+                <Skeleton className="h-6 w-36 mb-1" /> {/* Adjust the width as needed */}
+                <Skeleton className="h-6 w-24" />
+              </div>
+            </div>
+            <Skeleton className="h-6 w-24" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-6 w-full mb-2" />
+          <Skeleton className="h-4 w-3/4 mb-2" />
+          <Skeleton className="h-4 w-2/3" />
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-8 w-20" />
+        </CardFooter>
+      </Card>
+    </div>
+  );
+
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        {renderSkeleton()}
+      <div className="flex flex-col items-center min-h-screen pt-4">
+        <h1>Job Listings</h1>
+        <Skeleton className="mb-5 w-full max-w-md h-10" />
+        <div className="flex flex-col items-center w-full px-4">
+          <SkeletonCard />
+          <SkeletonCard />
+          {/* Add more SkeletonCards if needed */}
+        </div>
       </div>
     );
   }
 
+
   return (
     <>
-      <div className="flex flex-col items-center min-h-screen pt-10">
+      <div className="flex flex-col items-center min-h-screen pt-4">
         <h1>Job Listings</h1>
         <Input
           type="text"
@@ -188,14 +203,20 @@ function JobListings() {
           {filteredListings.map((listing, index) => (
             <div key={index} className="w-[800px] h-[150px] mb-20">
               <Link to={`/listing/${listing._id}`}>
-                <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out bg-white rounded-lg p-4">
+                <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
                   <CardHeader>
                     <div className="flex flex-col items-center space-x-4">
-                      <img
-                        src={listing.parentData?.image}
-                        alt={`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
-                        className="w-[80px] h-[80px] rounded-full"
-                      />
+                    {listing.parentData?.image ? (
+                        <img
+                          src={listing.parentData.image}
+                          alt={`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
+                          className="w-[80px] h-[80px] rounded-full"
+                        />
+                      ) : (
+                        <div className="w-[80px] h-[80px] rounded-full bg-blue-200 flex items-center justify-center text-lg font-semibold">
+                          {getInitials(`${listing.parentData?.firstName} ${listing.parentData?.lastName}`)}
+                        </div>
+                      )}
                       <div>
                         <CardDescription className="text-gray-900">
                           {`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}

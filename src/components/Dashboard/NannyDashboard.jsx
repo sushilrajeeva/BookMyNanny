@@ -2,74 +2,71 @@ import React, { useEffect, useState, useContext } from "react";
 import ActiveJobs from "../NannyComponent/ActiveJobs";
 import PastJobs from "../NannyComponent/PastJobs";
 import JobListings from "../NannyComponent/JobListings";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import CustomLoading from "../EssentialComponents/CustomLoading";
+
 import { getNannyById } from "@/firebase/NannyFunctions";
 import { AuthContext } from "../../context/AuthContext";
 import NotVerified from "../NannyComponent/NotVerified";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// Converting this to shadcn ui
 const NannyDashboard = () => {
   const { currentUser } = useContext(AuthContext);
-  const [activeComponent, setActiveComponent] = useState("JobListings");
+  const [tabValue, setTabValue] = useState("JobListings");
   const [nannyData, setNannyData] = useState(null);
+  const [isLoading, setLoading] = useState(true)
 
-  const renderComponent = (component) => {
-    setActiveComponent(component);
-  };
+  
 
   useEffect(() => {
     const fetchNanny = async () => {
       try {
+        setLoading(true)
         const nannyDetails = await getNannyById(currentUser.uid);
         setNannyData(nannyDetails);
       } catch (error) {
         console.error("Error fetching nanny:", error);
+      } finally {
+        setLoading(false)
       }
     };
 
     fetchNanny();
   }, [currentUser]);
 
-  return (
-    <Container maxWidth="lg" className="dashboard">
-      {nannyData !== null ? ( // Check if nannyData is not null
-        nannyData.verified === true ? (
-          <>
-            <Paper elevation={3} className="navigation">
-              <Box>
-                <>
-                  <Button onClick={() => renderComponent("JobListings")}>
-                    Job Listings
-                  </Button>
-                  <Button onClick={() => renderComponent("ActiveJobs")}>
-                    Active Jobs
-                  </Button>
-                  <Button onClick={() => renderComponent("PastJobs")}>
-                    Past Jobs
-                  </Button>
-                </>
-              </Box>
-            </Paper>
+  if(isLoading){
+    return (
+      <div>
+        <CustomLoading/>
+      </div>
+    )
+  }
 
-            <Paper elevation={3} className="component-container">
-              {activeComponent === "ActiveJobs" && <ActiveJobs />}
-              {activeComponent === "PastJobs" && <PastJobs />}
-              {activeComponent === "JobListings" && <JobListings />}
-            </Paper>
-          </>
-        ) : (
-          <Paper elevation={3} className="not-verified">
-            <Box>
-              <NotVerified />
-            </Box>
-          </Paper>
-        )
-      ) : (
-        <div>Loading</div>
-      )}
-    </Container>
+  if (nannyData.verified !== true) {
+    return <div className="p-6"><NotVerified /></div>; // Not verified state
+  }
+
+  return (
+    <div className="min-h-screen p-6">
+      <h2 className="text-3xl font-bold mb-6">Nanny Dashboard</h2>
+      <Tabs value={tabValue} onValueChange={setTabValue}>
+        <TabsList className="justify-left mb-4">
+          <TabsTrigger value="JobListings" className="text-current">Job Listings</TabsTrigger>
+          <TabsTrigger value="ActiveJobs" className="text-current">Active Jobs</TabsTrigger>
+          <TabsTrigger value="PastJobs" className="text-current">Past Jobs</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="JobListings">
+          <JobListings />
+        </TabsContent>
+        <TabsContent value="ActiveJobs">
+          <ActiveJobs />
+        </TabsContent>
+        <TabsContent value="PastJobs">
+          <PastJobs />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
