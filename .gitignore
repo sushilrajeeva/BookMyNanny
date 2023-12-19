@@ -1,1 +1,17 @@
-node_modules
+# Ignore node_modules in all directories
+node_modules/
+
+# Ignore package-lock.json in all directories
+package-lock.json
+
+# Ignore .env files in Client and Server directories
+client/.env
+server/.env
+
+client/package-lock.json
+server/package-lock.json
+
+
+# If you also want to ignore the main project folder's .env file (if it exists)
+# Uncomment the following line
+#.env
