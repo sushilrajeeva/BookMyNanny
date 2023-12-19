@@ -7,8 +7,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const AdminDashboard = ({ userRole }) => {
   const [tabValue, setTabValue] = useState("Overview");
 
-// For dashboard design i referred -> https://ui.shadcn.com/examples/dashboard
-// and https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/dashboard/page.tsx
+  // For dashboard design i referred -> https://ui.shadcn.com/examples/dashboard
+  // and https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/dashboard/page.tsx
+
+  // referece for two way binding: https://handsontable.com/blog/understanding-data-binding-in-react#:~:text=Two%2Dway%20data%20binding%20allows,is%20achieved%20using%20controlled%20components.
+
+  // Creating a two way binding for setting the tabs value
+  // Function to change the tab value
+  const changeTab = (newTabValue) => {
+    setTabValue(newTabValue);
+  };
 
   return (
     <div className="min-h-screen p-6">
@@ -20,7 +28,7 @@ const AdminDashboard = ({ userRole }) => {
           <TabsTrigger value="PendingVerifications" className="text-current">Pending Verifications</TabsTrigger>
         </TabsList>
         <TabsContent value="Overview">
-          <Overview />
+          <Overview changeTab={changeTab} />
         </TabsContent>
         <TabsContent value="VerifiedNannies">
           <VerifiedNannies />
