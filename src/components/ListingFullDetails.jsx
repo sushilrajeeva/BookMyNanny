@@ -51,8 +51,8 @@ function ListingFullDetails(props) {
   // This funciton just toggles the chat on or not
   const toggleDialog = () => setIsDialogOpen(!isDialogOpen);
   // This funciton just toggles the show intrested nannies
-  const toggleInterestedDialog = () => setIsInterestedDialogOpen(!isInterestedDialogOpen);
-
+  const toggleInterestedDialog = () =>
+    setIsInterestedDialogOpen(!isInterestedDialogOpen);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -147,6 +147,9 @@ function ListingFullDetails(props) {
                 <strong>Job Start Date:</strong> {listing.jobStartDate}
               </CardDescription>
               <CardDescription>
+                <strong>Job End Date:</strong> {listing.jobEndDate}
+              </CardDescription>
+              <CardDescription>
                 <strong>Payable Hours:</strong> {listing.payableHours}
               </CardDescription>
               <CardDescription>
@@ -190,39 +193,25 @@ function ListingFullDetails(props) {
                 Show Chat
               </Button>
             </CardFooter>
+            {listing && currentUser.uid === listing.selectedNannyID ? (
+              <JobCompletion
+                listing={listing}
+                onUpdatedListing={handleUpdate}
+              />
+            ) : (
+              <></>
+            )}
+            {listing &&
+            currentUser.uid === listing.parentID &&
+            listing.status === "completed" ? (
+              <PaymentDetails
+                listing={listing}
+                onUpdatedListing={handleUpdate}
+              />
+            ) : (
+              <></>
+            )}
           </Card>
-        )}
-
-        {/* {listing &&
-        currentUser.uid === listing.parentID &&
-        listing.progressBar === 0 ? (
-          <div className="card">
-            <InterestedNanny id={id} />
-          </div>
-        ) : (
-          <></>
-        )} */}
-
-        {/* <div className="card">
-          {listing && (currentUser.uid === listing.selectedNannyID || currentUser.uid === listing.parentID) ? ( 
-              <Chat room={id} />    
-          ) : (
-            <Typography>
-              Chat is available only for the selected nanny and the owner of the listing
-            </Typography>
-          )}
-        </div> */}
-        {listing && currentUser.uid === listing.selectedNannyID ? (
-          <JobCompletion listing={listing} onUpdatedListing={handleUpdate} />
-        ) : (
-          <></>
-        )}
-        {listing &&
-        currentUser.uid === listing.parentID &&
-        listing.status === "completed" ? (
-          <PaymentDetails listing={listing} onUpdatedListing={handleUpdate} />
-        ) : (
-          <></>
         )}
       </div>
 
@@ -275,25 +264,28 @@ function ListingFullDetails(props) {
           onOpenChange={setIsInterestedDialogOpen}
           className="max-w-lg mx-auto"
         >
-          {
-            listing && currentUser.uid === listing.parentID && listing.progressBar === 0 ? (
-              <div>
-                <DialogContent className="flex flex-col w-full h-[700px] overflow-y-auto" style={{ maxWidth: '600px' }}>
-                  <InterestedNanny id={id} />
-                </DialogContent>
+          {listing &&
+          currentUser.uid === listing.parentID &&
+          listing.progressBar === 0 &&
+          listing.interestedNannies.length !== 0 ? (
+            <div>
+              <DialogContent
+                className="flex flex-col w-full h-[700px] overflow-y-auto"
+                style={{ maxWidth: "600px" }}
+              >
+                <InterestedNanny id={id} />
+              </DialogContent>
             </div>
-            ):(
-              <div>
-                <DialogContent >
-                  <Typography>No nannies have shown interest to this listing yet!</Typography>
-                </DialogContent>
-              </div>
-            )
-            
-          }
-          
+          ) : (
+            <div>
+              <DialogContent>
+                <Typography>
+                  No nannies have shown interest to this listing yet!
+                </Typography>
+              </DialogContent>
+            </div>
+          )}
         </Dialog>
-
       </div>
     </div>
   );
