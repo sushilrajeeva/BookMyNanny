@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
         try {
           const role = await getUserRole(user.uid);
           setUserRole(role);
-          const userDetails = role.toLowerCase() === 'nanny' ? await getNannyById(user.uid) : await getParentById(user.uid);
+          console.log(user);
+          const userDetails = role.toLowerCase() === 'nanny' ? await getNannyById(user.uid) : (role.toLowerCase() === 'parent' ? await getParentById(user.uid) : {_id: user.uid, emailAddress: "booknanny7@gmail.com", image: "", firstName: "Admin", lastName: ""})
           const userDoc = {
             _id: userDetails._id,
             emailAddress: userDetails.emailAddress,
