@@ -11,6 +11,13 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+} from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button"
 
 
 
@@ -61,9 +68,7 @@ const DataTable = ({ columns, data }) => {
                         <TableRow key={row.id}>
                             {row.getVisibleCells().map((cell) => {
                 const cellValue = cell.getValue();
-                const alignStyle = isNumeric(cellValue) || isDate(cellValue)
-                  ? { textAlign: 'right' }
-                  : { textAlign: 'left' };
+                const alignStyle = { textAlign: 'left' };
 
                 return (
                   <TableCell key={cell.id} style={alignStyle}>
@@ -77,42 +82,50 @@ const DataTable = ({ columns, data }) => {
             </Table>
 
             
-            {/* Pagination Controls */}
-      <div className="flex items-center justify-between px-2 py-2">
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-        </div>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => table.setPageIndex(0)}
-            disabled={table.getState().pagination.pageIndex === 0}
-            className={table.getState().pagination.pageIndex === 0 ? disabledButtonStyles : buttonStyles + " bg-blue-500"}
-          >
-            First
-          </button>
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className={!table.getCanPreviousPage() ? disabledButtonStyles : buttonStyles + " bg-blue-500"}
-          >
-            Previous
-          </button>
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className={!table.getCanNextPage() ? disabledButtonStyles : buttonStyles + " bg-blue-500"}
-          >
-            Next
-          </button>
-          <button
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={table.getState().pagination.pageIndex === table.getPageCount() - 1}
-            className={table.getState().pagination.pageIndex === table.getPageCount() - 1 ? disabledButtonStyles : buttonStyles + " bg-blue-500"}
-          >
-            Last
-          </button>
-        </div>
-      </div>
+            {/* Pagination referece -> https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/tasks/components/data-table-pagination.tsx*/}
+            <div className="flex items-center justify-between px-2 py-2">
+              <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <span className="sr-only">Go to first page</span>
+                  <DoubleArrowLeftIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <span className="sr-only">Go to previous page</span>
+                  <ChevronLeftIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Go to next page</span>
+                  <ChevronRightIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Go to last page</span>
+                  <DoubleArrowRightIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
 
         </div>
     );
