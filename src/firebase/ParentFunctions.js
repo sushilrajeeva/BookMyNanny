@@ -96,7 +96,12 @@ const getActiveListings = async (parentID) => {
     // modifying to get only those listings where the the listing's parentID matches the given parentID and the status is pending
     listingsSnapshot.forEach((doc) => {
       const listingData = doc.data();
-      if (listingData.parentID == parentID && listingData.status == "pending") {
+      if (
+        (listingData.parentID == parentID && listingData.status == "pending") ||
+        (listingData.parentID == parentID &&
+          listingData.status === "completed" &&
+          listingData.progressBar === 0)
+      ) {
         activeListings.push(listingData);
       }
     });
@@ -228,7 +233,8 @@ const getPastParentJobs = async (parentID) => {
       const listingData = doc.data();
       if (
         listingData.parentID == parentID &&
-        listingData.status == "completed"
+        listingData.status == "completed" &&
+        listingData.progressBar === 100
       ) {
         pastJobs.push(listingData);
       }

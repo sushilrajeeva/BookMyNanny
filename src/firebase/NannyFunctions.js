@@ -136,8 +136,11 @@ const getActiveJobs = async (nannyID) => {
     listingsSnapshot.forEach((doc) => {
       const listingData = doc.data();
       if (
-        listingData.selectedNannyID == nannyID &&
-        listingData.status == "pending"
+        (listingData.selectedNannyID == nannyID &&
+          listingData.status == "pending") ||
+        (listingData.selectedNannyID == nannyID &&
+          listingData.status === "completed" &&
+          listingData.progressBar === 0)
       ) {
         activeJobs.push(listingData);
       }
@@ -187,7 +190,8 @@ const getPastJobs = async (nannyID) => {
       const listingData = doc.data();
       if (
         listingData.selectedNannyID == nannyID &&
-        listingData.status == "completed"
+        listingData.status == "completed" &&
+        listingData.progressBar === 100
       ) {
         pastJobs.push(listingData);
       }

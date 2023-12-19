@@ -276,11 +276,20 @@ function ListingFullDetails(props) {
                 <InterestedNanny id={id} />
               </DialogContent>
             </div>
+          ) : listing &&
+            currentUser.uid === listing.parentID &&
+            listing.progressBar === 100 &&
+            listing.interestedNannies.length !== 0 ? (
+            <div>
+              <DialogContent>
+                <Typography>This job is completed!</Typography>
+              </DialogContent>
+            </div>
           ) : (
             <div>
               <DialogContent>
                 <Typography>
-                  No nannies have shown interest to this listing yet!
+                  No nannies have shown interest in this listing yet!
                 </Typography>
               </DialogContent>
             </div>

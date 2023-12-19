@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
 import { Button as DeclineBtn } from "@/components/ui/button";
 import { jobClose, jobDecline } from "@/firebase/ParentFunctions";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const PaymentDetails = ({ listing, onUpdatedListing }) => {
   const payableAmount = listing.hoursWorked * listing.hourlyRate;
@@ -55,7 +56,16 @@ const PaymentDetails = ({ listing, onUpdatedListing }) => {
   ) : (
     <Card>
       <CardContent>
-        <Typography variant="h6">Payment Completed</Typography>
+        <CheckCircleIcon fontSize="large" color="success" />
+        <Typography variant="h6" mt={2}>
+          Payment Completed
+        </Typography>
+        <div>
+          <Typography variant="body1">Amount paid</Typography>
+          <Typography variant="h5">
+            ${(listing.hoursWorked * listing.hourlyRate).toFixed(2)}
+          </Typography>
+        </div>
       </CardContent>
     </Card>
   );
