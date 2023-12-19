@@ -232,6 +232,33 @@ const onJobComplete = async (listingId, hoursWorked, nannyId) => {
   }
 };
 
+const getVerifiedCount = async () => {
+  try {
+    const nannyCollection = collection(db, "Nanny");
+    const listingsSnapshot = await getDocs(nannyCollection);
+    const nannyList = listingsSnapshot.docs.map((doc) => doc.data());
+    return nannyList.filter((nanny) => nanny.verified === true).length;
+  } catch (error) {
+    console.log(error);
+    console.error("Error getting all Listings for this nanny!!:", error);
+    throw new Error("Error getting all users");
+  }
+};
+
+// Function to get the count of non-verified entries
+const getNonVerifiedCount = async () => {
+  try {
+    const nannyCollection = collection(db, "Nanny");
+    const listingsSnapshot = await getDocs(nannyCollection);
+    const nannyList = listingsSnapshot.docs.map((doc) => doc.data());
+    return nannyList.filter((nanny) => nanny.verified === false).length;
+  } catch (error) {
+    console.log(error);
+    console.error("Error getting all Listings for this nanny!!:", error);
+    throw new Error("Error getting all users");
+  }
+};
+
 export {
   getAllListings,
   nannyInterested,
@@ -241,4 +268,6 @@ export {
   getNannyById,
   updateNannyData,
   onJobComplete,
+  getVerifiedCount,
+  getNonVerifiedCount,
 };

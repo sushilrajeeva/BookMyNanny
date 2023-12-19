@@ -245,6 +245,17 @@ const getPastParentJobs = async (parentID) => {
   }
 };
 
+const getParentCount = async () => {
+  try {
+    const usersCollection = collection(db, "Users");
+    const usersSnapshot = await getDocs(usersCollection);
+    const usersList = usersSnapshot.docs.map((doc) => doc.data());
+    return usersList.filter((user) => user.role === "parent").length;
+  } catch (error) {
+    console.error("Error getting parent count", error);
+  }
+};
+
 export {
   createParentListing,
   getAllListings,
@@ -258,4 +269,5 @@ export {
   jobDecline,
   getPastParentJobs,
   getActiveListings,
+  getParentCount,
 };
