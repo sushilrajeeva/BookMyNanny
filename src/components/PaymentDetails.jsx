@@ -30,8 +30,8 @@ const PaymentDetails = ({ listing, onUpdatedListing }) => {
   };
 
   return listing.status === "completed" && listing.progressBar === 0 ? (
-    <Card>
-      <CardContent>
+    <Card className="flex flex-col items-center">
+      <CardContent className="flex flex-col items-center">
         <Typography variant="h6">Payment Details</Typography>
         <br />
         <Typography variant="body1">Amount due:</Typography>
@@ -41,21 +41,15 @@ const PaymentDetails = ({ listing, onUpdatedListing }) => {
         <Button variant="contained" onClick={handleJobCompletion}>
           Mark Job Completed
         </Button>
-        <br />
-        <br />
-        <Button
-          // sx={{ backgroundColor: "red" }}
-          color="error"
-          variant="contained"
-          onClick={handleDecline}
-        >
+
+        <Button color="error" variant="contained" onClick={handleDecline}>
           Decline
         </Button>
       </CardContent>
     </Card>
   ) : (
-    <Card>
-      <CardContent>
+    <Card className="flex flex-col items-center">
+      <CardContent className="flex flex-col items-center">
         <CheckCircleIcon fontSize="large" color="success" />
         <Typography variant="h6" mt={2}>
           Payment Completed
