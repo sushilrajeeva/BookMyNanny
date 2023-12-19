@@ -13,7 +13,7 @@ const ActiveJobs = () => {
   useEffect(() => {
     const fetchActiveJobs = async () => {
       try {
-        if (currentUser && userRole === "parent" && currentUser.uid) {
+        if (currentUser && userRole === "nanny" && currentUser.uid) {
           const jobs = await getActiveJobs(currentUser.uid);
           setActiveJobs(jobs);
         }
