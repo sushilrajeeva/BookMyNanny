@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import moment from "moment";
+import { Button } from "@/components/ui/button"
+
 
 import {
   doCreateUserWithEmailAndPassword,
@@ -169,6 +171,7 @@ function ParentSignUp() {
                 <Typography
                   variant="h2"
                   component="h3"
+                  className="text-black"
                   sx={{ textTransform: "uppercase" }}
                 >
                   Sign Up as a parent
@@ -182,7 +185,7 @@ function ParentSignUp() {
                   setFieldValue={setFieldValue}
                 />
                 <Button
-                  variant="contained"
+                  variant="outline"
                   type="submit"
                   sx={{
                     height: "3rem",

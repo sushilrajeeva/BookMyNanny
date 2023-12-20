@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Navigate, useNavigate} from "react-router-dom";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import {
   doCreateUserWithEmailAndPassword,
@@ -15,6 +15,8 @@ import { validateDate, passwordMatch, capitalize } from "../helpers";
 import CommonSignUpFields from "./SignUp/CommonFields";
 import NannyFields from "./SignUp/NannyFields.jsx";
 import moment from "moment";
+import { Button } from "@/components/ui/button"
+
 
 const schema = nannySchema;
 
@@ -204,6 +206,7 @@ function NannySignUp() {
                 <Typography
                   variant="h2"
                   component="h3"
+                  className="text-black"
                   sx={{ textTransform: "uppercase" }}
                 >
                   Sign Up as a nanny
@@ -227,7 +230,7 @@ function NannySignUp() {
                   setFieldError={setFieldError}
                 />
                 <Button
-                  variant="contained"
+                  variant="outline"
                   type="submit"
                   sx={{
                     height: "3rem",
