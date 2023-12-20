@@ -74,7 +74,12 @@ const getAllListings = async () => {
 };
 
 const deleteListing = async (listingID) => {
-  await deleteDoc(doc(db, "Listings", listingID));
+  try {
+    await deleteDoc(doc(db, "Listings", listingID));
+  } catch (error) {
+    console.error("Error deleting listing.", error);
+    throw new Error("Error deleting listing.");
+  }
 };
 
 const getInterestedNannies = async (listingID) => {
