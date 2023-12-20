@@ -1,7 +1,7 @@
-FROM node
+FROM node:alpine
 WORKDIR /app
-COPY package.json .
+COPY package.json ./
+COPY package-lock.json ./
+COPY ./ ./
 RUN npm i
-COPY . .
-EXPOSE 5173
-CMD ["npm","run","dev"]
+CMD ["npm", "run", "dev"]
