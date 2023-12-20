@@ -70,9 +70,7 @@ export const parentSchema = Yup.object().shape({
     ),
   pincode: Yup.string()
     .required("Zip code is required")
-    .min(4, "Zip code must be between 4-16 characters")
-    .max(16, "Zip code must be between 4-16 characters")
-    .matches(/^\d+$/, "Pincode must be a number"),
+    .matches(/^\d{5}(?:-\d{4})?$/, "Invalid Pincode"),
   phoneNumber: Yup.string()
     .required("Phone Number is required")
     .matches(/^\d{10}$/, "Invalid Phone Number"),

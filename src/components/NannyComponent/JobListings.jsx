@@ -264,26 +264,30 @@ function JobListings() {
 
         {showFilters && (
           <>
-            <Slider
-              sx={{ width: 300, color: "black", margin: "40px" }}
-              getAriaLabel={() => "Hourly rate range"}
-              value={value}
-              onChange={handleChange}
-              valueLabelDisplay="on"
-              valueLabelFormat={(value) => `${value}`}
-              min={0}
-              max={100}
-            />
-
-            <div className="flex justify-center mb-8">
-              <CalendarDateRangePicker
-                dateRange={dateRange}
-                setDateRange={setDateRange}
-              />
-              <Button onClick={clearDateFilter} className="ml-2">
-                Clear Date Filter
-              </Button>
-            </div>
+            <Card className="p-14 m-6">
+              <div className="flex items-center mb-6">
+                <p className="mr-4">Hourly Rate:</p>
+                <Slider
+                  sx={{ width: 300, color: "black", margin: "0 40px 0 20px" }}
+                  getAriaLabel={() => "Hourly rate range"}
+                  value={value}
+                  onChange={handleChange}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => `${value}`}
+                  min={0}
+                  max={100}
+                />
+              </div>
+              <div className="flex justify-center ">
+                <CalendarDateRangePicker
+                  dateRange={dateRange}
+                  setDateRange={setDateRange}
+                />
+                <Button onClick={clearDateFilter} className="ml-2">
+                  Clear Date Filter
+                </Button>
+              </div>
+            </Card>
           </>
         )}
 

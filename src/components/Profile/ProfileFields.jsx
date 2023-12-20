@@ -52,12 +52,6 @@ const ProfileFields = ({
         value={moment(values.dob, "MM-DD-YYYY").format("MMMM D, YYYY")}
       />
 
-      {userRole === "nanny" && (
-        <>
-          <DisplayProfileField label="ssn" value={formatSSN(values.ssn)} />
-        </>
-      )}
-
       <Stack
         direction="row"
         spacing={2}

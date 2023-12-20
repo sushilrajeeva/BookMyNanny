@@ -39,9 +39,7 @@ export const listingSchema = Yup.object().shape({
 
   pincode: Yup.string()
     .required("Zip code is required")
-    .min(4, "Zip code must be between 4-16 characters")
-    .max(16, "Zip code must be between 4-16 characters")
-    .matches(/^\d+$/, "Pincode must be a number"),
+    .matches(/^\d{5}(?:-\d{4})?$/, "Invalid Pincode"),
   jobStartDate: Yup.string("Invalid Job Date").required("Job Date is required"),
   jobEndDate: Yup.string("Invalid Job Date").required("Job Date is required"),
   hourlyRate: Yup.string()
