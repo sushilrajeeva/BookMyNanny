@@ -1,6 +1,6 @@
 FROM node:alpine
 WORKDIR /app
-RUN touch dummy.txt
+
 COPY package.json ./
 COPY package-lock.json ./
 COPY ./ ./
