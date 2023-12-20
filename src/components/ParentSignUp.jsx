@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Navigate , useNavigate} from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import moment from "moment";
@@ -8,7 +8,7 @@ import {
   doCreateUserWithEmailAndPassword,
   createUserDocument,
   createParentDocument,
-  doSignOut
+  doSignOut,
 } from "../firebase/AuthFunctions";
 import { AuthContext } from "../context/AuthContext";
 import { AlertContext } from "../context/AlertContext";
@@ -21,11 +21,10 @@ const schema = parentSchema;
 function ParentSignUp() {
   const { currentUser } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleSignUpParent = async (values, setSubmitting) => {
     setSubmitting(true);
     const {
-      displayName,
       email,
       passwordOne,
       passwordTwo,
@@ -35,26 +34,17 @@ function ParentSignUp() {
       street,
       city,
       state,
-
       pincode,
       dob,
     } = values;
 
-    // Validate the entire form
-    // const newFormErrors = await validateForm(values);
-    // setFormErrors(newFormErrors);
-    // if (Object.keys(newFormErrors).length > 0) {
-    //   showAlert("error", "Please fix the errors in the form.");
-    //   return;
-    // }
-    // setFormErrors({});
-
     try {
+      const name = firstName + " " + lastName;
       // Create user in Firebase Authentication
       let createdUid = await doCreateUserWithEmailAndPassword(
         email,
         passwordOne,
-        displayName
+        name
       );
       console.log("created uid", createdUid);
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -62,7 +52,6 @@ function ParentSignUp() {
       // if(!currentUser) throw "no usercreds to do crud"
       //await getNannyDocs()
       let dataToStore = {
-        displayName: capitalize(displayName.trim()),
         firstName: capitalize(firstName.trim()),
         lastName: capitalize(lastName.trim()),
         emailAddress: email.trim(),
@@ -120,7 +109,6 @@ function ParentSignUp() {
       >
         <Formik
           initialValues={{
-            displayName: "",
             email: "",
             passwordOne: "",
             passwordTwo: "",
