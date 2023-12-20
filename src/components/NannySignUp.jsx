@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
-import { Navigate, useNavigate} from "react-router-dom";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import {
   doCreateUserWithEmailAndPassword,
   createNannyDocument,
   createUserDocument,
-  doSignOut
+  doSignOut,
 } from "../firebase/AuthFunctions.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { AlertContext } from "../context/AlertContext";
@@ -15,20 +15,23 @@ import { validateDate, passwordMatch, capitalize } from "../helpers";
 import CommonSignUpFields from "./SignUp/CommonFields";
 import NannyFields from "./SignUp/NannyFields.jsx";
 import moment from "moment";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
+import CustomLoading from "./EssentialComponents/CustomLoading.jsx";
 
 const schema = nannySchema;
 
 function NannySignUp() {
   const { currentUser } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+
   const handleSignUpNanny = async (values, setSubmitting) => {
     setSubmitting(true);
 
     let {
-      displayName,
       email,
       passwordOne,
       passwordTwo,
@@ -49,19 +52,24 @@ function NannySignUp() {
 
     try {
       // Create user in Firebase Authentication
+      setLoading(true);
+      const name = firstName + " " + lastName;
+
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
       let createdUid = await doCreateUserWithEmailAndPassword(
         email,
         passwordOne,
-        displayName
+        name
       );
-      console.log("created uid", createdUid);
+      await doSignOut();
 
-      // Add a delay to simulate asynchronous operations
+      console.log("created uid", createdUid);
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Add a delay to simulate asynchronous operations
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // Create data object for storing in Firestore
       let dataToStore = {
-        displayName: capitalize(displayName.trim()),
         firstName: capitalize(firstName.trim()),
         lastName: capitalize(lastName.trim()),
         emailAddress: email.trim(),
@@ -80,17 +88,20 @@ function NannySignUp() {
         countryCode: "+1",
         role: "nanny",
         verified: false,
-        documents: [],
         wallet: 0,
         image: "",
       };
-
       console.log("From signup component data:", dataToStore);
 
       // Create document in Firestore nanny collection
       await createNannyDocument(createdUid, dataToStore);
       // Create document in Firestore user collection
       await createUserDocument(createdUid, { role: "nanny" });
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      setLoading(false); // Set loading state back to false
+      navigate("/signin");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         showAlert("error", "Email address is already in use.");
@@ -104,12 +115,11 @@ function NannySignUp() {
       }
     } finally {
       setSubmitting(false);
-      doSignOut();
-      navigate("/signin");
     }
   };
-  if (currentUser) {
-    return <Navigate to="/home" />;
+
+  if (loading) {
+    return <CustomLoading />;
   }
 
   //nanny signup return
@@ -127,7 +137,6 @@ function NannySignUp() {
       >
         <Formik
           initialValues={{
-            displayName: "",
             email: "",
             passwordOne: "",
             passwordTwo: "",
