@@ -3,7 +3,7 @@ import * as Yup from "yup";
 export const parentSchema = Yup.object().shape({
   email: Yup.string()
     .required("Email is required")
-    .email("Please enter a valid email")
+    .matches(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/, "Invalid email")
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
