@@ -31,7 +31,7 @@ function SignIn() {
     const { email, password } = event.target.elements;
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       await doSignInWithEmailAndPassword(email.value, password.value);
 
       setTimeout(() => {

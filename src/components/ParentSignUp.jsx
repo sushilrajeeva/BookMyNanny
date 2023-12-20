@@ -3,8 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import moment from "moment";
-import { Button } from "@/components/ui/button"
-
+import { Button } from "@/components/ui/button";
 
 import {
   doCreateUserWithEmailAndPassword,
@@ -17,12 +16,14 @@ import { AlertContext } from "../context/AlertContext";
 import { parentSchema } from "../schemas/parentsignup";
 import { validateDate, passwordMatch, capitalize } from "../helpers";
 import CommonSignUpFields from "./SignUp/CommonFields";
+import CustomLoading from "./EssentialComponents/CustomLoading.jsx";
 
 const schema = parentSchema;
 
 function ParentSignUp() {
   const { currentUser } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleSignUpParent = async (values, setSubmitting) => {
     setSubmitting(true);
@@ -41,6 +42,7 @@ function ParentSignUp() {
     } = values;
 
     try {
+      setLoading(true);
       const name = firstName + " " + lastName;
       // Create user in Firebase Authentication
       let createdUid = await doCreateUserWithEmailAndPassword(
@@ -48,6 +50,7 @@ function ParentSignUp() {
         passwordOne,
         name
       );
+      await doSignOut();
       console.log("created uid", createdUid);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       //todo need to hash password
@@ -75,6 +78,10 @@ function ParentSignUp() {
       await createParentDocument(createdUid, dataToStore);
       // Create document in Firestore user collection
       await createUserDocument(createdUid, { role: "parent" });
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      setLoading(false); // Set loading state back to false
+      navigate("/signin");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         showAlert("error", "Email address is already in use.");
@@ -88,13 +95,11 @@ function ParentSignUp() {
       }
     } finally {
       setSubmitting(false);
-      doSignOut();
-      navigate("/signin");
     }
   };
 
-  if (currentUser) {
-    return <Navigate to="/home" />;
+  if (loading) {
+    return <CustomLoading />;
   }
 
   return (

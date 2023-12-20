@@ -8,7 +8,7 @@ import {
 } from "@/firebase/ListingFunctions";
 import { Link } from "react-router-dom";
 import { deleteAllMessagesByJobId } from "@/firebase/ChatFunctions";
-function InterestedNanny({ id }) {
+function InterestedNanny({ id, onUpdatedListing }) {
   const [nannyData, setNannyData] = useState([]);
   const [selectedNanny, setSelectedNanny] = useState(null);
   const [approvedNanny, setApprovedNanny] = useState(null);
@@ -38,6 +38,7 @@ function InterestedNanny({ id }) {
     await approveNanny(id, nannyID);
     fetchNannies();
     fetchApprovedNanny();
+    onUpdatedListing();
   };
 
   const handleUnapproveNanny = async () => {
@@ -47,6 +48,7 @@ function InterestedNanny({ id }) {
     fetchNannies();
     setIsUnapproveConfirmationOpen(false);
     fetchApprovedNanny();
+    onUpdatedListing();
   };
 
   const fetchNannies = async () => {
