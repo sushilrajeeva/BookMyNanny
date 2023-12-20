@@ -84,7 +84,6 @@ function ListingFullDetails(props) {
   }, [id, currentUser.uid, userRole, updateCounter]);
 
   const handleUpdate = () => {
-    // Increment the counter to trigger a re-render
     setUpdateCounter((prevCounter) => prevCounter + 1);
   };
 
@@ -100,6 +99,7 @@ function ListingFullDetails(props) {
     if (success) {
       setIsInterested(false);
     }
+    handleUpdate();
   };
 
   if (isLoading) {
@@ -273,7 +273,7 @@ function ListingFullDetails(props) {
                 className="flex flex-col w-full h-[700px] overflow-y-auto"
                 style={{ maxWidth: "600px" }}
               >
-                <InterestedNanny id={id} />
+                <InterestedNanny id={id} onUpdatedListing={handleUpdate} />
               </DialogContent>
             </div>
           ) : listing &&

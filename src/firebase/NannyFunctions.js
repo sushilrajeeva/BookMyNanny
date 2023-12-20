@@ -159,6 +159,11 @@ const withdrawNannyInterest = async (listingId, nannyId) => {
 
     const listingData = listingSnapshot.data();
 
+    if (listingData.selectedNannyID === nannyId)
+      await updateDoc(listingDocRef, {
+        selectedNannyID: "",
+      });
+
     // Checking if the nanny is already in the interestedNannies array
     // if it exist then i will return false
     if (!listingData.interestedNannies.includes(nannyId)) {
