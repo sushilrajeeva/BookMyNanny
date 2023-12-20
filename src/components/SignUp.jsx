@@ -1,28 +1,26 @@
 import React, { useState } from "react";
-import ParentSignUp from "./ParentSignUp"; // Import your ParentSignUp component
-import NannySignUp from "./NannySignUp"; // Import your NannySignUp component
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ParentSignUp from "./ParentSignUp";
+import NannySignUp from "./NannySignUp";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 const SignUp = () => {
-  const [alignment, setAlignment] = useState("parent");
-  console.log("signup");
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
+  const [tabValue, setTabValue] = useState("parent");
 
   return (
-    <div className="mt-16">
-      <ToggleButtonGroup
-        color="primary"
-        value={alignment}
-        exclusive
-        onChange={handleChange}
-        aria-label="Platform"
-      >
-        <ToggleButton value="parent">Parent Sign Up </ToggleButton>
-        <ToggleButton value="nanny">Nanny Sign Up</ToggleButton>
-      </ToggleButtonGroup>
-      {alignment === "parent" ? <ParentSignUp /> : <NannySignUp />}
+    <div className="mt-16 p-6">
+      <Tabs value={tabValue} onValueChange={setTabValue}>
+        <TabsList className="justify-left mb-4">
+          <TabsTrigger value="parent">Parent Sign Up</TabsTrigger>
+          <TabsTrigger value="nanny">Nanny Sign Up</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="parent">
+          <ParentSignUp />
+        </TabsContent>
+        <TabsContent value="nanny">
+          <NannySignUp />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
