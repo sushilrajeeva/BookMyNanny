@@ -1,16 +1,6 @@
 import * as Yup from "yup";
 
 export const parentSchema = Yup.object().shape({
-  displayName: Yup.string()
-    .required("Display name is required")
-    .matches("^[a-zA-Z ]*$", "Invalid Name")
-    .min(3, "Name must be atleast 3 cahracters")
-    .max(40, "Name cannot be greater than 40 cahracters")
-    .test(
-      "is-not-empty-after-trim",
-      "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
-    ),
   email: Yup.string()
     .required("Email is required")
     .email("Please enter a valid email")

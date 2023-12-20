@@ -26,22 +26,6 @@ const CommonSignUpFields = ({
     <>
       <TextField
         variant="standard"
-        label="Name"
-        name="displayName"
-        value={values.displayName}
-        onInput={(e) => {
-          handleChange(e);
-          setTimeout(() => handleBlur(e), 0);
-        }}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={touched.displayName && Boolean(errors.displayName)}
-        helperText={touched.displayName && errors.displayName}
-        fullWidth
-        required
-      />
-      <TextField
-        variant="standard"
         label="Email"
         name="email"
         value={values.email}

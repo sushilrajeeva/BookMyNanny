@@ -9,6 +9,8 @@ import {
 } from "../../firebase/NannyFunctions";
 import { AuthContext } from "../../context/AuthContext";
 import { Button } from "@/components/ui/button";
+import Slider from "@mui/material/Slider";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Importing card from shadcn
 import {
@@ -50,16 +52,13 @@ function JobListings() {
   const [searchQuery, setSearchQuery] = useState("");
   const { currentUser, userRole } = useContext(AuthContext);
   const [dateRange, setDateRange] = useState({ from: null, to: null });
+  const [value, setValue] = React.useState([0, 100]);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     async function fetchListings() {
       try {
         const listings = await getAllcurrentListings();
-
-        console.log("All listings");
-        console.log(listings);
-
-        // Fetch parent data for each listing
         const listingsWithParentData = await Promise.all(
           listings.map(async (listing) => {
             const parentData = await getParentById(listing.parentID);
@@ -84,7 +83,10 @@ function JobListings() {
     setSearchQuery(e.target.value.toString().toLowerCase());
   };
 
-  // Function to clear my Selected Date range
+  const handleCheckboxChange = () => {
+    setShowFilters(!showFilters);
+  };
+
   const clearDateFilter = () => {
     setDateRange({ from: null, to: null });
   };
@@ -115,14 +117,15 @@ function JobListings() {
   };
 
   // Wrote a custom function to get initials from displayName
-const getInitials = (name) => {
-  const parts = name.split(' ');
-  const initials = parts.length > 1
-    ? `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`
-    : parts[0].charAt(0);
-  return initials.toUpperCase();
-};
-  
+  const getInitials = (name) => {
+    const parts = name.split(" ");
+    const initials =
+      parts.length > 1
+        ? `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`
+        : parts[0].charAt(0);
+    return initials.toUpperCase();
+  };
+
   const handleNannyWithdraw = async (listingId, e) => {
     e.preventDefault();
     const success = await withdrawNannyInterest(listingId, currentUser.uid);
@@ -143,33 +146,51 @@ const getInitials = (name) => {
       );
     }
   };
-  
-  const filteredListings = jobListings.filter(listing => {
 
-    const listingStartDate = new Date(formatFirestoreTimestamp(listing.jobStartDate));
-    const listingEndDate = new Date(formatFirestoreTimestamp(listing.jobEndDate));
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-    console.log("date called");
-    console.log("range from", dateRange.from);
-    console.log("range to", dateRange.to);
-    console.log("start date", listing);
-    
-    
+  const filteredListings = jobListings.filter((listing) => {
+    const listingStartDate = new Date(
+      formatFirestoreTimestamp(listing.jobStartDate)
+    );
+    const listingEndDate = new Date(
+      formatFirestoreTimestamp(listing.jobEndDate)
+    );
+
     // Filter logic to see if date is within the selected range
     const isWithinRange =
       (!dateRange.from || listingStartDate >= dateRange.from) &&
       (!dateRange.to || listingEndDate <= dateRange.to);
 
-    const listingAddress = listing.street + " " + listing.city + " " + listing.state + " " + listing.country;
+    const isHourlyRate =
+      parseFloat(listing.hourlyRate) >= parseFloat(value[0]) &&
+      parseFloat(listing.hourlyRate) <= parseFloat(value[1]);
+
+    const listingAddress =
+      listing.street +
+      " " +
+      listing.city +
+      " " +
+      listing.state +
+      " " +
+      listing.country;
 
     return (
       isWithinRange &&
-      (listing.listingName.toLowerCase().includes(searchQuery) ||
-        listingAddress.toLowerCase().includes(searchQuery) ||
-        listing.hourlyRate.toString().toLowerCase().includes(searchQuery))
+      isHourlyRate &&
+      (listing.listingName
+        .toLowerCase()
+        .trim()
+        .includes(searchQuery.trim().toLowerCase()) ||
+        listing.pincode
+          .toLowerCase()
+          .trim()
+          .includes(searchQuery.trim().toLowerCase()) ||
+        listingAddress.toLowerCase().includes(searchQuery.trim().toLowerCase()))
     );
   });
-  
 
   // To conditinoally render on loading animation
   const SkeletonCard = () => (
@@ -180,7 +201,8 @@ const getInitials = (name) => {
             <div className="flex items-center">
               <Skeleton className="w-[80px] h-[80px] rounded-full mr-4" />
               <div>
-                <Skeleton className="h-6 w-36 mb-1" /> {/* Adjust the width as needed */}
+                <Skeleton className="h-6 w-36 mb-1" />{" "}
+                {/* Adjust the width as needed */}
                 <Skeleton className="h-6 w-24" />
               </div>
             </div>
@@ -199,7 +221,6 @@ const getInitials = (name) => {
     </div>
   );
 
-
   if (isLoading) {
     return (
       <div className="flex flex-col items-center min-h-screen pt-4">
@@ -213,7 +234,6 @@ const getInitials = (name) => {
     );
   }
 
-
   return (
     <>
       <div className="flex flex-col items-center min-h-screen pt-4">
@@ -221,22 +241,52 @@ const getInitials = (name) => {
         <div className="w-full flex justify-center mb-4">
           <Input
             type="text"
-            placeholder="Search listings..."
+            placeholder="Search listings by name, pincode and address..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="w-full max-w-md" // Adjust width as needed
           />
         </div>
-
-        <div className="flex justify-center mb-4">
-          <CalendarDateRangePicker
-            dateRange={dateRange}
-            setDateRange={setDateRange}
+        <div className="flex items-center space-x-2 mb-5 mt-5">
+          <Checkbox
+            className="w-6 h-6 ml-2 mb-2"
+            id="filter"
+            checked={showFilters}
+            onCheckedChange={handleCheckboxChange}
           />
-          <Button onClick={clearDateFilter} className="ml-2">Clear Date Filter</Button>
+          <label
+            htmlFor="filter"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Show additional filters
+          </label>
         </div>
-        
-        
+
+        {showFilters && (
+          <>
+            <Slider
+              sx={{ width: 300, color: "black", margin: "40px" }}
+              getAriaLabel={() => "Hourly rate range"}
+              value={value}
+              onChange={handleChange}
+              valueLabelDisplay="on"
+              valueLabelFormat={(value) => `${value}`}
+              min={0}
+              max={100}
+            />
+
+            <div className="flex justify-center mb-8">
+              <CalendarDateRangePicker
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+              />
+              <Button onClick={clearDateFilter} className="ml-2">
+                Clear Date Filter
+              </Button>
+            </div>
+          </>
+        )}
+
         <div className="flex flex-wrap justify-center gap-4 w-full px-4">
           {filteredListings.map((listing, index) => (
             <div key={index} className="w-[800px] h-[150px] mb-20">
@@ -244,7 +294,7 @@ const getInitials = (name) => {
                 <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
                   <CardHeader>
                     <div className="flex flex-col items-center space-x-4">
-                    {listing.parentData?.image ? (
+                      {listing.parentData?.image ? (
                         <img
                           src={listing.parentData.image}
                           alt={`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
@@ -252,7 +302,9 @@ const getInitials = (name) => {
                         />
                       ) : (
                         <div className="w-[80px] h-[80px] rounded-full bg-blue-200 flex items-center justify-center text-lg font-semibold">
-                          {getInitials(`${listing.parentData?.firstName} ${listing.parentData?.lastName}`)}
+                          {getInitials(
+                            `${listing.parentData?.firstName} ${listing.parentData?.lastName}`
+                          )}
                         </div>
                       )}
                       <div>

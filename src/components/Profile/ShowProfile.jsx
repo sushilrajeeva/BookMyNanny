@@ -27,7 +27,6 @@ const ShowProfile = () => {
             setImageUrl(parentData.image);
             console.log(parentData);
             setValues({
-              displayName: parentData.displayName,
               email: parentData.emailAddress,
               firstName: parentData.firstName,
               lastName: parentData.lastName,
@@ -44,7 +43,6 @@ const ShowProfile = () => {
             console.log(nannyData.image);
             setImageUrl(nannyData.image);
             setValues({
-              displayName: nannyData.displayName,
               email: nannyData.emailAddress,
               firstName: nannyData.firstName,
               lastName: nannyData.lastName,
@@ -75,7 +73,7 @@ const ShowProfile = () => {
 
   if (mainLoading) {
     // Show loading indicator while waiting for user data
-    return <CustomLoading/>;
+    return <CustomLoading />;
   }
 
   const DisplayProfileField = ({ label, value }) => {
