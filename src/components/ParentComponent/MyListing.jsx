@@ -79,11 +79,7 @@ function MyListing() {
     <div className="flex flex-wrap pt-8 pb-8">
       <div className="flex flex-wrap justify-center gap-9 w-full">
         {listings.map((listing, index) => (
-          <Link
-            to={`/listing/${listing._id}`}
-            key={index}
-            onClick={(e) => e.preventDefault()}
-          >
+          <Link to={`/listing/${listing._id}`} key={index}>
             <Card className="w-[500px]  hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
               <CardHeader>
                 <CardTitle className="flex justify-between">
@@ -92,7 +88,9 @@ function MyListing() {
                     <AlertDialogTrigger asChild>
                       <div
                         style={{ cursor: "pointer" }}
-                        onClick={handleSvgClick}
+                        onClick={() => {
+                          handleSvgClick();
+                        }}
                       >
                         <svg
                           className="h-6 w-6 text-red-500"
@@ -124,8 +122,7 @@ function MyListing() {
                         <AlertDialogFooter>
                           <AlertDialogAction asChild>
                             <Button
-                              onClick={(e) => {
-                                e.preventDefault();
+                              onClick={() => {
                                 handleDeleteListingClick(listing._id);
                               }}
                               type="submit"
