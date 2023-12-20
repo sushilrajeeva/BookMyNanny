@@ -3,51 +3,38 @@ import ActiveListings from "../ParentComponent/ActiveListings";
 import PastListings from "../ParentComponent/PastListings";
 import MyListing from "../ParentComponent/MyListing";
 import CreateListingParent from "../ParentComponent/CreateListingParent";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Wallet from "../EssentialComponents/Wallet"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ParentDashboard = ({ userRole }) => {
-  const [activeComponent, setActiveComponent] = useState("MyListing");
-
-  const renderComponent = (component) => {
-    setActiveComponent(component);
-  };
+  const [tabValue, setTabValue] = useState("MyListing");
 
   return (
-    <Container maxWidth="lg" className="dashboard">
-      <Paper elevation={3} className="navigation">
-        <Box>
-          <>
-            <Button onClick={() => renderComponent("CreateListingParent")}>
-              Create Listing
-            </Button>
-            <Button onClick={() => renderComponent("MyListing")}>
-              My Listing
-            </Button>
-            <Button onClick={() => renderComponent("ActiveListings")}>
-              Active Listings
-            </Button>
-            <Button onClick={() => renderComponent("PastListings")}>
-              Past Listings
-            </Button>
-            {/* <Button onClick={() => renderComponent("Wallet")}>
-              Wallet
-            </Button> */}
-          </>
-        </Box>
-      </Paper>
+    <div className="min-h-screen p-6">
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold">Parent Dashboard</h2>
+      </div>
+      <Tabs value={tabValue} onValueChange={setTabValue}>
+        <TabsList className="justify-left mb-4">
+          <TabsTrigger value="CreateListingParent">Create Listing</TabsTrigger>
+          <TabsTrigger value="MyListing">My Listing</TabsTrigger>
+          <TabsTrigger value="ActiveListings">Active Listings</TabsTrigger>
+          <TabsTrigger value="PastListings">Past Listings</TabsTrigger>
+        </TabsList>
 
-      <Paper elevation={3} className="component-container">
-        {activeComponent === "CreateListingParent" && <CreateListingParent />}
-        {activeComponent === "ActiveListings" && <ActiveListings />}
-        {activeComponent === "PastListings" && <PastListings />}
-        {activeComponent === "MyListing" && <MyListing />}
-        {/* {activeComponent === "Wallet" && <Wallet />} */}
-      </Paper>
-    </Container>
+        <TabsContent value="CreateListingParent">
+          <CreateListingParent />
+        </TabsContent>
+        <TabsContent value="MyListing">
+          <MyListing />
+        </TabsContent>
+        <TabsContent value="ActiveListings">
+          <ActiveListings />
+        </TabsContent>
+        <TabsContent value="PastListings">
+          <PastListings />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

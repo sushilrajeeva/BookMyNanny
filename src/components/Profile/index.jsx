@@ -421,6 +421,7 @@ const Profile = () => {
                           }}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          className="text-black"
                           required
                           style={{
                             width: "100%",

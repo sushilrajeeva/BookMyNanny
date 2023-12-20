@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
+import { ModeToggle } from "./mode-toggle";
 
 const NavigationNonAuth = () => {
-    return (
-       // <div className="fixed top-0 h-14 left-0 w-full bg-opacity-75 backdrop-filter backdrop-blur-lg z-50 border-b">
-      <nav className="flex items-center space-x-4 lg:space-x-6 pt-4">
-        <div className="flex space-x-4 lg:space-x-6">
+  return (
+    <nav className="flex items-center justify-between bg-transparent">
+      <div className="flex space-x-4 lg:space-x-6">
         <NavLink
           to="/"
           className="text-sm font-medium transition-colors hover:text-primary"
@@ -24,10 +24,12 @@ const NavigationNonAuth = () => {
         >
           Sign-In
         </NavLink>
-        </div>
-      </nav>
-     // </div>
-    );
-  };
+      </div>
+      <div className="p-2">
+        <ModeToggle /> {/* Padding to match the avatar in NavigationAuth */}
+      </div>
+    </nav>
+  );
+};
 
-  export default NavigationNonAuth;
+export default NavigationNonAuth;
