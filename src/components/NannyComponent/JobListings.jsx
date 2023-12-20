@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   getAllListings,
+  getAllcurrentListings,
   getNannyById,
   nannyInterested,
   withdrawNannyInterest,
@@ -26,6 +27,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { getParentById } from "@/firebase/ParentFunctions";
 
+// importing my cusotm made Calander range function
+import CalendarDateRangePicker from "../EssentialComponents/CalendarDateRangePicker";
+
 function formatFirestoreTimestamp(timestamp) {
   // Checking if timestamp is a Firestore Timestamp object
   // did this because some posted dates are just strings and some are firestore timestamp functions
@@ -45,11 +49,12 @@ function JobListings() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const { currentUser, userRole } = useContext(AuthContext);
+  const [dateRange, setDateRange] = useState({ from: null, to: null });
 
   useEffect(() => {
     async function fetchListings() {
       try {
-        const listings = await getAllListings();
+        const listings = await getAllcurrentListings();
 
         console.log("All listings");
         console.log(listings);
@@ -77,6 +82,11 @@ function JobListings() {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value.toString().toLowerCase());
+  };
+
+  // Function to clear my Selected Date range
+  const clearDateFilter = () => {
+    setDateRange({ from: null, to: null });
   };
 
   const handleNannyInterest = async (listingId, e) => {
@@ -133,16 +143,33 @@ const getInitials = (name) => {
       );
     }
   };
+  
+  const filteredListings = jobListings.filter(listing => {
 
-  const filteredListings = jobListings.filter(
-    (listing) =>
-      listing.listingName.toLowerCase().includes(searchQuery) ||
-      listing.description.toLowerCase().includes(searchQuery) ||
-      formatFirestoreTimestamp(listing.postedDate)
-        .toLowerCase()
-        .includes(searchQuery) ||
-      listing.hourlyRate.toString().toLowerCase().includes(searchQuery)
-  );
+    const listingStartDate = new Date(formatFirestoreTimestamp(listing.jobStartDate));
+    const listingEndDate = new Date(formatFirestoreTimestamp(listing.jobEndDate));
+
+    console.log("date called");
+    console.log("range from", dateRange.from);
+    console.log("range to", dateRange.to);
+    console.log("start date", listing);
+    
+    
+    // Filter logic to see if date is within the selected range
+    const isWithinRange =
+      (!dateRange.from || listingStartDate >= dateRange.from) &&
+      (!dateRange.to || listingEndDate <= dateRange.to);
+
+    const listingAddress = listing.street + " " + listing.city + " " + listing.state + " " + listing.country;
+
+    return (
+      isWithinRange &&
+      (listing.listingName.toLowerCase().includes(searchQuery) ||
+        listingAddress.toLowerCase().includes(searchQuery) ||
+        listing.hourlyRate.toString().toLowerCase().includes(searchQuery))
+    );
+  });
+  
 
   // To conditinoally render on loading animation
   const SkeletonCard = () => (
@@ -181,7 +208,6 @@ const getInitials = (name) => {
         <div className="flex flex-col items-center w-full px-4">
           <SkeletonCard />
           <SkeletonCard />
-          {/* Add more SkeletonCards if needed */}
         </div>
       </div>
     );
@@ -191,14 +217,26 @@ const getInitials = (name) => {
   return (
     <>
       <div className="flex flex-col items-center min-h-screen pt-4">
-        <h1>Job Listings</h1>
-        <Input
-          type="text"
-          placeholder="Search listings..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="mb-5 w-full max-w-md"
-        />
+        <h1 className="p-4">Job Listings</h1>
+        <div className="w-full flex justify-center mb-4">
+          <Input
+            type="text"
+            placeholder="Search listings..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="w-full max-w-md" // Adjust width as needed
+          />
+        </div>
+
+        <div className="flex justify-center mb-4">
+          <CalendarDateRangePicker
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          />
+          <Button onClick={clearDateFilter} className="ml-2">Clear Date Filter</Button>
+        </div>
+        
+        
         <div className="flex flex-wrap justify-center gap-4 w-full px-4">
           {filteredListings.map((listing, index) => (
             <div key={index} className="w-[800px] h-[150px] mb-20">
@@ -218,12 +256,12 @@ const getInitials = (name) => {
                         </div>
                       )}
                       <div>
-                        <CardDescription className="text-gray-900">
+                        <CardDescription className="text-align:center p-1">
                           {`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
                         </CardDescription>
                       </div>
                     </div>
-                    <div className="text-gray-500 text-sm">
+                    <div className=" text-sm">
                       Posted Date:{" "}
                       {formatFirestoreTimestamp(listing.postedDate)}
                     </div>
