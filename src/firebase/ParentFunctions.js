@@ -97,7 +97,9 @@ const getActiveListings = async (parentID) => {
     listingsSnapshot.forEach((doc) => {
       const listingData = doc.data();
       if (
-        (listingData.parentID == parentID && listingData.status == "pending") ||
+        (listingData.parentID == parentID &&
+          listingData.selectedNannyID !== "" &&
+          listingData.status == "pending") ||
         (listingData.parentID == parentID &&
           listingData.status === "completed" &&
           listingData.progressBar === 0)
