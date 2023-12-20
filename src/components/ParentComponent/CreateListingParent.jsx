@@ -6,7 +6,6 @@ import { v4 as uuid } from "uuid";
 import AdressFields from "../AdressFields";
 import {
   Box,
-  Button,
   CircularProgress,
   Typography,
   Stack,
@@ -14,6 +13,8 @@ import {
   TextareaAutosize,
   Grid,
 } from "@mui/material";
+import { Button } from "@/components/ui/button"
+
 import { Formik, Form, Field } from "formik";
 import DatePickerFormInput from "../DatePicker";
 import moment from "moment";
@@ -257,6 +258,7 @@ function CreateListingParent() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
+                  className="text-black"
                   style={{
                     width: "100%",
                     marginTop: "16px",
@@ -282,6 +284,7 @@ function CreateListingParent() {
                   }}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  className="text-black"
                   required
                   style={{
                     width: "100%",
@@ -296,7 +299,7 @@ function CreateListingParent() {
                   </Typography>
                 )}
                 <Button
-                  variant="contained"
+                  variant="outline"
                   type="submit"
                   sx={{
                     height: "3rem",

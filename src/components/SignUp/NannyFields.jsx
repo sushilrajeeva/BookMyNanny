@@ -63,6 +63,7 @@ const NannyFields = ({
         name="bio"
         placeholder="Enter your bio here..."
         value={values.bio}
+        className="text-black"
         onInput={(e) => {
           handleChange(e);
           setTimeout(() => handleBlur(e), 0);
