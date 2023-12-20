@@ -42,7 +42,13 @@ const PaymentDetails = ({ listing, onUpdatedListing }) => {
           Mark Job Completed
         </Button>
 
-        <Button color="error" variant="contained" onClick={handleDecline}>
+        <Button
+          // mt={2}
+          color="error"
+          variant="contained"
+          onClick={handleDecline}
+          sx={{ marginTop: "10px" }}
+        >
           Decline
         </Button>
       </CardContent>
