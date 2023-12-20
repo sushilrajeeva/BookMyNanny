@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate,useNavigate} from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { doSignInWithEmailAndPassword, doPasswordReset } from '../firebase/AuthFunctions';
 
@@ -18,7 +18,7 @@ import {
 
 function SignIn() {
   const { currentUser } = useContext(AuthContext);
-
+  const navigate = useNavigate()
   const handleLogin = async (event) => {
     event.preventDefault();
     const { email, password } = event.target.elements;
@@ -41,7 +41,8 @@ function SignIn() {
   };
 
   if (currentUser) {
-    return <Navigate to='/home' />;
+    // return <Navigate to='/home' />;
+    navigate('/home');
   }
 
   return (
