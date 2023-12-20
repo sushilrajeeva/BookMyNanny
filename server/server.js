@@ -16,10 +16,20 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
-
+import { createClient } from "redis";
 // Implemented the redis using professor's lecture code
 import redis from "redis";
-const redisClient = redis.createClient();
+// const redisClient = redis.createClient({
+//   host: "redis-10257.c326.us-east-1-3.ec2.cloud.redislabs.com",
+//   port: 10257,
+// });
+const redisClient = createClient({
+  password: "mhpfMcaGuB6a4aCczTfsGXcuzWyNkns2",
+  socket: {
+    host: "redis-10257.c326.us-east-1-3.ec2.cloud.redislabs.com",
+    port: 10257,
+  },
+});
 redisClient.connect().then(() => {});
 
 dotenv.config();
