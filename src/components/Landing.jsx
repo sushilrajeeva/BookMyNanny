@@ -10,9 +10,21 @@ import {
 } from "@/components/ui/card";
 import { AuthContext } from "@/context/AuthContext";
 
+// Solving html validation error
+import { useNavigate } from 'react-router-dom';
+
 function Landing() {
 
   const { currentUser } = useContext(AuthContext);
+
+  let navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
+
+  
   const FeatureCard = ({ title, description }) => (
     <Card className="mb-4 transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-105">
       <CardHeader>
@@ -23,6 +35,8 @@ function Landing() {
       </CardContent>
     </Card>
   );
+
+  
 
   return (
     <div className="max-w-4xl mx-auto p-4 mt-16">
@@ -51,12 +65,15 @@ function Landing() {
       </div>
 
       {currentUser?<></>:<div className="flex justify-center gap-4 mt-8">
-        <NavLink to="/signup" className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto px-4 py-2">Sign Up</Button>
-        </NavLink>
-        <NavLink to="/signin" className="w-full sm:w-auto">
-          <Button variant="secondary" className="w-full sm:w-auto px-4 py-2">Sign In</Button>
-        </NavLink>
+
+        <Button onClick={() => handleNavigation('/signup')} className="w-full sm:w-auto px-4 py-2">
+          Sign Up
+        </Button>
+
+        <Button onClick={() => handleNavigation('/signin')} variant="secondary" className="w-full sm:w-auto px-4 py-2">
+          Sign In
+        </Button>
+        
       </div>}
     </div>
   );
