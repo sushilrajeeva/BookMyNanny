@@ -43,7 +43,6 @@ const Profile = () => {
             setImageUrl(parentData.image);
             console.log(parentData);
             setInitialValues({
-              displayName: parentData.displayName,
               email: parentData.emailAddress,
               firstName: parentData.firstName,
               lastName: parentData.lastName,
@@ -62,7 +61,6 @@ const Profile = () => {
             const nannyData = await response.json();
             setImageUrl(nannyData.image);
             setInitialValues({
-              displayName: nannyData.displayName,
               email: nannyData.emailAddress,
               firstName: nannyData.firstName,
               lastName: nannyData.lastName,
@@ -173,7 +171,6 @@ const Profile = () => {
       try {
         setSubmitting(true);
         const {
-          displayName,
           firstName,
           lastName,
           phoneNumber,
@@ -188,7 +185,6 @@ const Profile = () => {
         );
         const currentUserData = await response.json();
         const changedValues = Object.entries({
-          displayName: displayName.trim(),
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           phoneNumber: phoneNumber,
@@ -234,7 +230,6 @@ const Profile = () => {
       try {
         setSubmitting(true);
         const {
-          displayName,
           firstName,
           lastName,
           phoneNumber,
@@ -251,7 +246,6 @@ const Profile = () => {
         );
         const currentUserData = await response.json();
         const changedValues = Object.entries({
-          displayName: displayName.trim(),
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           phoneNumber: phoneNumber,
@@ -300,7 +294,7 @@ const Profile = () => {
 
   if (mainLoading) {
     // Show loading indicator while waiting for user data
-    return <CustomLoading/>;
+    return <CustomLoading />;
   }
 
   return (
@@ -341,7 +335,7 @@ const Profile = () => {
         </Card>
         <Card className="w-full p-4 ml-9">
           {!initialValues ? (
-            <CustomLoading/>
+            <CustomLoading />
           ) : (
             <Formik
               initialValues={initialValues}

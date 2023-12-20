@@ -39,6 +39,68 @@ const getAllListings = async () => {
   }
 };
 
+const getAllcurrentListings = async () => {
+  try {
+    function formatFirestoreTimestamp(timestamp) {
+      // Checking if timestamp is a Firestore Timestamp object
+      // did this because some posted dates are just strings and some are firestore timestamp functions
+      // so implemented the below logic to counter the error while rendering
+      if (timestamp && typeof timestamp.toDate === "function") {
+        const date = timestamp.toDate();
+        return date.toLocaleDateString();
+      } else if (timestamp) {
+        return timestamp;
+      }
+      return "";
+    }
+
+    const listingsCollection = collection(db, "Listings");
+    const listingsSnapshot = await getDocs(listingsCollection);
+
+    const allListings = [];
+
+    // modifying to get only those listings that are active (where parent hasn't selected a nanny yet)
+    listingsSnapshot.forEach((doc) => {
+      const listingData = doc.data();
+
+      const listingStartDate = new Date(
+        formatFirestoreTimestamp(listingData.jobStartDate)
+      );
+
+      // Remove the time part from the date for comparison
+      listingStartDate.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const listingAddress =
+        listingData.street +
+        " " +
+        listingData.city +
+        " " +
+        listingData.state +
+        " " +
+        listingData.country;
+
+      listingData.listingAddress = listingAddress;
+
+      if (
+        // condition to only push listing if the listing has no selectedNannyID and the status of the listing is pending
+        !listingData.selectedNannyID &&
+        listingData.status == "pending" &&
+        listingStartDate >= today
+      ) {
+        allListings.push(listingData);
+      }
+    });
+
+    return allListings;
+  } catch (error) {
+    console.log(error);
+    console.error("Error getting all Listings for this nanny!!:", error);
+    throw new Error("Error getting all users");
+  }
+};
+
 async function getNannyById(id) {
   try {
     const nannyDocRef = doc(db, "Nanny", id);
@@ -274,4 +336,5 @@ export {
   onJobComplete,
   getVerifiedCount,
   getNonVerifiedCount,
+  getAllcurrentListings,
 };

@@ -73,7 +73,7 @@ const ViewListing = ({ listing, onBackClick, onEditClick }) => {
             selectedNannyDetails.map((nanny, index) => (
               <div key={index}>
                 <p>
-                  <strong>Nanny Name:</strong> {nanny.displayName}
+                  <strong>Nanny Name:</strong> {nanny.firstName}
                 </p>
                 <p>
                   <strong>Nanny Experience:</strong> {nanny.experience}
@@ -84,7 +84,7 @@ const ViewListing = ({ listing, onBackClick, onEditClick }) => {
             interestedNanniesDetails.map((nanny, index) => (
               <div key={index}>
                 <p>
-                  <strong>Nanny Name:</strong> {nanny.displayName}
+                  <strong>Nanny Name:</strong> {nanny.firstName}
                 </p>
                 <p>
                   <strong>Nanny Experience:</strong> {nanny.experience}

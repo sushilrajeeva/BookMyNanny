@@ -58,23 +58,6 @@ const ProfileFields = ({
         </>
       )}
 
-      <TextField
-        variant="standard"
-        label="Display name"
-        name="displayName"
-        value={values.displayName}
-        onInput={(e) => {
-          handleChange(e);
-          setTimeout(() => handleBlur(e), 0);
-        }}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={touched.displayName && Boolean(errors.displayName)}
-        helperText={touched.displayName && errors.displayName}
-        fullWidth
-        required
-      />
-
       <Stack
         direction="row"
         spacing={2}
