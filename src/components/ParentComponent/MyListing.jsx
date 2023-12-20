@@ -2,6 +2,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { getAllListings, updateListing } from "../../firebase/ParentFunctions"; // Assuming there is an updateListing function
 import { AuthContext } from "../../context/AuthContext";
+import { Button } from "../ui/button";
 import { deleteListing } from "@/firebase/ListingFunctions";
 import ViewListing from "./ViewListing";
 import {
@@ -14,15 +15,25 @@ import {
 } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import CustomLoading from "../EssentialComponents/CustomLoading";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 function MyListing() {
   const [listings, setListings] = useState([]);
   const { currentUser, userRole } = useContext(AuthContext);
   const [loadingListings, setLoadingListings] = useState(true);
-
-  // State to track the selected listing for view or edit
   const [selectedListing, setSelectedListing] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     // Fetch all listings when the component mounts
@@ -45,103 +56,106 @@ function MyListing() {
     fetchListings();
   }, [isDelete]);
 
-  const handleViewListingClick = (listingId) => {
-    const selectedListing = listings.find(
-      (listing) => listing._id === listingId
-    );
-    setSelectedListing(selectedListing);
-    setIsEditing(false);
-  };
-
   const handleDeleteListingClick = (listingId) => {
     deleteListing(listingId);
-    alert("Done");
     setIsDelete(true);
+    setOpen(false);
   };
 
-  const handleBackToListings = () => {
-    setSelectedListing(null);
-    setIsEditing(false);
-  };
-
-  const handleSaveChanges = async (listingId, updatedData) => {
-    try {
-      // Assuming there is an updateListing function to update the listing in the backend
-      console.log("Updating listing with ID:", listingId);
-      console.log("Updated Data:", updatedData.updatedData);
-      await updateListing(listingId, updatedData.updatedData);
-
-      // Fetch updated listings
-      const parentListings = await getAllListings(currentUser.uid);
-      setListings(parentListings);
-      console.log("Listings updated successfully:", parentListings);
-    } catch (error) {
-      console.error("Error updating listing:", error);
-    } finally {
-      setSelectedListing(null);
-      setIsEditing(false);
-    }
+  const handleSvgClick = () => {
+    // Open the modal or perform any other action
+    setOpen(true);
   };
 
   if (loadingListings) {
     return (
       <div>
-        <CustomLoading/>
+        <CustomLoading />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-5 w-full px-4">
-      {selectedListing && !isEditing ? (
-        <ViewListing
-          listing={selectedListing}
-          onBackClick={handleBackToListings}
-          onEditClick={handleDeleteListingClick}
-        />
-      ) : (
-        listings.map((listing, index) => (
-          <Card key={index} className="w-[300px]">
-            {/* Display listing information */}
-            <CardHeader>
-              <CardTitle>{listing.listingName}</CardTitle>
-              <CardDescription>
-                <strong>Posted Date:</strong> {listing.postedDate}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                <strong>Description:</strong> {listing.description}
-              </p>
-              <p>
-                <strong>Hourly Rate:</strong> {listing.hourlyRate}
-              </p>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Link to={`/listing/${listing._id}`}>
-                <button
-                  onClick={() => console.log("View Listing is called")}
-                  className="bg-blue-500 text-white p-2 rounded"
-                >
-                  View Listing
-                </button>
-              </Link>
-              {/* <button
-                onClick={() => handleViewListingClick(listing._id)}
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                View Listing
-              </button> */}
-              <button
-                onClick={() => handleDeleteListingClick(listing._id)}
-                className="bg-red-500 text-white p-2 rounded"
-              >
-                Delete Listing
-              </button>
-            </CardFooter>
-          </Card>
-        ))
-      )}
+    <div className="flex flex-wrap pt-8 pb-8">
+      <div className="flex flex-wrap justify-center gap-9 w-full">
+        {listings.map((listing, index) => (
+          <Link
+            to={`/listing/${listing._id}`}
+            key={index}
+            onClick={(e) => e.preventDefault()}
+          >
+            <Card className="w-[500px]  hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
+              <CardHeader>
+                <CardTitle className="flex justify-between">
+                  <div>{listing.listingName}</div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={handleSvgClick}
+                      >
+                        <svg
+                          className="h-6 w-6 text-red-500"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" />
+                          <line x1="4" y1="7" x2="20" y2="7" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                          <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                          <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                        </svg>
+                      </div>
+                    </AlertDialogTrigger>
+                    {open && (
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete the listing?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogAction asChild>
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleDeleteListingClick(listing._id);
+                              }}
+                              type="submit"
+                            >
+                              Delete
+                            </Button>
+                          </AlertDialogAction>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    )}
+                  </AlertDialog>
+                </CardTitle>
+
+                <CardDescription>
+                  <strong>Posted Date:</strong> {listing.postedDate}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  <strong>Description:</strong> {listing.description}
+                </p>
+                <p>
+                  <strong>Hourly Rate:</strong> {listing.hourlyRate}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
