@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+   
+
   bookmynanny:
     build:
       context: ./
@@ -9,17 +17,3 @@ services:
       - "4001:5173"
     depends_on:
       - server
-
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    ports:
-      - "4002:3000"
-    depends_on:
-      - redis
-
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
