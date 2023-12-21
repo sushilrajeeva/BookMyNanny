@@ -164,7 +164,7 @@ function ParentSignUp() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 2,
-                  minWidth: "500px",
+                  minWidth: "800px",
                   padding: "2rem",
                   border: "1px solid #ccc",
                   borderRadius: "8px",
@@ -173,8 +173,8 @@ function ParentSignUp() {
                 }}
               >
                 <Typography
-                  variant="h2"
-                  component="h3"
+                  variant="h4"
+                  component="h4"
                   className="text-black"
                   sx={{ textTransform: "uppercase" }}
                 >
