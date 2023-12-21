@@ -27,7 +27,7 @@ export const AlertProvider = ({ children }) => {
         autoHideDuration={5000}
         onClose={hideAlert}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        style={{ marginTop: "150px" }}
+        style={{ marginTop: "100px" }}
       >
         <MuiAlert severity={snackbar.type || "info"} onClose={hideAlert}>
           {snackbar.message}

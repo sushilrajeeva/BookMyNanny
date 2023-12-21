@@ -189,7 +189,6 @@ function ParentSignUp() {
                   setFieldValue={setFieldValue}
                 />
                 <Button
-                  variant="outline"
                   type="submit"
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >

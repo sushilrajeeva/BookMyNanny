@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "../App.css";
 import { Typography } from "@mui/material";
 import Chat from "./Chat";
@@ -30,10 +30,10 @@ import { getNannyById } from "@/firebase/NannyFunctions";
 import CustomLoading from "./EssentialComponents/CustomLoading";
 import Error404Page from "./EssentialComponents/Error404Page";
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 
-import { ArrowLeft } from 'lucide-react';
-import { ChevronLeft  } from "lucide-react"
+import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 function ListingFullDetails(props) {
   const { id } = useParams();
@@ -65,8 +65,8 @@ function ListingFullDetails(props) {
     setIsInterestedDialogOpen(!isInterestedDialogOpen);
 
   const navigateBack = () => {
-    navigate('/dashboard')
-  }
+    navigate("/dashboard");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,7 +134,7 @@ function ListingFullDetails(props) {
 
   return (
     <div className="mt-16">
-      <div className="flex items-start gap-4 mb-4 pl-8">
+      {/* <div className="flex items-start gap-4 mb-4 pl-8">
         <Button 
           variant="outline"
           size="icon"
@@ -145,13 +145,14 @@ function ListingFullDetails(props) {
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <span className="text-lg font-medium self-center">Back to Dashboard</span>
-      </div>
+      </div> */}
       <div className="card-container">
         {listing && (
           <Card className="w-[550px] mx-auto shadow-lg">
-            <CardHeader >
-              
-              <CardTitle className="flex flex-col items-center">Listing Details</CardTitle>
+            <CardHeader>
+              <CardTitle className="flex flex-col items-center">
+                Listing Details
+              </CardTitle>
               <div className="flex items-center space-x-4 space-y-4">
                 <Avatar>
                   <AvatarImage src={parentDP.image} />
@@ -159,10 +160,16 @@ function ListingFullDetails(props) {
                     {parentDP.firstName[0]} {parentDP.lastName[0]}
                   </AvatarFallback>
                 </Avatar>
-                <div  className="ml-4">
+                <div className="ml-4">
                   <div className="font-bold text-lg leading-none">
-                    {parentDP.firstName} {parentDP.lastName}
+                    <Link
+                      to={`/profile-details/${parentDP._id}`}
+                      className="underline"
+                    >
+                      {parentDP.firstName} {parentDP.lastName}
+                    </Link>
                   </div>
+
                   <div className="text-sm text-gray-500">
                     {parentDP.emailAddress}
                   </div>

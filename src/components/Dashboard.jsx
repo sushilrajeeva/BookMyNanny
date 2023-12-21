@@ -1,4 +1,4 @@
-import React, { useContext , useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import "../App.css";
 import ParentDashboard from "./Dashboard/ParentDashboard";
@@ -13,11 +13,6 @@ function Dashboard() {
   console.log(currentUser);
   return (
     <div className="mt-16">
-      <h2>
-        Hello {currentUser && currentUser.displayName}, this is the Protected
-        Home page The user role is :{userRole}
-      </h2>
-
       <div>
         {userRole === "nanny" ? (
           <NannyDashboard />
@@ -26,7 +21,7 @@ function Dashboard() {
         ) : userRole === "admin" ? (
           <AdminDashboard />
         ) : (
-          <CustomLoading/>
+          <CustomLoading />
         )}
       </div>
     </div>
