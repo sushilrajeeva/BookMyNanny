@@ -2,7 +2,6 @@ import React from "react";
 import "../App.css";
 import { Route, Routes as AppRoutes } from "react-router-dom";
 import Account from "../components/Account";
-import Home from "../components/Dashboard";
 import Landing from "../components/Landing";
 import Navigation from "../components/Navigation";
 import SignIn from "../components/SignIn";
@@ -12,15 +11,13 @@ import ListingFullDetails from '../components/ListingFullDetails'
 import { AuthProvider } from "../context/AuthContext";
 import { AlertProvider } from "../context/AlertContext";
 import PrivateRoute from "../routes/PrivateRoute";
-import PaymentSuccess from "../components/EssentialComponents/PaymentSuccess"
-import PaymentFailure from "../components/EssentialComponents/PaymentFailure"
-import ShowProfile from "@/components/Profile/ShowProfile";
 import ProfileFullView from "@/components/Profile/ProfileFullView";
 import  Error404Page  from "@/components/EssentialComponents/Error404Page";
 import SignOutButton from "@/components/SignOut";
 import Dashboard from "../components/Dashboard"
 import { ThemeProvider } from "@/components/theme-provider";
 import PrivateRouteSignUp from "./PrivateRouteSignUp";
+import PrivateRouteProfile from "./PrivateRouteProfile";
 function Routes() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -41,7 +38,7 @@ function Routes() {
               <Route path="/account" element={<PrivateRoute />}>
                 <Route path="/account" element={<Account />} />
               </Route>
-              <Route path="/profile" element={<PrivateRoute />}>
+              <Route path="/profile" element={<PrivateRouteProfile />}>
                 <Route path="/profile" element={<Profile />} />
               </Route>
               <Route path="/listing/:id" element={<PrivateRoute />}>
