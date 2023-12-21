@@ -91,10 +91,10 @@ const getInitials = (name) => {
             <div className="p-2">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                <Avatar>
-                    <AvatarImage src={userView?.image} alt={userView?.displayName} />
-                    <AvatarFallback>{getInitials(userView?.displayName)}</AvatarFallback>
-                </Avatar>
+                  <Avatar>
+                      <AvatarImage src={userView?.image} alt={userView?.displayName} />
+                      <AvatarFallback>{getInitials(userView?.displayName)}</AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-auto p-2" align="end">
                 <div className="font-normal p-3">
@@ -112,7 +112,7 @@ const getInitials = (name) => {
                 </DropdownMenuItem>
                 
                 <DropdownMenuItem asChild>
-                    <span onClick={doSignOut} className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer">Sign Out</span>
+                    <button onClick={doSignOut} className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer">Sign Out</button>
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

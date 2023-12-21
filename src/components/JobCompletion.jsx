@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { AlertContext } from "@/context/AlertContext.jsx";
 
 function JobCompletion({ listing, onUpdatedListing }) {
   const [showForm, setShowForm] = useState(false);
@@ -25,6 +26,7 @@ function JobCompletion({ listing, onUpdatedListing }) {
   const [calculate, setCalculate] = useState(false);
   const [totalPay, setTotalPay] = useState(0);
   const auth = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
 
   const handleCompleteJob = () => {
     setShowForm(true);
@@ -36,15 +38,23 @@ function JobCompletion({ listing, onUpdatedListing }) {
 
   const handleCalculate = () => {
     const total = hoursWorked * listing.hourlyRate;
-    setTotalPay(total);
-    setCalculate(true);
+    try {
+      checkNumber(parseFloat(hoursWorked), "Hours Worked");
+      setTotalPay(total);
+      setCalculate(true);
+    } catch (error) {
+      showAlert("error", "Hours worked is Invalid!");
+      
+    }
+    
+    
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      checkNumber(parseFloat(hoursWorked), "hours worked");
+      
       await onJobComplete(listing._id, hoursWorked, auth.currentUser.uid);
       onUpdatedListing();
       // Reset state
@@ -56,13 +66,13 @@ function JobCompletion({ listing, onUpdatedListing }) {
   };
 
   return (
-    <Card className=" flex flex-col pt-8 items-center mt-5">
+    <Card className=" bg-white flex flex-col pt-8 items-center mt-5">
       <CardContent className="flex flex-col items-center">
         {listing.status === "pending" && listing.progressBar === 0 && (
           <Box>
             <Button
               className="mt-5"
-              color="primary"
+              variant="outline"
               onClick={handleCompleteJob}
               disabled={showForm}
             >
@@ -126,12 +136,12 @@ function JobCompletion({ listing, onUpdatedListing }) {
         {listing.status === "completed" && listing.progressBar === 0 && (
           <CardContent className="flex flex-col items-center">
             <CheckCircleIcon fontSize="large" color="warning" />
-            <Typography variant="h6" mt={2}>
+            <Typography className="text-black" variant="h6" mt={2}>
               Request Submitted
             </Typography>
             <div>
-              <Typography variant="body1">Your Total Pay</Typography>
-              <Typography variant="h5">
+              <Typography className="text-black" variant="body1">Your Total Pay</Typography>
+              <Typography className="text-black" variant="h5">
                 ${(listing.hoursWorked * listing.hourlyRate).toFixed(2)}
               </Typography>
             </div>
@@ -150,12 +160,12 @@ function JobCompletion({ listing, onUpdatedListing }) {
         {listing.status === "completed" && listing.progressBar === 100 && (
           <CardContent className="flex flex-col items-center">
             <CheckCircleIcon fontSize="large" color="success" />
-            <Typography variant="h6" mt={2}>
+            <Typography className="text-black" variant="h6" mt={2}>
               Payment Completed
             </Typography>
             <div>
-              <Typography variant="body1">Your Total Pay</Typography>
-              <Typography variant="h5">
+              <Typography className="text-black" variant="body1">Your Total Pay</Typography>
+              <Typography className="text-black" variant="h5">
                 ${(listing.hoursWorked * listing.hourlyRate).toFixed(2)}
               </Typography>
             </div>

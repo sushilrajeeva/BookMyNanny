@@ -59,7 +59,7 @@ function ParentSignUp() {
       let dataToStore = {
         firstName: capitalize(firstName.trim()),
         lastName: capitalize(lastName.trim()),
-        emailAddress: email.trim(),
+        emailAddress: email.toLowerCase().trim(),
         countryCode: "+1",
         phoneNumber: phoneNumber,
         street: capitalize(street.trim()),
@@ -192,10 +192,7 @@ function ParentSignUp() {
                 <Button
                   variant="outline"
                   type="submit"
-                  sx={{
-                    height: "3rem",
-                    width: "10rem",
-                  }}
+                  
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : "Sign Up"}

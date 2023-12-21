@@ -17,7 +17,7 @@ function NotVerified() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center"> 
       <Card className="w-[350px] shadow-md">
         <CardHeader>
           <CardTitle className="text-xl font-bold">
@@ -25,7 +25,7 @@ function NotVerified() {
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center">
-          <p className="text-gray-600">
+          <p>
             You are not verified. Please wait for admin approval.
           </p>
         </CardContent>
@@ -34,6 +34,7 @@ function NotVerified() {
         </CardFooter>
       </Card>
     </div>
+
   );
 }
 

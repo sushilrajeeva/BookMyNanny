@@ -12,6 +12,14 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+
+import { Terminal } from "lucide-react"
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 import { Link } from "react-router-dom";
 import CustomLoading from "../EssentialComponents/CustomLoading";
 import {
@@ -85,16 +93,14 @@ function MyListing() {
             >
               <CardHeader>
                 <CardTitle className="flex justify-between">
-                  <div>
                     <Link to={`/listing/${listing._id}`} key={index}>
                       {listing.listingName}
                     </Link>
-                  </div>
                   <AlertDialog>
                     {listing.status === "completed" &&
                     listing.progressBar === 100 ? null : (
                       <AlertDialogTrigger asChild>
-                        <div
+                        <button
                           style={{ cursor: "pointer" }}
                           onClick={() => {
                             handleSvgClick();
@@ -118,7 +124,7 @@ function MyListing() {
                             <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
                             <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                           </svg>
-                        </div>
+                        </button>
                       </AlertDialogTrigger>
                     )}
                     {open && (
@@ -190,11 +196,15 @@ function MyListing() {
             </Card>
           ))
         ) : (
-          <Card className="w-[500px] hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
-            <CardContent>
-              <p className="text-center text-black">No listings to display</p>
-            </CardContent>
-          </Card>
+          <Alert className="w-0.6">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
+              You don't have any listings to display!
+              Create a listing.
+            </AlertDescription>
+          </Alert>
+
         )}
       </div>
     </div>

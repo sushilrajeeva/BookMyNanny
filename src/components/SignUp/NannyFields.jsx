@@ -58,7 +58,7 @@ const NannyFields = ({
         required
       />
       <TextareaAutosize
-        label="Bio"
+        
         minRows={6}
         name="bio"
         placeholder="Enter your bio here..."

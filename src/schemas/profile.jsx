@@ -4,12 +4,17 @@ export const profile = Yup.object().shape({
   firstName: Yup.string()
     .required("First name is required")
     .matches("^[a-zA-Z ]*$", "Invalid First name")
-    .min(3, "First name must be atleast 3 cahracters")
-    .max(40, "First name cannot be greater than 40 cahracters")
+    .min(3, "First name must be at least 3 characters")
+    .max(40, "First name cannot be greater than 40 characters")
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Name should have at least 3 valid characters.",
+      (value) => value.trim().length >= 3
     ),
   lastName: Yup.string()
     .required("Last name is required")
@@ -19,15 +24,26 @@ export const profile = Yup.object().shape({
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Name should have at least 3 valid characters.",
+      (value) => value.trim().length >= 3
     ),
   street: Yup.string()
     .required("Street is required")
     .min(6, "Street must be at least 6 characters")
+    .matches("^[a-zA-Z0-9-, ]*$", "Invalid Street name")
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Street should have at least 6 valid characters.",
+      (value) => value.trim().length >= 6
     ),
   city: Yup.string()
     .required("City is required")
@@ -36,7 +52,12 @@ export const profile = Yup.object().shape({
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Enter at least 3 valid characters.",
+      (value) => value.trim().length >= 3
     ),
   state: Yup.string()
     .required("State is required")
@@ -45,7 +66,12 @@ export const profile = Yup.object().shape({
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Enter at least 3 valid characters.",
+      (value) => value.trim().length >= 3
     ),
 
   pincode: Yup.string()

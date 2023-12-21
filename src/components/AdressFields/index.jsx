@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, TextField, MenuItem } from "@mui/material";
+import { Stack, TextField, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 
 const stateList = [
   "Alabama",
@@ -102,25 +102,26 @@ const AdressFields = ({
           width: "100%",
         }}
       >
-        <TextField
-          select
-          variant="standard"
-          label="State"
-          name="state"
-          value={values.state}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.state && Boolean(errors.state)}
-          helperText={touched.state && errors.state}
-          fullWidth
-          required
-        >
-          {stateList.map((state) => (
-            <MenuItem key={state} value={state}>
-              {state}
-            </MenuItem>
-          ))}
-        </TextField>
+        <FormControl variant="standard" fullWidth required error={touched.state && Boolean(errors.state)}>
+          <InputLabel id="state-select">State</InputLabel>
+          <Select
+            labelId="state-select"
+            name="state"
+            value={values.state}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          >
+            {stateList.map((state) => (
+              <MenuItem key={state} value={state}>
+                {state}
+              </MenuItem>
+            ))}
+          </Select>
+          {touched.state && errors.state && (
+            <p style={{ color: 'red', margin: '4px 14px 0 14px' }}>{errors.state}</p>
+          )}
+        </FormControl>
+
 
         <TextField
           variant="standard"
