@@ -20,12 +20,18 @@ const DisplayProfileField = ({ label, value }) => {
           fontWeight: "400",
           lineHeight: "1.4375em",
           letterSpacing: "0.00938em",
+          
         }}
         variant="subtitle1"
       >
         {label}
       </Typography>
-      <Typography variant="body1">{value}</Typography>
+      <Typography 
+        variant="body1"
+        sx={{ color: "gray" }}
+      >
+        {value}
+      </Typography>
     </Stack>
   );
 };
@@ -46,7 +52,7 @@ const ProfileFields = ({
 }) => {
   return (
     <>
-      <DisplayProfileField label="Email" value={values.email} />
+      <DisplayProfileField label="Email" value={values.email} className = "text-black"/>
       <DisplayProfileField
         label="Date of Birth"
         value={moment(values.dob, "MM-DD-YYYY").format("MMMM D, YYYY")}

@@ -311,7 +311,7 @@ const Profile = () => {
   return (
     <div className="profile-card mt-16">
       <div className=" flex flex-row">
-        <Card className="w-full h-[340px] md:w-[340px] p-4 ml-9">
+        <Card className="w-full h-[340px] md:w-[340px] p-4 ml-9 bg-white">
           <CardContent>
             <form onSubmit={submit}>
               <div className="flex flex-col items-center space-y-1.5">
@@ -323,6 +323,7 @@ const Profile = () => {
                 )}
 
                 <Input
+                  className="bg-white text-black"
                   ref={aRef}
                   onChange={handleImageChange}
                   type="file"
@@ -330,6 +331,7 @@ const Profile = () => {
                   required
                 />
                 <Button
+                  
                   variant="contained"
                   type="submit"
                   sx={{
