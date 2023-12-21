@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    image: bookmynanny-client:latest  
    
 
   bookmynanny:
@@ -17,3 +18,4 @@ services:
       - "4001:5173"
     depends_on:
       - server
+    image: bookmynanny-server:latest
