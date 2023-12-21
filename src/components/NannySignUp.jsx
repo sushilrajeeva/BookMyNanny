@@ -41,7 +41,6 @@ function NannySignUp() {
       street,
       city,
       state,
-
       pincode,
       dob,
       experience,
@@ -239,7 +238,6 @@ function NannySignUp() {
                   setFieldError={setFieldError}
                 />
                 <Button
-                  variant="outline"
                   type="submit"
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >

@@ -20,10 +20,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import CustomLoading from "./EssentialComponents/CustomLoading.jsx";
+import { AlertContext } from "../context/AlertContext";
 
 function SignIn() {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
+
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (event) => {
@@ -31,7 +34,7 @@ function SignIn() {
     const { email, password } = event.target.elements;
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       await doSignInWithEmailAndPassword(email.value, password.value);
 
       setTimeout(() => {
@@ -39,7 +42,8 @@ function SignIn() {
         navigate("/home");
       }, 500);
     } catch (error) {
-      alert("Either the username or password is incorrect!");
+      showAlert("error", "Either the username or password is incorrect!");
+      // alert("Either the username or password is incorrect!");
       setLoading(false);
     }
   };
@@ -51,16 +55,22 @@ function SignIn() {
       setLoading(true);
       doPasswordReset(email)
         .then(() => {
-          alert("Password reset email was sent");
+          // alert("Password reset email was sent");
+          showAlert("success", "Password reset email was sent");
         })
         .catch((error) => {
-          alert(error);
+          // alert(error);
+          showAlert("success", error);
         })
         .finally(() => {
           setLoading(false);
         });
     } else {
-      alert(
+      // alert(
+      //   "Please enter an email address below before you click the forgot password link"
+      // );
+      showAlert(
+        "error",
         "Please enter an email address below before you click the forgot password link"
       );
     }
@@ -75,7 +85,7 @@ function SignIn() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-16">
+    <Card className="w-full max-w-md mx-auto mt-[200px]">
       <CardHeader>
         <CardTitle>Log-In</CardTitle>
         <CardDescription>Enter your credentials to sign in.</CardDescription>
