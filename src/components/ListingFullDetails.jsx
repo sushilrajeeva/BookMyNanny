@@ -28,6 +28,7 @@ import { getParentById } from "@/firebase/ParentFunctions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getNannyById } from "@/firebase/NannyFunctions";
 import CustomLoading from "./EssentialComponents/CustomLoading";
+import Error404Page from "./EssentialComponents/Error404Page";
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -41,6 +42,7 @@ function ListingFullDetails(props) {
   const { currentUser, userRole } = useContext(AuthContext);
   const [parentDP, setParentDP] = useState("");
   const [isInterested, setIsInterested] = useState(false);
+  const [error, setError] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -87,6 +89,7 @@ function ListingFullDetails(props) {
         }
       } catch (error) {
         console.error(error);
+        setError(true);
       } finally {
         setIsLoading(false);
       }
@@ -118,12 +121,15 @@ function ListingFullDetails(props) {
     return <CustomLoading />;
   }
 
-  if (!userRole) {
-    return <CustomLoading />;
-  }
+  // if (!userRole) {
+  //   return <CustomLoading />;
+  // }
 
-  if (!listing) {
-    return <CustomLoading />;
+  // if (!listing) {
+  //   return <CustomLoading />;
+  // }
+  if (error) {
+    return <Error404Page />;
   }
 
   return (

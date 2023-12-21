@@ -4,6 +4,7 @@ import { getUserRole } from "@/firebase/AuthFunctions";
 import { getNannyById } from "@/firebase/NannyFunctions";
 import { getParentById } from "@/firebase/ParentFunctions";
 import CustomLoading from "../EssentialComponents/CustomLoading";
+import Error404Page from "../EssentialComponents/Error404Page";
 
 import {
   Card,
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button"
 function ProfileFullView() {
   const { id } = useParams();
   const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ function ProfileFullView() {
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -48,6 +51,7 @@ function ProfileFullView() {
   }, [id]);
 
   if (loading) return <CustomLoading />;
+  if (error) return <Error404Page />;
 
   if (!userData) return <div>User not found.</div>;
 

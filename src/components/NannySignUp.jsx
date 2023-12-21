@@ -80,7 +80,7 @@ function NannySignUp() {
         state: capitalize(state.trim()),
         country: "United States",
         pincode: pincode,
-        password: passwordOne.trim(),
+        // password: passwordOne.trim(),
         dob: dob,
         experience,
         bio: bio.trim(),
@@ -241,7 +241,6 @@ function NannySignUp() {
                 <Button
                   variant="outline"
                   type="submit"
-                  
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : "Sign Up"}
