@@ -112,9 +112,9 @@ const Chat = ({ room, chatUser }) => {
             >
               <div
                 className={`break-words p-2 rounded-lg shadow max-w-[80%] ${
-                  message.userID === currentUser.uid
-                    ? "bg-black text-white" // Messages from current user
-                    : "bg-gray-300 text-gray-800" // Messages from other users
+                  message.userID === currentUser.uid // for these color codes I used iMessage colors (got color code values from https://tailwindcss.com/docs/customizing-colors)
+                    ? "bg-sky-500 text-white" // Messages from current user
+                    : "bg-gray-200 text-gray-800" // Messages from other users
                 }`}
               >
                 <span>{message.text}</span>
@@ -135,7 +135,7 @@ const Chat = ({ room, chatUser }) => {
             />
             {/* I referred tailwind toolkit for the send icon */}
             {/* citation -> https://www.tailwindtoolbox.com/icons */}
-              <Button type="submit" >
+              <Button  type="submit" className="bg-sky-500 text-white" >
                 <span>Send</span>
                 <svg className="ml-2 h-6 w-6" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  
                   <path stroke="none" d="M0 0h24v24H0z"/>  

@@ -29,6 +29,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getNannyById } from "@/firebase/NannyFunctions";
 import CustomLoading from "./EssentialComponents/CustomLoading";
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
+import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft  } from "lucide-react"
+
 function ListingFullDetails(props) {
   const { id } = useParams();
   const [updateCounter, setUpdateCounter] = useState(0);
@@ -36,6 +41,9 @@ function ListingFullDetails(props) {
   const { currentUser, userRole } = useContext(AuthContext);
   const [parentDP, setParentDP] = useState("");
   const [isInterested, setIsInterested] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [chatUserDoc, setChatUserDoc] = useState(null);
   // to keep track of data loading in useEffect
@@ -53,6 +61,10 @@ function ListingFullDetails(props) {
   // This funciton just toggles the show intrested nannies
   const toggleInterestedDialog = () =>
     setIsInterestedDialogOpen(!isInterestedDialogOpen);
+
+  const navigateBack = () => {
+    navigate('/dashboard')
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,6 +128,18 @@ function ListingFullDetails(props) {
 
   return (
     <div className="mt-16">
+      <div className="flex items-start gap-4 mb-4 pl-8">
+        <Button 
+          variant="outline"
+          size="icon"
+          onClick={navigateBack} 
+          aria-label="Go back"
+          className="self-start" // Align the button to the top
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <span className="text-lg font-medium self-center">Back to Dashboard</span>
+      </div>
       <div className="card-container">
         {listing && (
           <Card className="w-[550px] mx-auto shadow-lg">

@@ -9,12 +9,28 @@ import { AuthContext } from "../../context/AuthContext";
 import NotVerified from "../NannyComponent/NotVerified";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+
+
+
+
 // Converting this to shadcn ui
 const NannyDashboard = () => {
   const { currentUser } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState("JobListings");
   const [nannyData, setNannyData] = useState(null);
   const [isLoading, setLoading] = useState(true)
+
+  
+
+
+  // this function is to change my tab value
+  // will be using this function for two way binding using prop drilling
+  // const changeTab = (tabName) => {
+  //   console.log("tab name", tabName);
+  //   setTabValue(tabName);
+  // };
+
+
 
   
 
