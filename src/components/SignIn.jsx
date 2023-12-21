@@ -39,7 +39,7 @@ function SignIn() {
         navigate("/home");
       }, 500);
     } catch (error) {
-      alert(error);
+      alert("Either the username or password is incorrect!");
       setLoading(false);
     }
   };
