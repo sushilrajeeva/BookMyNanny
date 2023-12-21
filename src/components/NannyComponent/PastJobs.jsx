@@ -46,7 +46,7 @@ function PastJobs() {
       {pastJobs.length === 0 ? (
         <>
           <DataTable columns={columns} data={pastJobs} />
-          <div className="flex flex-wrap justify-center gap-4 w-full px-4">
+          <div className="flex flex-wrap justify-center gap-4 w-full p-10">
             <Alert className="w-1/4">
               <Terminal className="h-4 w-4" />
               <AlertTitle>Heads up!</AlertTitle>
