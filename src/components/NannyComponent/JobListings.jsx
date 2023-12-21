@@ -12,6 +12,14 @@ import { Button } from "@/components/ui/button";
 import Slider from "@mui/material/Slider";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { Terminal } from "lucide-react"
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 // Importing card from shadcn
 import {
   Card,
@@ -294,81 +302,91 @@ function JobListings() {
         )}
 
         <div className="flex flex-wrap justify-center gap-4 w-full px-4">
-          {filteredListings.map((listing, index) => (
-            <div key={index} className="w-[800px] h-[150px] mb-20">
-              
-                <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
-                  <Link to={`/listing/${listing._id}`}>
-                  <CardHeader>
-                  
-                    <div className="flex flex-col items-center space-x-4">
-                      {listing.parentData?.image ? (
-                        <img
-                          src={listing.parentData.image}
-                          alt={`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
-                          className="w-[80px] h-[80px] rounded-full"
-                        />
-                      ) : (
-                        <div className="w-[80px] h-[80px] rounded-full bg-blue-200 flex items-center justify-center text-lg font-semibold">
-                          {getInitials(
-                            `${listing.parentData?.firstName} ${listing.parentData?.lastName}`
-                          )}
-                        </div>
-                      )}
-                      <div>
-                        <CardDescription className="text-align:center p-1">
-                          {`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
-                        </CardDescription>
-                      </div>
-                    </div>
+          {filteredListings.length > 0 ? (
+            filteredListings.map((listing, index) => (
+              <div key={index} className="w-[800px] h-[150px] mb-20">
+                
+                  <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
+                    <Link to={`/listing/${listing._id}`}>
+                    <CardHeader>
                     
-                    <div className=" text-sm">
-                      Posted Date:{" "}
-                      {formatFirestoreTimestamp(listing.postedDate)}
-                    </div>
-                  </CardHeader>
-                  </Link>
-                  <CardContent>
-                  <Link to={`/listing/${listing._id}`}>
-                    <CardTitle className="text-xl font-semibold mt-6">
-                      {listing.listingName}
-                    </CardTitle>
-                    <p>
-                      <strong>Job Start Date:</strong> {listing.jobStartDate}
-                    </p>
-                    <p>
-                      <strong>Job End Date:</strong> {listing.jobEndDate}
-                    </p>
-                    <p>
-                      <strong>Pincode:</strong> {listing.pincode}
-                    </p>
-                    <p>
-                      <strong>Hourly Rate:</strong> {listing.hourlyRate}
-                    </p>
+                      <div className="flex flex-col items-center space-x-4">
+                        {listing.parentData?.image ? (
+                          <img
+                            src={listing.parentData.image}
+                            alt={`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
+                            className="w-[80px] h-[80px] rounded-full"
+                          />
+                        ) : (
+                          <div className="w-[80px] h-[80px] rounded-full bg-blue-200 flex items-center justify-center text-lg font-semibold">
+                            {getInitials(
+                              `${listing.parentData?.firstName} ${listing.parentData?.lastName}`
+                            )}
+                          </div>
+                        )}
+                        <div>
+                          <CardDescription className="text-align:center p-1">
+                            {`${listing.parentData?.firstName} ${listing.parentData?.lastName}`}
+                          </CardDescription>
+                        </div>
+                      </div>
+                      
+                      <div className=" text-sm">
+                        Posted Date:{" "}
+                        {formatFirestoreTimestamp(listing.postedDate)}
+                      </div>
+                    </CardHeader>
                     </Link>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    {listing.interestedNannies &&
-                    listing.interestedNannies.includes(currentUser.uid) ? (
-                      <Button
-                        variant="destructive"
-                        onClick={(e) => handleNannyWithdraw(listing._id, e)}
-                      >
-                        Withdraw
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="secondary"
-                        onClick={(e) => handleNannyInterest(listing._id, e)}
-                      >
-                        Apply
-                      </Button>
-                    )}
-                  </CardFooter>
-                </Card>
-              
-            </div>
-          ))}
+                    <CardContent>
+                    <Link to={`/listing/${listing._id}`}>
+                      <CardTitle className="text-xl font-semibold mt-6">
+                        {listing.listingName}
+                      </CardTitle>
+                      <p>
+                        <strong>Job Start Date:</strong> {listing.jobStartDate}
+                      </p>
+                      <p>
+                        <strong>Job End Date:</strong> {listing.jobEndDate}
+                      </p>
+                      <p>
+                        <strong>Pincode:</strong> {listing.pincode}
+                      </p>
+                      <p>
+                        <strong>Hourly Rate:</strong> {listing.hourlyRate}
+                      </p>
+                      </Link>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      {listing.interestedNannies &&
+                      listing.interestedNannies.includes(currentUser.uid) ? (
+                        <Button
+                          variant="destructive"
+                          onClick={(e) => handleNannyWithdraw(listing._id, e)}
+                        >
+                          Withdraw
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="secondary"
+                          onClick={(e) => handleNannyInterest(listing._id, e)}
+                        >
+                          Apply
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                
+              </div>
+            ))
+          ) : (
+            <Alert className="w-1/4">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                <p>No Job Listings found!</p>
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
       </div>
     </>

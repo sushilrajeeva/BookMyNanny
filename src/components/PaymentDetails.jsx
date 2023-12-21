@@ -57,12 +57,12 @@ const PaymentDetails = ({ listing, onUpdatedListing }) => {
     <Card className="flex flex-col items-center">
       <CardContent className="flex flex-col items-center">
         <CheckCircleIcon fontSize="large" color="success" />
-        <Typography variant="h6" mt={2}>
+        <Typography className="text-black flex flex-col items-center" variant="h6" mt={2}>
           Payment Completed
         </Typography>
         <div>
-          <Typography variant="body1">Amount paid</Typography>
-          <Typography variant="h5">
+          <Typography className="text-black flex flex-col items-center" variant="body1">Amount paid</Typography>
+          <Typography className="text-black flex flex-col items-center" variant="h5">
             ${(listing.hoursWorked * listing.hourlyRate).toFixed(2)}
           </Typography>
         </div>

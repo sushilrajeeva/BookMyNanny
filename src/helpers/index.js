@@ -37,7 +37,7 @@ const checkNumber = (num, varName) => {
   if (typeof num !== "number") {
     throw `Error: ${varName} must be a number!`;
   }
-  if (num < 0) throw `Error: ${varName} must be a positive number!`;
+  if (num <= 0) throw `Error: ${varName} must be a positive non zero number!`;
   return num;
 };
 
