@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { getVerifiedNannies } from '../../firebase/AdminFunctions';
-import DataTable from '../ListingTable/data-table';
-
+import React, { useEffect, useState } from "react";
+import { getVerifiedNannies } from "../../firebase/AdminFunctions";
+import DataTable from "../ListingTable/data-table";
 
 function verifiedNannies() {
   const [nannies, setNannies] = useState([]);
@@ -12,25 +11,23 @@ function verifiedNannies() {
       try {
         const verifiedNannies = await getVerifiedNannies();
         setNannies(verifiedNannies);
-        console.log(verifiedNannies)
       } catch (error) {
-        console.error('Error fetching Nannies:', error);
+        console.error("Error fetching Nannies:", error);
       }
     };
 
     fetchNannies();
   }, []);
 
-
   // Define the columns for the DataTable
   const columns = [
     {
-      accessorKey: 'firstName',
-      header: 'Name',
+      accessorKey: "firstName",
+      header: "Name",
     },
     {
-      accessorKey: 'ssn',
-      header: 'SSN',
+      accessorKey: "ssn",
+      header: "SSN",
     },
   ];
 

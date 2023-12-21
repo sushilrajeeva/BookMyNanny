@@ -30,7 +30,6 @@ import {
 function ChangePassword() {
   const { currentUser } = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState("");
-  console.log(currentUser);
 
   const [alert, setAlert] = useState({
     show: false,

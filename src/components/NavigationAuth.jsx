@@ -23,7 +23,6 @@ const NavigationAuth = () => {
   // Wrote a custom function to get initials from displayName
   const getInitials = (name) => {
     if (name) {
-      console.log(name);
       const parts = name.split(" ");
       const initials =
         parts.length > 1

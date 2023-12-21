@@ -20,7 +20,6 @@ function ActiveListings() {
         if (currentUser && userRole === "parent" && currentUser.uid) {
           const parentListings = await getActiveListings(currentUser.uid);
           setListings(parentListings);
-          console.log(parentListings);
         }
       } catch (error) {
         console.error("Error fetching listings:", error);

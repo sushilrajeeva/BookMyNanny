@@ -20,10 +20,7 @@ function InterestedNanny({ id, onUpdatedListing }) {
     try {
       const listing = await getListingById(id);
       setListingData(listing);
-      console.log(
-        "Listing inside fetch approved nanny",
-        listing.selectedNannyID
-      );
+
       if (listing.selectedNannyID && listing.selectedNannyID !== "") {
         setApprovedNanny(listing.selectedNannyID);
       } else {

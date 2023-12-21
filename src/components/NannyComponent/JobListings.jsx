@@ -12,13 +12,9 @@ import { Button } from "@/components/ui/button";
 import Slider from "@mui/material/Slider";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { Terminal } from "lucide-react"
+import { Terminal } from "lucide-react";
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Importing card from shadcn
 import {
@@ -63,8 +59,6 @@ function JobListings() {
   const [value, setValue] = React.useState([0, 100]);
   const [showFilters, setShowFilters] = useState(false);
 
-  
-
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -103,12 +97,8 @@ function JobListings() {
 
   const handleNannyInterest = async (listingId, e) => {
     e.preventDefault();
-    console.log("Handle nanny interest is called");
-    console.log("ListingID:", listingId);
-    console.log("NannyID:", currentUser.uid);
     const success = await nannyInterested(listingId, currentUser.uid);
     if (success) {
-      console.log("Nanny added to InterestedNanny list successfully");
       // Update only the modified listing
       setJobListings((prevListings) =>
         prevListings.map((listing) =>
@@ -140,7 +130,6 @@ function JobListings() {
     e.preventDefault();
     const success = await withdrawNannyInterest(listingId, currentUser.uid);
     if (success) {
-      console.log("Nanny removed from InterestedNanny list successfully");
       // Update only the modified listing
       setJobListings((prevListings) =>
         prevListings.map((listing) =>
@@ -305,11 +294,9 @@ function JobListings() {
           {filteredListings.length > 0 ? (
             filteredListings.map((listing, index) => (
               <div key={index} className="w-[800px] h-[150px] mb-20">
-                
-                  <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
-                    <Link to={`/listing/${listing._id}`}>
+                <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
+                  <Link to={`/listing/${listing._id}`}>
                     <CardHeader>
-                    
                       <div className="flex flex-col items-center space-x-4">
                         {listing.parentData?.image ? (
                           <img
@@ -330,14 +317,14 @@ function JobListings() {
                           </CardDescription>
                         </div>
                       </div>
-                      
+
                       <div className=" text-sm">
                         Posted Date:{" "}
                         {formatFirestoreTimestamp(listing.postedDate)}
                       </div>
                     </CardHeader>
-                    </Link>
-                    <CardContent>
+                  </Link>
+                  <CardContent>
                     <Link to={`/listing/${listing._id}`}>
                       <CardTitle className="text-xl font-semibold mt-6">
                         {listing.listingName}
@@ -354,28 +341,27 @@ function JobListings() {
                       <p>
                         <strong>Hourly Rate:</strong> {listing.hourlyRate}
                       </p>
-                      </Link>
-                    </CardContent>
-                    <CardFooter className="flex justify-between">
-                      {listing.interestedNannies &&
-                      listing.interestedNannies.includes(currentUser.uid) ? (
-                        <Button
-                          variant="destructive"
-                          onClick={(e) => handleNannyWithdraw(listing._id, e)}
-                        >
-                          Withdraw
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="secondary"
-                          onClick={(e) => handleNannyInterest(listing._id, e)}
-                        >
-                          Apply
-                        </Button>
-                      )}
-                    </CardFooter>
-                  </Card>
-                
+                    </Link>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    {listing.interestedNannies &&
+                    listing.interestedNannies.includes(currentUser.uid) ? (
+                      <Button
+                        variant="destructive"
+                        onClick={(e) => handleNannyWithdraw(listing._id, e)}
+                      >
+                        Withdraw
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        onClick={(e) => handleNannyInterest(listing._id, e)}
+                      >
+                        Apply
+                      </Button>
+                    )}
+                  </CardFooter>
+                </Card>
               </div>
             ))
           ) : (

@@ -10,7 +10,6 @@ import CustomLoading from "./EssentialComponents/CustomLoading";
 
 function Dashboard() {
   const { currentUser, userRole } = useContext(AuthContext);
-  console.log(currentUser);
   return (
     <div className="mt-16">
       <div>

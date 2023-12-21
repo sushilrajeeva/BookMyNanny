@@ -62,7 +62,6 @@ function NannySignUp() {
       );
       await doSignOut();
 
-      console.log("created uid", createdUid);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       // Add a delay to simulate asynchronous operations
       // await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -90,7 +89,6 @@ function NannySignUp() {
         wallet: 0,
         image: "",
       };
-      console.log("From signup component data:", dataToStore);
 
       // Create document in Firestore nanny collection
       await createNannyDocument(createdUid, dataToStore);

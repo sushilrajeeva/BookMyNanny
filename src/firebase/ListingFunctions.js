@@ -18,7 +18,6 @@ import { v4 as uid } from "uuid";
 import { getNannyById } from "./NannyFunctions.js";
 
 const createParentListing = async (data) => {
-  console.log("data", data);
   let uuid = uid();
   try {
     data._id = uuid;
@@ -37,7 +36,6 @@ const getListingById = async (id) => {
 
     if (docSnapshot.exists()) {
       const data = docSnapshot.data();
-      // console.log("GETTING DATA FROM PARENT", data);
       return data;
     } else {
       throw new Error("No Listing exists");

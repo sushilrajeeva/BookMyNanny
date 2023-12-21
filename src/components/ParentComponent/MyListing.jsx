@@ -13,13 +13,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 
-import { Terminal } from "lucide-react"
+import { Terminal } from "lucide-react";
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
 import CustomLoading from "../EssentialComponents/CustomLoading";
 import {
@@ -50,7 +46,6 @@ function MyListing() {
         if (currentUser && userRole === "parent" && currentUser.uid) {
           const parentListings = await getAllListings(currentUser.uid);
           setListings(parentListings);
-          console.log(parentListings);
         }
       } catch (error) {
         console.error("Error fetching listings:", error);
@@ -93,9 +88,9 @@ function MyListing() {
             >
               <CardHeader>
                 <CardTitle className="flex justify-between">
-                    <Link to={`/listing/${listing._id}`} key={index}>
-                      {listing.listingName}
-                    </Link>
+                  <Link to={`/listing/${listing._id}`} key={index}>
+                    {listing.listingName}
+                  </Link>
                   <AlertDialog>
                     {listing.status === "completed" &&
                     listing.progressBar === 100 ? null : (
@@ -200,11 +195,9 @@ function MyListing() {
             <Terminal className="h-4 w-4" />
             <AlertTitle>Heads up!</AlertTitle>
             <AlertDescription>
-              You don't have any listings to display!
-              Create a listing.
+              You don't have any listings to display! Create a listing.
             </AlertDescription>
           </Alert>
-
         )}
       </div>
     </div>

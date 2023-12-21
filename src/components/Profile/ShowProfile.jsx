@@ -23,9 +23,7 @@ const ShowProfile = () => {
         if (currentUser) {
           if (userRole === "parent") {
             const parentData = await getParentById(currentUser.uid);
-            console.log("Parent", parentData);
             setImageUrl(parentData.image);
-            console.log(parentData);
             setValues({
               email: parentData.emailAddress,
               firstName: parentData.firstName,
@@ -40,7 +38,6 @@ const ShowProfile = () => {
             });
           } else if (userRole === "nanny") {
             const nannyData = await getNannyById(currentUser.uid);
-            console.log(nannyData.image);
             setImageUrl(nannyData.image);
             setValues({
               email: nannyData.emailAddress,
@@ -110,7 +107,6 @@ const ShowProfile = () => {
   };
 
   const PhoneNumberDisplay = ({ label, value }) => {
-    console.log("phone", value);
     return (
       <Stack
         direction="column"
@@ -143,7 +139,6 @@ const ShowProfile = () => {
         <Card className="w-full h-[250px] md:w-[340px] p-4 ml-9">
           <CardContent>
             <div className="flex flex-col items-center space-y-1.5">
-              {console.log(imageUrl)}
               {imageUrl && (
                 <Avatar className="w-[220px] h-[220px]">
                   <AvatarImage src={imageUrl} alt="Profile" />
@@ -167,7 +162,6 @@ const ShowProfile = () => {
               backgroundColor: "#fff",
             }}
           >
-            {console.log(values)}
             <Stack
               direction="row"
               spacing={2}

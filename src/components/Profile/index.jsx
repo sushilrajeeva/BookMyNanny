@@ -42,10 +42,8 @@ const Profile = () => {
                 `http://localhost:3000/getParent/${currentUser.uid}`
               );
 
-              console.log("RESPONSE", response.data);
               const parentData = await response.data;
               setImageUrl(parentData.image);
-              console.log(parentData);
               setInitialValues({
                 email: parentData.emailAddress,
                 firstName: parentData.firstName,
@@ -59,14 +57,13 @@ const Profile = () => {
                 dob: parentData.dob,
               });
             } catch (error) {
-              console.log("FETTTCH", error);
+              console.log(error);
             }
           } else if (userRole === "nanny") {
             const response = await axios.get(
               `http://localhost:3000/getNanny/${currentUser.uid}`
             );
 
-            console.log("RESPONSE", response.data);
             const nannyData = await response.data;
             setImageUrl(nannyData.image);
             setInitialValues({
@@ -141,7 +138,6 @@ const Profile = () => {
               },
             }
           );
-          console.log("UPDATE RESPONSE", response);
 
           if (response.status === 200) {
             showAlert("success", "Image uploaded successfully!");
@@ -158,7 +154,6 @@ const Profile = () => {
               },
             }
           );
-          console.log("UPDATE RESPONSE", response);
 
           if (response.status === 200) {
             showAlert("success", "Image uploaded successfully!");
@@ -210,8 +205,6 @@ const Profile = () => {
           }
           return acc;
         }, {});
-
-        console.log("Changed values:", changedValues);
 
         // Update only the changed values
         if (Object.keys(changedValues).length > 0) {
@@ -274,7 +267,6 @@ const Profile = () => {
           return acc;
         }, {});
 
-        console.log("Changed values:", changedValues);
         if (Object.keys(changedValues).length > 0) {
           const response = await axios.patch(
             `http://localhost:3000/updateNanny/${currentUser.uid}`,
@@ -331,7 +323,6 @@ const Profile = () => {
                   required
                 />
                 <Button
-                  
                   variant="contained"
                   type="submit"
                   sx={{

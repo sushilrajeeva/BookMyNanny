@@ -32,7 +32,6 @@ const DatePickerFormInput = ({
           minDate={minDate}
           maxDate={maxDate}
           onChange={(newValue) => {
-            console.log("Hello");
             setFieldValue(
               field.name,
               newValue ? newValue.format("MM-DD-YYYY") : null
