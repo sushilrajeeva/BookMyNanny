@@ -63,7 +63,7 @@ const Profile = () => {
             }
           } else if (userRole === "nanny") {
             const response = await axios.get(
-              `http://localhost:3000/getParent/${currentUser.uid}`
+              `http://localhost:3000/getNanny/${currentUser.uid}`
             );
 
             console.log("RESPONSE", response.data);
