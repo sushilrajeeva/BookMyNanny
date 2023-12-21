@@ -3,12 +3,12 @@ import * as Yup from "yup";
 export const listingSchema = Yup.object().shape({
   listingName: Yup.string()
     .required("Listing name is required")
-    .matches("^[a-zA-Z ]*$", "Invalid Name")
+    .matches("^[a-zA-Z0-9 ]*$", "Invalid Name")
     .min(3, "Listing name must be atleast 3 cahracters")
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
     )
     .test(
       "is-not-empty-after-trim-length",
@@ -91,7 +91,12 @@ export const listingSchema = Yup.object().shape({
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Enter at least 5 valid characters.",
+      (value) => value.trim().length >= 5
     ),
   description: Yup.string()
     .required("Description is required")
@@ -99,6 +104,11 @@ export const listingSchema = Yup.object().shape({
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
-      (value) => value.trim() !== ""
+      (value) => value.trim().length > 0
+    )
+    .test(
+      "is-not-empty-after-trim-length",
+      "Enter at least 10 valid characters.",
+      (value) => value.trim().length >= 10
     ),
 });
