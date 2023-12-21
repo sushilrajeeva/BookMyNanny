@@ -55,6 +55,7 @@ export const nannySchema = Yup.object().shape({
   street: Yup.string()
     .required("Street is required")
     .min(6, "Street must be at least 6 characters")
+    .matches("^[a-zA-Z0-9-, ]*$", "Invalid Street name")
     .test(
       "is-not-empty-after-trim",
       "Cannot be empty. Enter valid characters",
