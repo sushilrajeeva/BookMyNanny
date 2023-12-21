@@ -72,7 +72,7 @@ function NannySignUp() {
       let dataToStore = {
         firstName: capitalize(firstName.trim()),
         lastName: capitalize(lastName.trim()),
-        emailAddress: email.trim(),
+        emailAddress: email.toLowerCase().trim(),
         countryCode: "+1",
         phoneNumber: phoneNumber,
         street: capitalize(street.trim()),
