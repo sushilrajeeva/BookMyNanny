@@ -18,7 +18,6 @@ import {
 } from "firebase/firestore";
 import { createClient } from "redis";
 // Implemented the redis using professor's lecture code
-import redis from "redis";
 // const redisClient = redis.createClient({
 //   host: "redis-10257.c326.us-east-1-3.ec2.cloud.redislabs.com",
 //   port: 10257,
@@ -30,7 +29,13 @@ const redisClient = createClient({
     port: 10257,
   },
 });
-redisClient.connect().then(() => {});
+console.log("Connecting to Redis...");
+try {
+  await redisClient.connect().then(() => {});
+  console.log("Connected to Redis successfully");
+} catch (error) {
+  console.log("Error connecting to Redis:", error);
+}
 
 dotenv.config();
 const app = express();
