@@ -20,7 +20,7 @@ import  Error404Page  from "@/components/EssentialComponents/Error404Page";
 import SignOutButton from "@/components/SignOut";
 import Dashboard from "../components/Dashboard"
 import { ThemeProvider } from "@/components/theme-provider";
-
+import PrivateRouteSignUp from "./PrivateRouteSignUp";
 function Routes() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -48,11 +48,13 @@ function Routes() {
                 <Route path="/listing/:id" element={<ListingFullDetails />} />
               </Route>
               <Route path="/profile-details/:id" element={<ProfileFullView/>}/>
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
+              <Route path="/signin"  element={<PrivateRouteSignUp />}>
+                <Route path="/signin" element={<SignIn />} />
+              </Route>
+              <Route path="/signup"  element={<PrivateRouteSignUp />}>
+                <Route path="/signup" element={<SignUp />} />
+              </Route>
               <Route path="/signout" element={<SignOutButton />} />
-              {/* <Route path="/paymentSuccess" element={<PaymentSuccess />} />
-              <Route path="/paymentFailure" element={<PaymentFailure />} /> */}
               <Route path="/*" element={<Error404Page />}></Route>
             </AppRoutes>
           </div>
