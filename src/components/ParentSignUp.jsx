@@ -4,7 +4,6 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import moment from "moment";
 import { Button } from "@/components/ui/button";
-
 import {
   doCreateUserWithEmailAndPassword,
   createUserDocument,
@@ -69,7 +68,7 @@ function ParentSignUp() {
         pincode: pincode,
         dob: dob,
         role: "parent",
-        password: passwordOne.trim(),
+        // password: passwordOne.trim(),
         wallet: 0,
         image: "",
       };
@@ -192,7 +191,6 @@ function ParentSignUp() {
                 <Button
                   variant="outline"
                   type="submit"
-                  
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : "Sign Up"}

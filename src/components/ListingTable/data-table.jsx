@@ -85,7 +85,7 @@ const DataTable = ({ columns, data }) => {
             {/* Pagination referece -> https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/tasks/components/data-table-pagination.tsx*/}
             <div className="flex items-center justify-between px-2 py-2">
               <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() === 0 ? 1 : table.getPageCount() }
               </div>
               <div className="flex items-center space-x-2">
                 <Button

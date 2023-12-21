@@ -30,7 +30,13 @@ const redisClient = createClient({
     port: 10257,
   },
 });
-redisClient.connect().then(() => {});
+console.log("Connecting to Redis...");
+try {
+  await redisClient.connect().then(() => {});
+  console.log("Connected to Redis successfully");
+} catch (error) {
+  console.error("Error connecting to Redis:", error);
+}
 
 dotenv.config();
 const app = express();
@@ -128,10 +134,12 @@ const updateNannyData = async (id, obj) => {
 app.get("/getNanny/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
     let data = await getNannyById(id);
+    console.log("NANNYDATA", data);
     return res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
