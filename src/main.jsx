@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Routes from "./routes/index";
 import "./index.css";
+import "./App.css"
 import { BrowserRouter } from "react-router-dom";
 import { getFirestore } from "firebase/firestore";
 // Import the functions you need from the SDKs you need

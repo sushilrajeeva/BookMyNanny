@@ -55,6 +55,8 @@ function JobListings() {
   const [value, setValue] = React.useState([0, 100]);
   const [showFilters, setShowFilters] = useState(false);
 
+  
+
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -294,9 +296,11 @@ function JobListings() {
         <div className="flex flex-wrap justify-center gap-4 w-full px-4">
           {filteredListings.map((listing, index) => (
             <div key={index} className="w-[800px] h-[150px] mb-20">
-              <Link to={`/listing/${listing._id}`}>
+              
                 <Card className="flex justify-between hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
+                  <Link to={`/listing/${listing._id}`}>
                   <CardHeader>
+                  
                     <div className="flex flex-col items-center space-x-4">
                       {listing.parentData?.image ? (
                         <img
@@ -317,13 +321,16 @@ function JobListings() {
                         </CardDescription>
                       </div>
                     </div>
+                    
                     <div className=" text-sm">
                       Posted Date:{" "}
                       {formatFirestoreTimestamp(listing.postedDate)}
                     </div>
                   </CardHeader>
+                  </Link>
                   <CardContent>
-                    <CardTitle className="text-xl font-semibold">
+                  <Link to={`/listing/${listing._id}`}>
+                    <CardTitle className="text-xl font-semibold mt-6">
                       {listing.listingName}
                     </CardTitle>
                     <p>
@@ -338,6 +345,7 @@ function JobListings() {
                     <p>
                       <strong>Hourly Rate:</strong> {listing.hourlyRate}
                     </p>
+                    </Link>
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     {listing.interestedNannies &&
@@ -358,7 +366,7 @@ function JobListings() {
                     )}
                   </CardFooter>
                 </Card>
-              </Link>
+              
             </div>
           ))}
         </div>
