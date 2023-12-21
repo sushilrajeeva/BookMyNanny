@@ -32,11 +32,9 @@ async function doCreateUserWithEmailAndPassword(email, password, displayName) {
 async function doChangePassword(email, oldPassword, newPassword) {
   const auth = getAuth();
   let credential = EmailAuthProvider.credential(email, oldPassword);
-  console.log(credential);
   await reauthenticateWithCredential(auth.currentUser, credential);
 
   await updatePassword(auth.currentUser, newPassword);
-  console.log(" reached 1");
   //await doSignOut();
 }
 
@@ -62,8 +60,6 @@ async function doSignOut() {
 }
 
 async function createNannyDocument(uid, data) {
-  console.log("from createUserDoc", uid);
-  console.log("data", data);
   data._id = uid;
   try {
     const nannyDocRef = doc(db, "Nanny", uid);
@@ -78,7 +74,6 @@ async function getNannyDocs() {
   try {
     const nannyCollectionRef = collection(db, "Nanny");
     const data = await getDocs(nannyCollectionRef);
-    console.log("GETTING DATA FROM NANNY", data);
   } catch (error) {
     alert(error);
   }
@@ -95,8 +90,6 @@ const createUserDocument = async (uid, data) => {
 };
 
 const createParentDocument = async (uid, data) => {
-  console.log("from createUserDoc", uid);
-  console.log("data", data);
   data._id = uid;
   try {
     const userDocRef = doc(db, "Parent", uid);

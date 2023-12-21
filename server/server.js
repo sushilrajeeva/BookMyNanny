@@ -136,7 +136,6 @@ app.get("/getNanny/:id", async (req, res) => {
     const { id } = req.params;
 
     let data = await getNannyById(id);
-    console.log("NANNYDATA", data);
     return res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -219,7 +218,6 @@ app.patch("/updateParent/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
-    console.log("DATA", updatedData);
     await updateParentData(id, updatedData);
     res.status(200).json({ success: true });
   } catch (error) {

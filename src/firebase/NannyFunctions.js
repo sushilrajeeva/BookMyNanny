@@ -108,7 +108,6 @@ async function getNannyById(id) {
 
     if (docSnapshot.exists()) {
       const data = docSnapshot.data();
-      // console.log("GETTING DATA FROM PARENT", data);
       return data;
     } else {
       throw new Error("No nanny exists");
@@ -132,7 +131,6 @@ const nannyInterested = async (listingId, nannyId) => {
     const listingData = listingSnapshot.data();
 
     if (listingData.interestedNannies.includes(nannyId)) {
-      console.log("Nanny already in the interested list");
       return false;
     }
 
@@ -167,7 +165,6 @@ const withdrawNannyInterest = async (listingId, nannyId) => {
     // Checking if the nanny is already in the interestedNannies array
     // if it exist then i will return false
     if (!listingData.interestedNannies.includes(nannyId)) {
-      console.log("Nanny not in the interested list");
       return false;
     }
 
@@ -193,7 +190,6 @@ const withdrawNannyInterest = async (listingId, nannyId) => {
 // This method will give all the listings in the listings collection firestore whose selectedNannyID matches the current loggedin Nanny's nannyID
 const getActiveJobs = async (nannyID) => {
   try {
-    console.log("Get active jobs firestore method called");
     const listingsCollection = collection(db, "Listings");
     const listingsSnapshot = await getDocs(listingsCollection);
 
@@ -212,7 +208,6 @@ const getActiveJobs = async (nannyID) => {
         activeJobs.push(listingData);
       }
     });
-    console.log("Active jobs : ", activeJobs);
     return activeJobs;
   } catch (error) {
     console.log(error);
@@ -230,7 +225,6 @@ const updateNannyData = async (id, obj) => {
   try {
     await runTransaction(db, async (transaction) => {
       const nannyDoc = await transaction.get(nannyDocRef);
-      console.log("NannyDoc", nannyDoc);
       if (!nannyDoc.exists()) {
         throw new Error("Document does not exist!");
       }
@@ -246,7 +240,6 @@ const updateNannyData = async (id, obj) => {
 
 const getPastJobs = async (nannyID) => {
   try {
-    console.log("Get Past jobs firestore method called");
     const listingsCollection = collection(db, "Listings");
     const listingsSnapshot = await getDocs(listingsCollection);
 
@@ -263,7 +256,6 @@ const getPastJobs = async (nannyID) => {
         pastJobs.push(listingData);
       }
     });
-    console.log("Past jobs : ", pastJobs);
     return pastJobs;
   } catch (error) {
     console.log(error);
@@ -283,12 +275,9 @@ const onJobComplete = async (listingId, hoursWorked, nannyId) => {
     if (listing) {
       const currentStatus = listing.data().status;
       if (currentStatus && currentStatus === "pending") {
-        console.log("ID", listing.selectedNannyID, nannyId);
-
         if (listing.data().selectedNannyID === nannyId) {
           // If the current status is "pending", update the status to "completed"
           await updateDoc(listingDocRef, { status: "completed", hoursWorked });
-          console.log("Job marked as completed successfully!");
         } else {
           throw "You are not the approved nanny for this job";
         }

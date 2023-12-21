@@ -37,7 +37,6 @@ const NannyFields = ({
           let ssn = e.target.value;
           ssn = ssn.replace(/\D/g, "");
           ssn = ssn.replace(/[()-\s]/g, "");
-          console.log(ssn, ssn.length);
           if (ssn.length > 9) {
             return;
           }
@@ -58,7 +57,6 @@ const NannyFields = ({
         required
       />
       <TextareaAutosize
-        
         minRows={6}
         name="bio"
         placeholder="Enter your bio here..."

@@ -13,7 +13,7 @@ import {
   TextareaAutosize,
   Grid,
 } from "@mui/material";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 import { Formik, Form, Field } from "formik";
 import DatePickerFormInput from "../DatePicker";
@@ -72,7 +72,6 @@ function CreateListingParent() {
         return true;
       }
 
-      console.log("From createParentListing component data:", dataToStore);
       await createParentListing(dataToStore);
       showAlert("success", "Listing created successfully");
       return false; // No error
@@ -207,6 +206,7 @@ function CreateListingParent() {
                         label="Job End Date"
                         minDate={moment()}
                         maxDate={moment().add(1, "year")}
+                        required
                       />
                     </Grid>
                   </Grid>
@@ -297,9 +297,7 @@ function CreateListingParent() {
                   </Typography>
                 )}
                 <Button
-                  
                   type="submit"
-                  
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : "Create"}

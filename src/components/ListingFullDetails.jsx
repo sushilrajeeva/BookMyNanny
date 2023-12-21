@@ -262,7 +262,6 @@ function ListingFullDetails(props) {
           onOpenChange={setIsDialogOpen}
           className="max-w-lg mx-auto"
         >
-          {console.log("Our chat user is - ", chatUserDoc)}
           {listing &&
           (currentUser.uid === listing.selectedNannyID ||
             currentUser.uid === listing.parentID) &&
@@ -279,13 +278,6 @@ function ListingFullDetails(props) {
             <div>
               <DialogContent>
                 <Typography>
-                  {console.log(" curent user ", currentUser.uid)}
-                  {console.log(" parent ", parentDP._id)}
-                  {console.log(
-                    "checkinggggg",
-                    currentUser.uid === parentDP._id
-                  )}
-
                   {currentUser.uid === parentDP._id ? (
                     <span>No user has been approved</span>
                   ) : (

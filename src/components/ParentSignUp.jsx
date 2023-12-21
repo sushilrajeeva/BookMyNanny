@@ -50,7 +50,7 @@ function ParentSignUp() {
         name
       );
       await doSignOut();
-      console.log("created uid", createdUid);
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
       //todo need to hash password
       // if(!currentUser) throw "no usercreds to do crud"
@@ -72,7 +72,7 @@ function ParentSignUp() {
         wallet: 0,
         image: "",
       };
-      console.log("From signup component data:", dataToStore);
+
       // Create document in Firestore parent collection
       await createParentDocument(createdUid, dataToStore);
       // Create document in Firestore user collection

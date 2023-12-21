@@ -17,9 +17,7 @@ const validateJobDate = (date) => {
   if (!momentDate.isValid()) return false;
   const minDate = moment();
   const maxDate = moment().add(1, "year");
-  console.log("Min", minDate);
-  console.log("Current", momentDate);
-  console.log("Max", maxDate);
+
   const isBtwn = momentDate.isBetween(minDate, maxDate);
   if (!isBtwn) return false;
   return true;

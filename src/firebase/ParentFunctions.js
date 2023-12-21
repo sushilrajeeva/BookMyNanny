@@ -15,7 +15,6 @@ import db from "../main.jsx";
 import { v4 as uid } from "uuid";
 
 const createParentListing = async (data) => {
-  console.log("data", data);
   let uuid = uid();
   try {
     data._id = uuid;
@@ -34,7 +33,6 @@ async function getParentById(id) {
 
     if (docSnapshot.exists()) {
       const data = docSnapshot.data();
-      // console.log("GETTING DATA FROM PARENT", data);
       return data;
     } else {
       throw new Error("No parent exists");
@@ -50,7 +48,6 @@ const updateParentData = async (id, obj) => {
   try {
     await runTransaction(db, async (transaction) => {
       const parentDoc = await transaction.get(parentDocRef);
-      console.log("ParentDoc", parentDoc);
       if (!parentDoc.exists()) {
         throw new Error("Document does not exist!");
       }
@@ -87,7 +84,6 @@ const getAllListings = async (parentID) => {
 // This method will give all the listings in the listings collection firestore whose parentID matches the current loggedin Nanny's nannyID
 const getActiveListings = async (parentID) => {
   try {
-    console.log("Get active jobs firestore method called");
     const listingsCollection = collection(db, "Listings");
     const listingsSnapshot = await getDocs(listingsCollection);
 
@@ -107,7 +103,6 @@ const getActiveListings = async (parentID) => {
         activeListings.push(listingData);
       }
     });
-    console.log("Active Listings : ", activeListings);
     return activeListings;
   } catch (error) {
     console.log(error);
@@ -132,7 +127,6 @@ const getWalletBalance = async (parentID) => {
 const updateListing = async (listingId, updatedData) => {
   try {
     const listingDocRef = doc(db, "Listings", listingId);
-    console.log(updatedData);
     await updateDoc(listingDocRef, updatedData);
   } catch (error) {
     console.error("Error updating parent listing:", error);
@@ -224,7 +218,6 @@ const jobDecline = async (listingId) => {
 
 const getPastParentJobs = async (parentID) => {
   try {
-    console.log("Get Past jobs firestore method called");
     const listingsCollection = collection(db, "Listings");
     const listingsSnapshot = await getDocs(listingsCollection);
 
@@ -241,7 +234,6 @@ const getPastParentJobs = async (parentID) => {
         pastJobs.push(listingData);
       }
     });
-    console.log("Past jobs : ", pastJobs);
     return pastJobs;
   } catch (error) {
     console.log(error);

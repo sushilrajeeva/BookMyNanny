@@ -12,7 +12,6 @@ import {
 
 const getVerifiedNannies = async () => {
   try {
-    console.log("Get Verified Nannies firestore method called");
     const NanniesCollection = collection(db, "Nanny");
     const NanniesSnapshot = await getDocs(NanniesCollection);
 
@@ -24,7 +23,6 @@ const getVerifiedNannies = async () => {
         verifed.push(VerifiedData);
       }
     });
-    console.log("Verified Nannies : ", verifed);
     return verifed;
   } catch (error) {
     console.log(error);
@@ -35,9 +33,6 @@ const getVerifiedNannies = async () => {
 
 const getPendingVerifications = async () => {
   try {
-    console.log(
-      "Get the list of nannies with pending verifications firestore method called"
-    );
     const NanniesCollection = collection(db, "Nanny");
     const NanniesSnapshot = await getDocs(NanniesCollection);
 
@@ -49,7 +44,6 @@ const getPendingVerifications = async () => {
         ToBeVerifed.push(VerifiedData);
       }
     });
-    console.log("Nannies to be verified : ", ToBeVerifed);
     return ToBeVerifed;
   } catch (error) {
     console.log(error);
@@ -71,7 +65,6 @@ const VerifyNanny = async (nannyId) => {
     const NannyData = NannySnapshot.data();
 
     if (NannyData.verified == true) {
-      console.log("Nanny already verified");
       return false;
     }
 
