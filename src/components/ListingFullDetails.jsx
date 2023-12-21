@@ -143,22 +143,26 @@ function ListingFullDetails(props) {
       <div className="card-container">
         {listing && (
           <Card className="w-[550px] mx-auto shadow-lg">
-            <CardHeader>
-              <div className="flex items-center space-x-4">
+            <CardHeader >
+              
+              <CardTitle className="flex flex-col items-center">Listing Details</CardTitle>
+              <div className="flex items-center space-x-4 space-y-4">
                 <Avatar>
                   <AvatarImage src={parentDP.image} />
                   <AvatarFallback>
-                    {parentDP.firstName} {parentDP.lastName}
+                    {parentDP.firstName[0]} {parentDP.lastName[0]}
                   </AvatarFallback>
                 </Avatar>
-                <div>
-                  <p className="text-lg font-medium leading-none">
-                    {parentDP.firstName} {parentDP.emailAddress}
-                  </p>
+                <div  className="ml-4">
+                  <div className="font-bold text-lg leading-none">
+                    {parentDP.firstName} {parentDP.lastName}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {parentDP.emailAddress}
+                  </div>
                 </div>
               </div>
-              <CardTitle>Listing Details</CardTitle>
-              <CardDescription>User role is {userRole}</CardDescription>
+              {/* <CardDescription>User role is {userRole}</CardDescription> */}
             </CardHeader>
             <CardContent className="left-aligned-content">
               <CardDescription>
