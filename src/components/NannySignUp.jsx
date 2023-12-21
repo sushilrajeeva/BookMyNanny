@@ -241,10 +241,7 @@ function NannySignUp() {
                 <Button
                   variant="outline"
                   type="submit"
-                  sx={{
-                    height: "3rem",
-                    width: "10rem",
-                  }}
+                  
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : "Sign Up"}

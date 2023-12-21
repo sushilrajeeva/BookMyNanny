@@ -12,6 +12,14 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+
+import { Terminal } from "lucide-react"
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 import { Link } from "react-router-dom";
 import CustomLoading from "../EssentialComponents/CustomLoading";
 import {
@@ -190,11 +198,15 @@ function MyListing() {
             </Card>
           ))
         ) : (
-          <Card className="w-[500px] hover:shadow-lg transition duration-300 ease-in-out rounded-lg p-4">
-            <CardContent>
-              <p className="text-center text-black">No listings to display</p>
-            </CardContent>
-          </Card>
+          <Alert className="w-0.6">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
+              You don't have any listings to display!
+              Create a listing.
+            </AlertDescription>
+          </Alert>
+
         )}
       </div>
     </div>

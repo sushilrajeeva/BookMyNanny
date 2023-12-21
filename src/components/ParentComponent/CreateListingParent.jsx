@@ -246,7 +246,6 @@ function CreateListingParent() {
                   required
                 />
                 <TextareaAutosize
-                  label="Kid Info"
                   minRows={3}
                   name="kidInfo"
                   placeholder="Enter info about your kid here..."
@@ -273,7 +272,6 @@ function CreateListingParent() {
                 )}
 
                 <TextareaAutosize
-                  label="Description"
                   minRows={3}
                   name="description"
                   placeholder="Provide brief description about the work (min 10 characters)"
@@ -299,12 +297,9 @@ function CreateListingParent() {
                   </Typography>
                 )}
                 <Button
-                  variant="outline"
+                  
                   type="submit"
-                  sx={{
-                    height: "3rem",
-                    width: "10rem",
-                  }}
+                  
                   disabled={!!(isSubmitting || Object.keys(errors).length > 0)}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : "Create"}

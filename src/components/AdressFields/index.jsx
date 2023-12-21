@@ -103,15 +103,13 @@ const AdressFields = ({
         }}
       >
         <FormControl variant="standard" fullWidth required error={touched.state && Boolean(errors.state)}>
-          <InputLabel id="state-select-label">State</InputLabel>
+          <InputLabel id="state-select">State</InputLabel>
           <Select
-            labelId="state-select-label"
-            id="state-select"
+            labelId="state-select"
             name="state"
             value={values.state}
             onChange={handleChange}
             onBlur={handleBlur}
-            label="State"
           >
             {stateList.map((state) => (
               <MenuItem key={state} value={state}>
@@ -123,6 +121,7 @@ const AdressFields = ({
             <p style={{ color: 'red', margin: '4px 14px 0 14px' }}>{errors.state}</p>
           )}
         </FormControl>
+
 
         <TextField
           variant="standard"
