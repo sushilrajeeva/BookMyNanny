@@ -16,6 +16,7 @@ import { nannyProfile } from "@/schemas/nannyProfile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import CustomLoading from "../EssentialComponents/CustomLoading";
+import axios from "axios";
 
 const Profile = () => {
   const { currentUser, userRole } = useContext(AuthContext);
@@ -36,29 +37,37 @@ const Profile = () => {
       try {
         if (currentUser) {
           if (userRole === "parent") {
-            const response = await fetch(
+            try {
+              const response = await axios.get(
+                `http://localhost:3000/getParent/${currentUser.uid}`
+              );
+
+              console.log("RESPONSE", response.data);
+              const parentData = await response.data;
+              setImageUrl(parentData.image);
+              console.log(parentData);
+              setInitialValues({
+                email: parentData.emailAddress,
+                firstName: parentData.firstName,
+                lastName: parentData.lastName,
+                phoneNumber: parentData.phoneNumber,
+                street: parentData.street,
+                city: parentData.city,
+                state: parentData.state,
+                country: parentData.country,
+                pincode: parentData.pincode,
+                dob: parentData.dob,
+              });
+            } catch (error) {
+              console.log("FETTTCH", error);
+            }
+          } else if (userRole === "nanny") {
+            const response = await axios.get(
               `http://localhost:3000/getParent/${currentUser.uid}`
             );
-            const parentData = await response.json();
-            setImageUrl(parentData.image);
-            console.log(parentData);
-            setInitialValues({
-              email: parentData.emailAddress,
-              firstName: parentData.firstName,
-              lastName: parentData.lastName,
-              phoneNumber: parentData.phoneNumber,
-              street: parentData.street,
-              city: parentData.city,
-              state: parentData.state,
-              country: parentData.country,
-              pincode: parentData.pincode,
-              dob: parentData.dob,
-            });
-          } else if (userRole === "nanny") {
-            const response = await fetch(
-              `http://localhost:3000/getNanny/${currentUser.uid}`
-            );
-            const nannyData = await response.json();
+
+            console.log("RESPONSE", response.data);
+            const nannyData = await response.data;
             setImageUrl(nannyData.image);
             setInitialValues({
               email: nannyData.emailAddress,
@@ -123,33 +132,35 @@ const Profile = () => {
         const newImageUrl = url.split("?")[0];
         const imgObj = { image: newImageUrl };
         if (userRole === "parent") {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateParent/${currentUser.uid}`,
+            imgObj,
             {
-              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(imgObj),
             }
           );
-          if (response.ok) {
+          console.log("UPDATE RESPONSE", response);
+
+          if (response.status === 200) {
             showAlert("success", "Image uploaded successfully!");
           } else {
             showAlert("error", "Error uploading image. Please try again.");
           }
         } else {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateNanny/${currentUser.uid}`,
+            imgObj,
             {
-              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(imgObj),
             }
           );
-          if (response.ok) {
+          console.log("UPDATE RESPONSE", response);
+
+          if (response.status === 200) {
             showAlert("success", "Image uploaded successfully!");
           } else {
             showAlert("error", "Error uploading image. Please try again.");
@@ -180,10 +191,10 @@ const Profile = () => {
           country,
           pincode,
         } = values;
-        const response = await fetch(
+        const response = await axios.get(
           `http://localhost:3000/getParent/${currentUser.uid}`
         );
-        const currentUserData = await response.json();
+        const currentUserData = await response.data;
         const changedValues = Object.entries({
           firstName: firstName.trim(),
           lastName: lastName.trim(),
@@ -204,17 +215,17 @@ const Profile = () => {
 
         // Update only the changed values
         if (Object.keys(changedValues).length > 0) {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateParent/${currentUser.uid}`,
+            changedValues,
             {
-              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(changedValues),
             }
           );
-          if (response.ok) {
+
+          if (response.status === 200) {
             showAlert("success", "Profile updated successfully!");
           } else {
             showAlert("error", "Update not successful");
@@ -241,10 +252,10 @@ const Profile = () => {
           bio,
           experience,
         } = values;
-        const response = await fetch(
+        const response = await axios.get(
           `http://localhost:3000/getNanny/${currentUser.uid}`
         );
-        const currentUserData = await response.json();
+        const currentUserData = await response.data;
         const changedValues = Object.entries({
           firstName: firstName.trim(),
           lastName: lastName.trim(),
@@ -265,17 +276,17 @@ const Profile = () => {
 
         console.log("Changed values:", changedValues);
         if (Object.keys(changedValues).length > 0) {
-          const response = await fetch(
+          const response = await axios.patch(
             `http://localhost:3000/updateNanny/${currentUser.uid}`,
+            changedValues,
             {
-              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(changedValues),
             }
           );
-          if (response.ok) {
+
+          if (response.status === 200) {
             showAlert("success", "Profile updated successfully!");
           } else {
             showAlert("error", "Update not successful");
@@ -410,7 +421,6 @@ const Profile = () => {
                           required
                         />
                         <TextareaAutosize
-                          
                           minRows={6}
                           name="bio"
                           placeholder="Enter your bio here..."
