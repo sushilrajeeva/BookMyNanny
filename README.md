@@ -23,7 +23,7 @@ There are three possible roles in this app. A user can be a parent, nanny or adm
 
 Admin Credentials:
 email: booknanny7@gmail.com
-pswd:
+pswd: Bookmynanny7!
 
 ---
 
@@ -43,6 +43,10 @@ pswd:
 4. Once the docker containers are running the server is binded to localhost:3000 and the client will be binded to localhost:4001.
    The website can be accessed from: http://localhost:4001/
 
+5. Once you are done using the docker container to bring down the container use the command.
+
+   > docker compose down
+   
 ## How to run the application in your local machine without docker:
 
 1. cd to the BookMyNanny root directory and run the following commands in the terminal:
@@ -85,3 +89,6 @@ With **BookMyNanny**, we aim to revolutionize child-care services, offering a re
 ### GitHub Repository
 
 [BookMyNanny GitHub Repository](https://github.com/sushilrajeeva/BookMyNanny)
+
+### Click Here! [Project Walkthrough Video Link](https://youtu.be/gHj9tL7KoC4)
+
