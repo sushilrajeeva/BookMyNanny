@@ -24,9 +24,9 @@ import redis from "redis";
 //   port: 10257,
 // });
 const redisClient = createClient({
-  password: "mhpfMcaGuB6a4aCczTfsGXcuzWyNkns2",
+  password: process.env.REDIS_PASSWORD,
   socket: {
-    host: "redis-10257.c326.us-east-1-3.ec2.cloud.redislabs.com",
+    host: process.env.REDIS_HOST,
     port: 10257,
   },
 });
