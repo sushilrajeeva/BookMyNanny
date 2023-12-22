@@ -65,7 +65,6 @@ pswd:
 2. **Firebase:** Firebase authentication will be pivotal in user management. By offering options to log in or sign up using email IDs, Google, and Facebook, we aim to cater to a broader audience, ensuring security and a personalized user experience.
 
 3. **Redis:** Redis, an in-memory data structure store, will be used for caching purposes. It will optimize our platform's performance, ensuring faster data retrieval, and reduced database load. We are using redis cloud.
-4. **GraphQL:** GraphQL will manage and query our data. Unlike traditional REST APIs, GraphQL allows for precise data retrieval. It will enable intricate data structures to be fetched seamlessly, such as nanny listings with associated ratings and reviews.
 
 ---
 
