@@ -12,6 +12,7 @@ import {
   TextField,
   TextareaAutosize,
   Grid,
+  InputLabel,
 } from "@mui/material";
 import { Button } from "@/components/ui/button";
 
@@ -245,25 +246,39 @@ function CreateListingParent() {
                   fullWidth
                   required
                 />
-                <TextareaAutosize
-                  minRows={3}
-                  name="kidInfo"
-                  placeholder="Enter info about your kid here..."
-                  value={values.kidInfo}
-                  onInput={(e) => {
-                    handleChange(e);
-                    setTimeout(() => handleBlur(e), 0);
-                  }}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  required
-                  className="text-black"
+                <div
                   style={{
-                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
                     marginTop: "16px",
-                    border: "1px solid black",
                   }}
-                />
+                >
+                  <InputLabel
+                    htmlFor="kidInfo"
+                    style={{ marginBottom: "8px", fontSize: "14px" }}
+                  >
+                    Kid Information*
+                  </InputLabel>
+                  <TextareaAutosize
+                    id="kidInfo"
+                    minRows={3}
+                    name="kidInfo"
+                    placeholder="Enter info about your kid here..."
+                    value={values.kidInfo}
+                    onInput={(e) => {
+                      handleChange(e);
+                      setTimeout(() => handleBlur(e), 0);
+                    }}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    required
+                    className="text-black"
+                    style={{
+                      width: "35rem",
+                      border: "1px solid black",
+                    }}
+                  />
+                </div>
 
                 {touched.kidInfo && errors.kidInfo && (
                   <Typography variant="caption" color="error" textAlign="left">
@@ -271,25 +286,41 @@ function CreateListingParent() {
                   </Typography>
                 )}
 
-                <TextareaAutosize
-                  minRows={3}
-                  name="description"
-                  placeholder="Provide brief description about the work (min 10 characters)"
-                  value={values.description}
-                  onInput={(e) => {
-                    handleChange(e);
-                    setTimeout(() => handleBlur(e), 0);
-                  }}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className="text-black"
-                  required
+                <div
                   style={{
-                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
                     marginTop: "16px",
-                    border: "1px solid black",
                   }}
-                />
+                >
+                  <InputLabel
+                    htmlFor="description"
+                    style={{ marginBottom: "8px", fontSize: "14px" }}
+                  >
+                    Responsibilities*
+                  </InputLabel>
+
+                  <TextareaAutosize
+                    id="description"
+                    minRows={3}
+                    name="description"
+                    placeholder="Provide brief description about the work (min 10 characters)"
+                    value={values.description}
+                    onInput={(e) => {
+                      handleChange(e);
+                      setTimeout(() => handleBlur(e), 0);
+                    }}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className="text-black"
+                    required
+                    style={{
+                      width: "35rem",
+
+                      border: "1px solid black",
+                    }}
+                  />
+                </div>
 
                 {touched.description && errors.description && (
                   <Typography variant="caption" color="error" textAlign="left">

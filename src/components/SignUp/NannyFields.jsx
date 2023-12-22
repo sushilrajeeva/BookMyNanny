@@ -1,6 +1,11 @@
 import React from "react";
 
-import { TextField, TextareaAutosize, Typography } from "@mui/material";
+import {
+  TextField,
+  TextareaAutosize,
+  Typography,
+  InputLabel,
+} from "@mui/material";
 
 const NannyFields = ({
   values,
@@ -56,21 +61,32 @@ const NannyFields = ({
         fullWidth
         required
       />
-      <TextareaAutosize
-        minRows={6}
-        name="bio"
-        placeholder="Enter your bio here..."
-        value={values.bio}
-        className="text-black"
-        onInput={(e) => {
-          handleChange(e);
-          setTimeout(() => handleBlur(e), 0);
-        }}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        required
-        style={{ width: "100%", marginTop: "16px", border: "1px solid black" }}
-      />
+      <div
+        style={{ display: "flex", flexDirection: "column", marginTop: "16px" }}
+      >
+        <InputLabel
+          htmlFor="bio"
+          style={{ marginBottom: "8px", fontSize: "14px" }}
+        >
+          Bio*
+        </InputLabel>
+        <TextareaAutosize
+          minRows={6}
+          id="bio"
+          name="bio"
+          placeholder="Enter your bio here..."
+          value={values.bio}
+          className="text-black"
+          onInput={(e) => {
+            handleChange(e);
+            setTimeout(() => handleBlur(e), 0);
+          }}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required
+          style={{ width: "46rem", border: "1px solid black" }}
+        />
+      </div>
 
       {touched.bio && errors.bio && (
         <Typography variant="caption" color="error" textAlign="left">

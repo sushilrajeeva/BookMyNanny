@@ -9,6 +9,7 @@ import {
   CircularProgress,
   TextField,
   TextareaAutosize,
+  InputLabel,
 } from "@mui/material";
 import { Formik, Form } from "formik";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -413,25 +414,40 @@ const Profile = () => {
                           fullWidth
                           required
                         />
-                        <TextareaAutosize
-                          minRows={6}
-                          name="bio"
-                          placeholder="Enter your bio here..."
-                          value={values.bio}
-                          onInput={(e) => {
-                            handleChange(e);
-                            setTimeout(() => handleBlur(e), 0);
-                          }}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className="text-black"
-                          required
+                        <div
                           style={{
-                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
                             marginTop: "16px",
-                            border: "1px solid black",
                           }}
-                        />
+                        >
+                          <InputLabel
+                            htmlFor="bio"
+                            style={{ marginBottom: "8px", fontSize: "14px" }}
+                          >
+                            Bio*
+                          </InputLabel>
+                          <TextareaAutosize
+                            minRows={6}
+                            name="bio"
+                            id="bio"
+                            placeholder="Enter your bio here..."
+                            value={values.bio}
+                            onInput={(e) => {
+                              handleChange(e);
+                              setTimeout(() => handleBlur(e), 0);
+                            }}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="text-black"
+                            required
+                            style={{
+                              width: "60rem",
+
+                              border: "1px solid black",
+                            }}
+                          />
+                        </div>
 
                         {touched.bio && errors.bio && (
                           <Typography
