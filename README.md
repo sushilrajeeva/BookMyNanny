@@ -36,14 +36,6 @@ pswd:
 2. Once user has docker. User can open this app in their id and start new terminal or they can cd to this directory from the terminal.
 3. In the terminal run the following commands:
 
-   > cd server
-
-   > npm i
-
-   > cd ..
-
-   > npm i
-
    > docker-compose build
 
    > docker compose up

@@ -5,6 +5,8 @@ import { getNannyById } from "@/firebase/NannyFunctions";
 import { getParentById } from "@/firebase/ParentFunctions";
 import CustomLoading from "../EssentialComponents/CustomLoading";
 import Error404Page from "../EssentialComponents/Error404Page";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 import {
   Card,
@@ -24,6 +26,11 @@ function ProfileFullView() {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // This function will give me the first letter of firstName and lastName of the userData
+  const getUserInitials = (firstName, lastName) => {
+    return `${firstName[0]}${lastName[0]}`;
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -50,7 +57,28 @@ function ProfileFullView() {
     fetchUserData();
   }, [id]);
 
-  if (loading) return <CustomLoading />;
+  // Reffered shadcn ui to create this skeleton
+  // Created my custom design for loader that mimics the way my card will look like
+  // I created the card structure with shadcn ui card and then added skeleton inside it 
+  if (loading){
+    return (
+      <div className="mt-16 flex justify-center">
+        <Card className="w-[550px] shadow-lg">
+          <CardHeader>
+            <Skeleton className="h-24 w-24 rounded-full" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-6 w-48 mb-2" /> 
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-64" /> 
+              <Skeleton className="h-4 w-64" />
+              <Skeleton className="h-4 w-64" /> 
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
   if (error) return <Error404Page />;
 
   if (!userData) return <div>User not found.</div>;
@@ -59,11 +87,19 @@ function ProfileFullView() {
     <div className="mt-16 flex justify-center">
       <Card className="w-[550px] shadow-lg">
         <CardHeader>
-          <img
-            src={userData.image}
-            alt="User"
-            className="h-full w-full object-cover"
-          />
+          {userData.image ? (
+              <img
+                src={userData.image}
+                alt={`${userData.firstName} ${userData.lastName}`}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-24 w-24 items-center justify-center bg-gray-200 rounded-full">
+                <span className="text-4xl font-semibold">
+                  {getUserInitials(userData.firstName, userData.lastName)}
+                </span>
+              </div>
+            )}
         </CardHeader>
         <CardContent>
           <CardTitle>{userData.role === "nanny" ? "Nanny" : "Parent"} Profile</CardTitle>
@@ -72,12 +108,13 @@ function ProfileFullView() {
             <CardDescription>Phone: {userData.phoneNumber}</CardDescription>
             {userData.role === "nanny" && (
               <>
+                <CardDescription>Nanny's Name: {userData.firstName}</CardDescription>
                 <CardDescription>Experience: {userData.experience} years</CardDescription>
                 <CardDescription>Bio: {userData.bio}</CardDescription>
               </>
             )}
             {userData.role === "parent" && (
-              <CardDescription>Child's Name: {userData.firstName}</CardDescription>
+              <CardDescription>Parent's Name: {userData.firstName}</CardDescription>
             )}
             <CardDescription>DOB: {userData.dob}</CardDescription>
           </div>

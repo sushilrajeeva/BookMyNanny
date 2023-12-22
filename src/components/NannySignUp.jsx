@@ -95,7 +95,7 @@ function NannySignUp() {
       // Create document in Firestore user collection
       await createUserDocument(createdUid, { role: "nanny" });
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setLoading(false); // Set loading state back to false
       navigate("/signin");
@@ -201,7 +201,7 @@ function NannySignUp() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 2,
-                  minWidth: "500px",
+                  minWidth: "800px",
                   padding: "2rem",
                   border: "1px solid #ccc",
                   borderRadius: "8px",
@@ -210,8 +210,8 @@ function NannySignUp() {
                 }}
               >
                 <Typography
-                  variant="h2"
-                  component="h3"
+                  variant="h4"
+                  component="h4"
                   className="text-black"
                   sx={{ textTransform: "uppercase" }}
                 >

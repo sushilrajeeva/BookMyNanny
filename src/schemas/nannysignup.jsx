@@ -14,7 +14,7 @@ export const nannySchema = Yup.object().shape({
     .min(6, "Password must be at least 6 characters")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
-      "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 6 characters long"
+      "Must be 6+ chars with upper & lowercase, a digit, & special char."
     )
     .test(
       "is-not-empty-after-trim",

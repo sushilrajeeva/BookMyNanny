@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { getPastJobs } from "../../firebase/NannyFunctions";
 import { Button } from "@/components/ui/button";
+import { Terminal } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Took reference from shadcn -> https://ui.shadcn.com/docs/components/data-table
 
@@ -40,10 +42,27 @@ function PastJobs() {
   }, [currentUser.uid]); // Dependency array includes nannyID, so this effect runs when nannyID changes
 
   return (
-    <div>
-      <h2>Past Jobs</h2>
-      <DataTable columns={columns} data={pastJobs} />
-    </div>
+    <>
+      {pastJobs.length === 0 ? (
+        <>
+          <DataTable columns={columns} data={pastJobs} />
+          <div className="flex flex-wrap justify-center gap-4 w-full p-10">
+            <Alert className="w-1/4">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                <p>No Past Jobs found!</p>
+              </AlertDescription>
+            </Alert>
+          </div>
+        </>
+      ) : (
+        <>
+          <h2>Past Jobs</h2>
+          <DataTable columns={columns} data={pastJobs} />
+        </>
+      )}
+    </>
   );
 }
 
