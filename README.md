@@ -86,6 +86,72 @@ With **BookMyNanny**, we aim to revolutionize child-care services, offering a re
 
 ---
 
+## Stripe Setup for Payment Processing
+
+Stripe is a powerful payment processing tool that we've integrated into **BookMyNanny** for handling transactions. To set up Stripe in your local environment and ensure smooth payment functionalities, follow these steps:
+
+### Setting Up Stripe Account
+
+1. **Create a Stripe Account:**
+   - Visit [Stripe's website](https://stripe.com/) and sign up for an account.
+   - Fill in the required details and verify your email address.
+
+2. **Retrieve API Keys:**
+   - Once your account is set up, go to the Stripe Dashboard.
+   - Navigate to the "Developers" section in the sidebar.
+   - Under the "API Keys" tab, you'll find two keys: a publishable key and a secret key. 
+   - Make a note of both keys; you'll need them to configure Stripe in the application.
+
+### Configuring Stripe in BookMyNanny
+
+1. **Setting Environment Variables:**
+   - In the root folder of the server part of your **BookMyNanny** application, create a `.env` file (if not already present).
+   - Add the following lines to the file:
+     ```
+     STRIPE_SECRET_KEY=your_stripe_secret_key_here
+     STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret_here
+     ```
+   - Replace `your_stripe_secret_key_here` with your Stripe secret key.
+   - The webhook secret will be obtained in the next steps.
+
+2. **Setting up Stripe Webhook:**
+   - Go back to the Stripe Dashboard.
+   - Navigate to the "Webhooks" section under "Developers".
+   - Click on “+ Add endpoint” and add the URL where you want to receive the webhook events. For local development, this will be your local server URL, e.g., `http://localhost:3000/webhook`.
+   - Select the event `checkout.session.completed` to be sent to this endpoint.
+   - After adding the endpoint, Stripe will generate a signing secret. Add this secret to your `.env` file as the value for `STRIPE_WEBHOOK_SECRET`.
+
+3. **Running the Application:**
+   - Ensure that all environment variables are set correctly.
+   - Start your application. Stripe should now be configured to handle payments and send webhook events to your application.
+
+### Testing Stripe Integration
+
+1. **Using Stripe Test Cards:**
+   - Stripe provides [test card numbers](https://stripe.com/docs/testing) for you to simulate different payment scenarios without using real money.
+   - Use these test card numbers to make payments and ensure your application handles these transactions correctly.
+
+2. **Verifying Webhook Receipt:**
+   - When a test transaction is completed, check if your application receives the webhook event and handles it as expected.
+   - For debugging, you can log the received events in your server logs.
+
+---
+
+By following these steps, you should have Stripe fully integrated and functional within your **BookMyNanny** application for both payment processing and webhook event handling.
+
+---
+
+**Note:** Remember to switch to live mode (with live API keys and webhook secret) for your production application once you are ready to accept real payments.
+
+---
+
+### Additional Resources
+
+- [Stripe API Documentation](https://stripe.com/docs/api)
+- [Stripe Testing and Debugging](https://stripe.com/docs/testing)
+
+
+
 ### GitHub Repository
 
 [BookMyNanny GitHub Repository](https://github.com/sushilrajeeva/BookMyNanny)
