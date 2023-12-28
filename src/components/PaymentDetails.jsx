@@ -4,15 +4,72 @@ import { Button as DeclineBtn } from "@/components/ui/button";
 import { jobClose, jobDecline } from "@/firebase/ParentFunctions";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
+import { loadStripe } from '@stripe/stripe-js';
+
 const PaymentDetails = ({ listing, onUpdatedListing }) => {
   const payableAmount = listing.hoursWorked * listing.hourlyRate;
+  const [stripe, setStripe] = useState(null);
+
+  // useEffect(() => {
+  //   // Initialize Stripe
+  //   const initStripe = async () => {
+  //     const stripeInstance = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+  //     setStripe(stripeInstance);
+  //   };
+
+  //   initStripe();
+  // }, []);
+
+  // Payment Integration
+    // I referred the npm documentation for stripe - reference -> https://www.npmjs.com/package/@stripe/stripe-js
+  const handleStripeCheckout = async () => {
+
+    // Here I am pasting my stripe developer account publishing key
+    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    console.log("This is my publishable key - ", publishableKey);
+    const stripe = await loadStripe(publishableKey);
+
+    // Create the Stripe checkout session
+    const body = {
+      transaction: [
+        {
+          description: `BookMyNanny Payment`,
+          price: payableAmount,
+          payerID: listing.parentID,
+          payeeID: listing.selectedNannyID,
+          listingID: listing._id,
+
+        }
+      ]
+    };
+    const headers = {
+      "Content-Type": "application/json"
+    };
+    const response = await fetch("http://localhost:3000/api/create-checkout-session", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body)
+    });
+    console.log("wtfff");
+    const session = await response.json();
+
+    console.log("interesting...");
+    // Redirect to Stripe checkout
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id
+    });
+    console.log(" called soon");
+    if (result.error) {
+      console.error("Error in Stripe checkout", result.error);
+    }
+  };
 
   const handleJobCompletion = async () => {
     try {
+      await handleStripeCheckout();
       await jobClose(listing._id);
       onUpdatedListing();
     } catch (error) {
-      // Handle error and notify the user
       console.error("Error closing job:", error);
       alert("Error marking job complete. Please try again later.");
     }
